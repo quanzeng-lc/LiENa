@@ -15,7 +15,9 @@ class LienaMessageQueue:
         return self.device_id
 
     def append(self, msg):
+        self.msgQueueLock.acquire()
         self.msgQueue.append(msg)
+        self.msgQueueLock.release()
 
     def is_empty(self):
         if len(self.msgQueue) > 0:

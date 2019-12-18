@@ -89,6 +89,7 @@ class LienaDecoder(QObject):
             self.convert_lienadatagram_to_endovascular_control_instruction(datagram)
 
     def convert_lienadatagram_to_endovascular_control_instruction(self, datagram):
+
         message_id = datagram.get_message_id()
         target_id = datagram.get_target_id()
         origin_id = datagram.get_origin_id()
