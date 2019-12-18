@@ -29,6 +29,7 @@ class LienaMessageQueue:
         return length
 
     def pop_front(self):
+        ret = None
         self.msgQueueLock.acquire()
         if len(self.msgQueue) > 0:
             ret = self.msgQueue.pop(0)
@@ -36,6 +37,7 @@ class LienaMessageQueue:
         return ret
 
     def pop_back(self):
+        ret = None
         self.msgQueueLock.acquire()
         if len(self.msgQueue) > 0:
             ret = self.msgQueue.pop(len(self.msgQueue)-1)
