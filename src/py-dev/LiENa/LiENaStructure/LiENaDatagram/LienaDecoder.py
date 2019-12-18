@@ -122,7 +122,7 @@ class LienaDecoder(QObject):
         elif int(body[13]) == 1:
             chrs = 1 * (int(body[14]) * 256 + int(body[15]))
             ci.set_catheter_translational_speed(chrs)
-
+        print ("convert_lienadatagram_to_endovascular_control_instruction", gwts, gwrs, chrs)
         self.controlMessageArrived.emit(ci)
 
     def convert_lienadatagram_to_network_quality_message(self, datagram):
