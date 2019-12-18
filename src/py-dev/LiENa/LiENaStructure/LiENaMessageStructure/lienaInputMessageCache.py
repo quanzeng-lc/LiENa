@@ -15,11 +15,10 @@ class LienaInputMessageCache:
         self.inputMessageCache[identifier].append(msg)
 
     def get_latest_message_by_index(self, identifier):
-        #print("get_latest_message_by_index", self.inputMessageCache[identifier])
-        self.inputMessageCache[identifier].pop_back()
+        return self.inputMessageCache[identifier].pop_back()
 
     def get_front_message_by_index(self, identifier):
-        self.inputMessageCache[identifier].pop_front()
+        return self.inputMessageCache[identifier].pop_front()
 
     def generate_new_msg_seq(self, device_id):
         msgQ = LienaMessageQueue()
