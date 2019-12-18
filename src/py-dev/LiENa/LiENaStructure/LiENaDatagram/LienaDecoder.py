@@ -102,26 +102,26 @@ class LienaDecoder(QObject):
         gwts = 0
         if int(body[2]) == 0:
             gwts = -1 * (int(body[3])*256 + int(body[4]))
-        if int(body[2]) == 1:
+            ci.set_guidewire_translational_speed(gwts)
+        elif int(body[2]) == 1:
             gwts =  1 * (int(body[3])*256 + int(body[4]))
-
-        ci.set_guidewire_translational_speed(gwts)
+            ci.set_guidewire_translational_speed(gwts)
 
         gwrs = 0
         if int(body[7]) == 0:
             gwrs = -1 * (int(body[8]) * 256 + int(body[9]))
-        if int(body[2]) == 1:
+            ci.set_guidewire_rotational_speed(gwrs)
+        elif int(body[7]) == 1:
             gwrs = 1 * (int(body[8]) * 256 + int(body[9]))
-
-        ci.set_guidewire_rotational_speed(gwrs)
-
+            ci.set_guidewire_rotational_speed(gwrs)
+        
         chrs = 0
         if int(body[13]) == 0:
             chrs = -1 * (int(body[14]) * 256 + int(body[15]))
-        if int(body[2]) == 1:
+            ci.set_catheter_translational_speed(chrs)
+        elif int(body[13]) == 1:
             chrs = 1 * (int(body[14]) * 256 + int(body[15]))
-
-        ci.set_catheter_translational_speed(chrs)
+            ci.set_catheter_translational_speed(chrs)
 
         self.controlMessageArrived.emit(ci)
 

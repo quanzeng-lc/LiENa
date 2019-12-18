@@ -23,5 +23,5 @@ class LienaControlInstruction(LienaMessage):
     def get_guidewire_rotational_speed(self):
         return self.guidewireRotationalSpeed
 
-    def set_catheter_translational_speed(self):
+    def get_catheter_translational_speed(self):
         return self.catheterTranslationalSpeed

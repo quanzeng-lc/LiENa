@@ -59,7 +59,7 @@ class LienaDecodingTask(QObject):
         self.decoder.rehandshakeCommitMessageArrived[LienaReHandshakeCommitMessage].connect(self.notify_rehandshake_commit_message)
         self.decoder.passiveNTPClockSynchronisationMessageArrived[LienaNetworkQualityMessage].connect(self.notify_passive_ntp_clock_synchronisation_message)
         self.decoder.motivateNTPClockSynchronisationMessageArrived[LienaNetworkQualityMessage].connect(self.notify_motivate_ntp_clock_synchronisation_message)
-        self.decoder.self.controlMessageArrived[LienaControlInstruction].connect(self.notify_control_instruction)
+        self.decoder.controlMessageArrived[LienaControlInstruction].connect(self.notify_control_instruction)
 
         self.rtFlag = True
         self.rtPeriod = 0.05
