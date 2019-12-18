@@ -1,4 +1,4 @@
-from LiENaBasic.lienaDefinition import *
+from LiENa.LiENaBasic.lienaDefinition import *
 
 
 class LienaDatagram:

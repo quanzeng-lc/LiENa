@@ -1,5 +1,5 @@
-from LiENaStructure.LiENaDatagram.LienaDatagram import LienaDatagram
-from LiENaBasic.lienaDefinition import *
+from LiENa.LiENaStructure.LiENaDatagram.LienaDatagram import LienaDatagram
+from LiENa.LiENaBasic.lienaDefinition import *
 
 
 class LienaEncoder:

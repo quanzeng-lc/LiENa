@@ -1,9 +1,12 @@
-from LiENaStructure.LiENaMessageStructure.lienaMessageQueue import LienaMessageQueue
+from LiENa.LiENaStructure.LiENaMessageStructure.lienaMessageQueue import LienaMessageQueue
 
 
 class LienaInputMessageCache:
     def __init__(self):
         self.inputMessageCache = list()
+
+    def get_sequence_count(self):
+        return len(self.inputMessageCache)
 
     def add_message_sequence(self):
         self.inputMessageCache.append([])
@@ -14,10 +17,10 @@ class LienaInputMessageCache:
     def append_message_by_id(self, identifier, msg):
         self.inputMessageCache[identifier].append(msg)
 
-    def get_latest_message_by_id(self, identifier):
+    def get_latest_message_by_index(self, identifier):
         self.inputMessageCache[identifier].pop(-1)
 
-    def get_front_message_by_id(self, identifier):
+    def get_front_message_by_index(self, identifier):
         self.inputMessageCache[identifier].pop(0)
 
     def generate_new_msg_seq(self, device_id):

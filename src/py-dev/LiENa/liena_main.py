@@ -23,6 +23,11 @@ def main():
     communication_stack.launch()
     communication_stack.open_session_request(SIAT_COCKPIT_VERSION_1, "192.168.1.142", 10704)
 
+    input_cache = communication_stack.get_input_cache()
+    output_cache = communication_stack.get_output_cache()
+
+
+
     sys.exit(app.exec_())
 
 

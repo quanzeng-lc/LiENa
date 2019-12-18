@@ -1,4 +1,4 @@
-from LiENaStructure.LiENaMessage.LienaMessage import LienaMessage
+from LiENa.LiENaStructure.LiENaMessage.LienaMessage import LienaMessage
 
 
 class LienaNetworkQualityMessage(LienaMessage):

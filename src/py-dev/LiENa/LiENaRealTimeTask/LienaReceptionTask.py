@@ -2,8 +2,8 @@
 import threading
 import time
 import socket
-from LiENaStructure.LiENaDatagram.LienaDatagram import LienaDatagram
-from LiENaBasic.lienaDefinition import *
+from LiENa.LiENaStructure.LiENaDatagram.LienaDatagram import LienaDatagram
+from LiENa.LiENaBasic.lienaDefinition import *
 
 
 class LienaReceptionTask:

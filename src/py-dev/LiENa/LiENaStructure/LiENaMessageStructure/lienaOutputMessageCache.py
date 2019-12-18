@@ -1,4 +1,4 @@
-from LiENaStructure.LiENaMessageStructure.lienaMessageQueue import LienaMessageQueue
+from LiENa.LiENaStructure.LiENaMessageStructure.lienaMessageQueue import LienaMessageQueue
 
 
 class LienaOutputMessageCache:

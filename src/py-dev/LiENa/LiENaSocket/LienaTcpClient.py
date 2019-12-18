@@ -1,6 +1,6 @@
 import socket
 from PyQt5.QtCore import QObject
-from LiENaBasic.lienaDefinition import *
+from LiENa.LiENaBasic.lienaDefinition import *
 
 
 class LienaTcpClient(QObject):

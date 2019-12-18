@@ -2,7 +2,7 @@ from PyQt5.QtCore import QObject, pyqtSignal, pyqtSlot
 import socket
 import threading
 
-from LiENaSocket.LienaTcpClient import LienaTcpClient
+from LiENa.LiENaSocket.LienaTcpClient import LienaTcpClient
 
 
 class LienaTcpServer(QObject):

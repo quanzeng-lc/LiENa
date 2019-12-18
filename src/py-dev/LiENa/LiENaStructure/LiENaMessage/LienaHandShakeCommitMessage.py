@@ -1,5 +1,5 @@
-from LiENaStructure.LiENaMessage.LienaMessage import LienaMessage
-from LiENaStructure.LiENaDatagram import LienaDatagram
+from LiENa.LiENaStructure.LiENaMessage.LienaMessage import LienaMessage
+from LiENa.LiENaStructure.LiENaDatagram import LienaDatagram
 
 
 class LienaHandShakeCommitMessage(LienaMessage):

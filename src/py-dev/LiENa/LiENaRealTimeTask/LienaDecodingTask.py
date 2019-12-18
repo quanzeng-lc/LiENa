@@ -3,20 +3,20 @@ import threading
 import time
 
 from PyQt5.QtCore import QObject, pyqtSignal
-from LiENaStructure.LiENaDatagram.LienaDecoder import LienaDecoder
-from LiENaStructure.LiENaMessage.LienaNetworkQualityMessage import LienaNetworkQualityMessage
-from LiENaStructure.LiENaMessage.LienaChannelReOpenedMessage import LienaChannelReOpenedMessage
-from LiENaStructure.LiENaMessage.LienaChannelClosedMessage import LienaChannelClosedMessage
-from LiENaStructure.LiENaMessage.LienaDisengagementMessage import LienaDisengagementMessage
-from LiENaStructure.LiENaMessage.LienaHandShakeCommitMessage import LienaHandShakeCommitMessage
-from LiENaStructure.LiENaMessage.LienaHeartbeatMessage import LienaHeartbeatMessage
-from LiENaStructure.LiENaMessage.LienaHandShakeMessage import LienaHandShakeMessage
-from LiENaStructure.LiENaMessage.LienaChannelOpenedMessage import LienaChannelOpenedMessage
-from LiENaStructure.LiENaMessage.LienaReHandshakeCommitMessage import LienaReHandshakeCommitMessage
-from LiENaStructure.LiENaMessage.lienaReHandshakeMessage import LienaReHandshakeMessage
-from LiENaStructure.LiENaMessage.LienaDisengagementCommitMessage import LienaDisengagementCommitMessage
-from LiENaBasic.lienaDefinition import *
-from LiENaStructure.LiENaMessage.LienaControlInstruction import LienaControlInstruction
+from LiENa.LiENaStructure.LiENaDatagram.LienaDecoder import LienaDecoder
+from LiENa.LiENaStructure.LiENaMessage.LienaNetworkQualityMessage import LienaNetworkQualityMessage
+from LiENa.LiENaStructure.LiENaMessage.LienaChannelReOpenedMessage import LienaChannelReOpenedMessage
+from LiENa.LiENaStructure.LiENaMessage.LienaChannelClosedMessage import LienaChannelClosedMessage
+from LiENa.LiENaStructure.LiENaMessage.LienaDisengagementMessage import LienaDisengagementMessage
+from LiENa.LiENaStructure.LiENaMessage.LienaHandShakeCommitMessage import LienaHandShakeCommitMessage
+from LiENa.LiENaStructure.LiENaMessage.LienaHeartbeatMessage import LienaHeartbeatMessage
+from LiENa.LiENaStructure.LiENaMessage.LienaHandShakeMessage import LienaHandShakeMessage
+from LiENa.LiENaStructure.LiENaMessage.LienaChannelOpenedMessage import LienaChannelOpenedMessage
+from LiENa.LiENaStructure.LiENaMessage.LienaReHandshakeCommitMessage import LienaReHandshakeCommitMessage
+from LiENa.LiENaStructure.LiENaMessage.lienaReHandshakeMessage import LienaReHandshakeMessage
+from LiENa.LiENaStructure.LiENaMessage.LienaDisengagementCommitMessage import LienaDisengagementCommitMessage
+from LiENa.LiENaStructure.LiENaMessage.LienaCustomizedMessage import LienaCustomizedMessage
+from LiENa.LiENaBasic.lienaDefinition import *
 
 
 class LienaDecodingTask(QObject):
@@ -34,7 +34,7 @@ class LienaDecodingTask(QObject):
     handshakeCommitMessageArrived = pyqtSignal(LienaHandShakeCommitMessage)
     motivateNTPClockSynchronisationMessageArrived = pyqtSignal(LienaNetworkQualityMessage)
     passiveNTPClockSynchronisationMessageArrived = pyqtSignal(LienaNetworkQualityMessage)
-    controlMessageArrived = pyqtSignal(LienaControlInstruction)
+    controlMessageArrived = pyqtSignal(LienaCustomizedMessage)
 
     def __init__(self, input_queue, motivate, local_device_id, target_device_id):
         super(LienaDecodingTask, self).__init__()
@@ -59,7 +59,7 @@ class LienaDecodingTask(QObject):
         self.decoder.rehandshakeCommitMessageArrived[LienaReHandshakeCommitMessage].connect(self.notify_rehandshake_commit_message)
         self.decoder.passiveNTPClockSynchronisationMessageArrived[LienaNetworkQualityMessage].connect(self.notify_passive_ntp_clock_synchronisation_message)
         self.decoder.motivateNTPClockSynchronisationMessageArrived[LienaNetworkQualityMessage].connect(self.notify_motivate_ntp_clock_synchronisation_message)
-        self.decoder.controlMessageArrived[LienaControlInstruction].connect(self.notify_control_instruction)
+        self.decoder.customizedMessageArrived[LienaCustomizedMessage].connect(self.notify_control_instruction)
 
         self.rtFlag = True
         self.rtPeriod = 0.05
@@ -78,7 +78,6 @@ class LienaDecodingTask(QObject):
         self.stand_by = True
 
     def notify_control_instruction(self, msg):
-
         self.inputMsgQue.append(msg)
 
     def notify_channel_reopened_message_arrived(self, msg):

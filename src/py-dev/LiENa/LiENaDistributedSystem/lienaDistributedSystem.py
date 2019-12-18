@@ -1,5 +1,5 @@
-from LiENaDistributedSystem.lienaDistributedModule import LienaDistributedModule
-from LiENaBasic.lienaDefinition import *
+from LiENa.LiENaDistributedSystem.lienaDistributedModule import LienaDistributedModule
+from LiENa.LiENaBasic.lienaDefinition import *
 
 from PyQt5.QtCore import QObject, pyqtSlot, pyqtSignal
 

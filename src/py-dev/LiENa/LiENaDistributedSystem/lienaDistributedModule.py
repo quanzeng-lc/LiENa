@@ -4,32 +4,32 @@ import threading
 import time
 import socket
 from PyQt5.QtCore import QObject, pyqtSignal
-from LiENaBasic.lienaDefinition import *
-from LiENaSocket.LienaTcpClient import LienaTcpClient
+from LiENa.LiENaBasic.lienaDefinition import *
+from LiENa.LiENaSocket.LienaTcpClient import LienaTcpClient
 
-from LiENaRealTimeTask.LienaDecodingTask import LienaDecodingTask
-from LiENaRealTimeTask.LienaDiagnosisTask import LienaDiagnosisTask
-from LiENaRealTimeTask.LienaEncodingTask import LienaEncodingTask
-from LiENaRealTimeTask.LienaHeartbeatTask import LienaHearBeatTask
-from LiENaRealTimeTask.LienaReceptionTask import LienaReceptionTask
-from LiENaRealTimeTask.LienaTransmissionTask import LienaTransmissionTask
-from LiENaRealTimeTask.LienaNTPClockSynchronisationTask import LienaNTPClockSynchronisationTask
+from LiENa.LiENaRealTimeTask.LienaDecodingTask import LienaDecodingTask
+from LiENa.LiENaRealTimeTask.LienaDiagnosisTask import LienaDiagnosisTask
+from LiENa.LiENaRealTimeTask.LienaEncodingTask import LienaEncodingTask
+from LiENa.LiENaRealTimeTask.LienaHeartbeatTask import LienaHearBeatTask
+from LiENa.LiENaRealTimeTask.LienaReceptionTask import LienaReceptionTask
+from LiENa.LiENaRealTimeTask.LienaTransmissionTask import LienaTransmissionTask
+from LiENa.LiENaRealTimeTask.LienaNTPClockSynchronisationTask import LienaNTPClockSynchronisationTask
 
-from LiENaStructure.LiENaDatagramStructure.LienaInputQueue import LienaInputQueue
-from LiENaStructure.LiENaDatagramStructure.LienaOutputQueue import LienaOutputQueue
+from LiENa.LiENaStructure.LiENaDatagramStructure.LienaInputQueue import LienaInputQueue
+from LiENa.LiENaStructure.LiENaDatagramStructure.LienaOutputQueue import LienaOutputQueue
 
-from LiENaStructure.LiENaMessage.LienaChannelReOpenedMessage import LienaChannelReOpenedMessage
-from LiENaStructure.LiENaMessage.LienaChannelClosedMessage import LienaChannelClosedMessage
-from LiENaStructure.LiENaMessage.LienaDisengagementMessage import LienaDisengagementMessage
-from LiENaStructure.LiENaMessage.LienaHandShakeCommitMessage import LienaHandShakeCommitMessage
-from LiENaStructure.LiENaMessage.LienaHeartbeatMessage import LienaHeartbeatMessage
-from LiENaStructure.LiENaMessage.LienaHandShakeMessage import LienaHandShakeMessage
-from LiENaStructure.LiENaMessage.LienaChannelOpenedMessage import LienaChannelOpenedMessage
-from LiENaStructure.LiENaMessage.LienaNetworkQualityMessage import LienaNetworkQualityMessage
-from LiENaStructure.LiENaMessage.LienaReHandshakeCommitMessage import LienaReHandshakeCommitMessage
-from LiENaStructure.LiENaMessage.lienaReHandshakeMessage import LienaReHandshakeMessage
-from LiENaStructure.LiENaMessage.LienaDisengagementCommitMessage import LienaDisengagementCommitMessage
-from LiENaStructure.LiENaMessage.LienaControlInstruction import LienaControlInstruction
+from LiENa.LiENaStructure.LiENaMessage.LienaChannelReOpenedMessage import LienaChannelReOpenedMessage
+from LiENa.LiENaStructure.LiENaMessage.LienaChannelClosedMessage import LienaChannelClosedMessage
+from LiENa.LiENaStructure.LiENaMessage.LienaDisengagementMessage import LienaDisengagementMessage
+from LiENa.LiENaStructure.LiENaMessage.LienaHandShakeCommitMessage import LienaHandShakeCommitMessage
+from LiENa.LiENaStructure.LiENaMessage.LienaHeartbeatMessage import LienaHeartbeatMessage
+from LiENa.LiENaStructure.LiENaMessage.LienaHandShakeMessage import LienaHandShakeMessage
+from LiENa.LiENaStructure.LiENaMessage.LienaChannelOpenedMessage import LienaChannelOpenedMessage
+from LiENa.LiENaStructure.LiENaMessage.LienaNetworkQualityMessage import LienaNetworkQualityMessage
+from LiENa.LiENaStructure.LiENaMessage.LienaReHandshakeCommitMessage import LienaReHandshakeCommitMessage
+from LiENa.LiENaStructure.LiENaMessage.lienaReHandshakeMessage import LienaReHandshakeMessage
+from LiENa.LiENaStructure.LiENaMessage.LienaDisengagementCommitMessage import LienaDisengagementCommitMessage
+from LiENa.LiENaStructure.LiENaMessage.LienaCustomizedMessage import LienaCustomizedMessage
 
 
 class LienaDistributedModule(QObject):
@@ -292,7 +292,7 @@ class LienaDistributedModule(QObject):
         self.decoding_task.channelReOpenedMessageArrived[LienaChannelReOpenedMessage].connect(self.launch_channel_reopened)
         self.decoding_task.passiveNTPClockSynchronisationMessageArrived.connect(self.return_back_network_quality_message)
         self.decoding_task.motivateNTPClockSynchronisationMessageArrived.connect(self.store_ntp__clock_synchronisation_message)
-        self.decoding_task.controlMessageArrived[LienaControlInstruction].connect(self.store_control_instruction_message)
+        self.decoding_task.controlMessageArrived[LienaCustomizedMessage].connect(self.store_control_instruction_message)
         self.decoding_task.launch()
 
         print("instantiate decoding task")

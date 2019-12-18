@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 import threading
 import time
-from LiENaBasic.lienaDefinition import *
-from LiENaStructure.LiENaDatagram.LienaDatagram import LienaDatagram
-from LiENaStructure.LiENaMessage.LienaHeartbeatMessage import LienaHeartbeatMessage
+from LiENa.LiENaBasic.lienaDefinition import *
+from LiENa.LiENaStructure.LiENaDatagram.LienaDatagram import LienaDatagram
+from LiENa.LiENaStructure.LiENaMessage.LienaHeartbeatMessage import LienaHeartbeatMessage
 
 
 class LienaHearBeatTask:

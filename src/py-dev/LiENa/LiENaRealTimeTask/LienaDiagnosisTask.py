@@ -1,7 +1,7 @@
 import threading
 import time
 from PyQt5.QtCore import QObject, pyqtSignal
-from LiENaBasic.lienaDefinition import *
+from LiENa.LiENaBasic.lienaDefinition import *
 
 
 class LienaDiagnosisTask(QObject):

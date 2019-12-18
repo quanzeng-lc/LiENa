@@ -1,56 +1,38 @@
-#-*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 import threading
 import time
 from threading import Lock
 import csv
+
+from RCPContext.LienaControlInstruction import LienaControlInstruction
 from RCPControl.SensingParameter import SensingParameter
 from RCPControl.GlobalParameterType import GlobalParameterType
 
+
 class RCPContext:
 
-    def __init__(self):
-	
-	# ---------------------------------------------------------------------------------------------
+    def __init__(self, input_cache, output_cache):
+
+        self.input_cache = input_cache
+        self.output_cache = output_cache
+
+        # ---------------------------------------------------------------------------------------------
         # define the mutex to avoid concurency
         # ---------------------------------------------------------------------------------------------
         self.inputLock = threading.Lock()
         self.outputLock = threading.Lock()
-        
-	# ---------------------------------------------------------------------------------------------
+
+        # ---------------------------------------------------------------------------------------------
         # message sequences
         # ---------------------------------------------------------------------------------------------
-	# catheter control commandes in speed mode
-        self.catheterMoveInstructionSequence = []
-	
-	# guidewire control commandes in speed mode
-        self.guidewireProgressInstructionSequence = []
-        self.guidewireRotateInstructionSequence = []
+        # catheter control commandes in speed mode
+        self.controlInstruction = []
 
-	# guidewire control commandes in position mode
-        self.guidewireMovingDistance = []
-
-	# to be verified...
-        self.contrastMediaPushInstructionSequence = []
-        self.injectionCommandSequence = []
-        self.retractInstructionSequence = []
-  
-        # forcefeedback
-        self.forcefeedbackSequence = []
-        
-        # push catheter and guidewire together
-        self.catheter_guidewire_push_sequence = []
-
-	# system control
-        self.closeSessionSequence = []
-        
-
-        self.sensingParameterSequence = []
-
-	# ---------------------------------------------------------------------------------------------
+        # ---------------------------------------------------------------------------------------------
         # system status variable 
         # ---------------------------------------------------------------------------------------------
         self.systemStatus = True
-        
+
         # ------------------------------------------------------------------------------------------------------------
         # control variables:
         #
@@ -89,17 +71,59 @@ class RCPContext:
         self.globalRotationVelocity = 0.0
         self.globalDecisionMade = 1
 
-        informationAnalysisTask = threading.Thread(None, self.coreInformationAnalysis)
-        informationAnalysisTask.start()
+        parse_command_task = threading.Thread(None, self.parse_command)
+        parse_command_task.start()
 
-        decisionMaking_task = threading.Thread(None, self.decisionMaking)
-        decisionMaking_task.start()
+        feedback_task = threading.Thread(None, self.real_time_feedback)
+        feedback_task.start()
 
-        self.storingDataLock = Lock()
-        storingDataTask = threading.Thread(None, self.storingData)
-        storingDataTask.start()
+        # ------ to be merged ----
+        # decisionMaking_task = threading.Thread(None, self.decisionMaking)
+        # decisionMaking_task.start()
 
-    def coreInformationAnalysis(self):
+        # self.storingDataLock = Lock()
+        # storingDataTask = threading.Thread(None, self.storingData)
+        # storingDataTask.start()
+
+    def parse_command(self):
+        while True:
+            cpt = self.input_cache.get_sequence_count()
+            for i in range(cpt):
+                self.inputLock.acquire()
+                msg = self.input_cache.get_latest_message_by_index(i)
+
+                ci = LienaControlInstruction(msg.get_message_id(), msg.get_target_id(), msg.get_origin_id(), msg.get_time_stamps(), msg.get_dlc())
+
+                body = msg.get_value()
+
+                gwts = 0
+                if int(body[2]) == 0:
+                  gwts = -1 * (int(body[3])*256 + int(body[4]))
+                  ci.set_guidewire_translational_speed(gwts)
+                elif int(body[2]) == 1:
+                  gwts =  1 * (int(body[3])*256 + int(body[4]))
+                  ci.set_guidewire_translational_speed(gwts)
+
+                gwrs = 0
+                if int(body[7]) == 0:
+                  gwrs = -1 * (int(body[8]) * 256 + int(body[9]))
+                  ci.set_guidewire_rotational_speed(gwrs)
+                elif int(body[7]) == 1:
+                  gwrs = 1 * (int(body[8]) * 256 + int(body[9]))
+                  ci.set_guidewire_rotational_speed(gwrs)
+
+                chrs = 0
+                if int(body[13]) == 0:
+                  chrs = -1 * (int(body[14]) * 256 + int(body[15]))
+                  ci.set_catheter_translational_speed(chrs)
+                elif int(body[13]) == 1:
+                  chrs = 1 * (int(body[14]) * 256 + int(body[15]))
+                  ci.set_catheter_translational_speed(chrs)
+                print ("parse_command:", gwts, gwrs, chrs)
+                self.controlInstruction.append(ci)
+                self.inputLock.release()
+
+    def real_time_feedback(self):
         while True:
             parameter = SensingParameter()
             parameter.setTimestamps(10)
@@ -111,17 +135,16 @@ class RCPContext:
             parameter.setGuidewireAngle(10)
             parameter.setTranslationVelocity(10)
             parameter.setRotationVelocity(10)
-            self.sensingParameterSequence.append(parameter)
-            #print 'length',len(self.sensingParameterSequence)
-            #print "forcefeedback ", parameter.getForceFeedback(), "torquefeedback ", parameter.getTorqueFeedback()
+            # self.sensingParameterSequence.append(parameter)
+            # print 'length',len(self.sensingParameterSequence)
+            # print "forcefeedback ", parameter.getForceFeedback(), "torquefeedback ", parameter.getTorqueFeedback()
             time.sleep(0.03)
 
     def decisionMaking(self):
         while True:
-
             self.globalDecisionMade = 1
             time.sleep(0.01)
-        #return ret
+        # return ret
 
     def decision_made(self):
         ret = self.decision_made
@@ -134,7 +157,7 @@ class RCPContext:
             if len(self.sensingParameterSequence) >= 100:
                 data = self.sensingParameterSequence[0:100]
                 del self.sensingParameterSequence[0:100]
-            self.storingDataLock.release() 
+            self.storingDataLock.release()
             path = "./hapticData/hapticFeedback.csv"
             for var in data:
                 tmpData = list()
@@ -147,17 +170,14 @@ class RCPContext:
                 tmpData.append(str(var.getGuidewireAngle()))
                 tmpData.append(str(var.getTranslationVelocity()))
                 tmpData.append(str(var.getRotationVelocity()))
-               # for x in tmpData:
+                # for x in tmpData:
                 #    print x
                 with open(path, 'a+') as f:
                     csv_writer = csv.writer(f)
                     csv_writer.writerow(tmpData)
-                    #f.write(tmpData[0])
+                    # f.write(tmpData[0])
 
             time.sleep(1)
-
-    def clear_guidewire_message(self):
-        self.guidewireProgressInstructionSequence = []
 
     def get_guidewire_control_state(self):
         return self.guidewireControlState
@@ -252,49 +272,9 @@ class RCPContext:
         else:
             print("ParameterType error")
 
-    def append_close_session_msg(self, close_session_msg):
-        self.closeSessionSequence.append(close_session_msg)
-    
-    def fetch_close_session_msg(self):
-        self.inputLock.acquire()
-        length = len(self.closeSessionSequence)
-        ret = self.closeSessionSequence.pop(length-1)
-        self.inputLock.release()
-        return ret
-	
-    def get_close_session_sequence_length(self):
-        self.inputLock.acquire()
-        length = len(self.closeSessionSequence)
-        self.inputLock.release()
-        return length
-	
-    def append_new_injection_msg(self, msg):
-        self.inputLock.acquire()
-        self.injectionCommandSequence.append(msg)
-        self.inputLock.release()
-
-    def fetch_latest_injection_msg_msg(self):
-        self.inputLock.acquire()
-        length = len(self.injectionCommandSequence)
-        ret = self.injectionCommandSequence.pop(length-1)
-        self.inputLock.release()
-        return ret
-
-    def get_injection_command_sequence_length(self):
-        self.inputLock.acquire()
-        length = len(self.injectionCommandSequence)
-        self.inputLock.release()
-        return length
-
     def close_system(self):
         self.systemStatus = False
-        self.catheterMoveInstructionSequence = []
-        self.guidewireProgressInstructionSequence = []
-        self.guidewireRotateInstructionSequence = []
-        self.contrastMediaPushInstructionSequence = []
-        self.retractInstructionSequence = []
-        self.guidewireMovingDistance = []
-        self.closeSessionSequence = []
+        self.controlInstruction = []
 
     def open_system(self):
         self.systemStatus = True
@@ -303,159 +283,17 @@ class RCPContext:
         return self.systemStatus
 
     def clear(self):
-        self.catheterMoveInstructionSequence = []
-        self.guidewireProgressInstructionSequence = []
-        self.guidewireRotateInstructionSequence = []
-        self.contrastMediaPushInstructionSequence = []
-        self.retractInstructionSequence = []
-        self.guidewireMovingDistance = []
-        self.closeSessionSequence = []
+        self.controlInstruction = []
 
-    def set_distance(self, dis):
-        self.guidewireMovingDistance.append(dis)
-
-    def fetch_latest_guidewire_moving_distance(self):
-        self.outputLock.acquire()
-        length = len(self.guidewireMovingDistance)
-        ret = self.guidewireMovingDistance[length-1]
-        self.outputLock.release()
-        return ret		
-
-    def fetch_latest_guidewire_moving_distance_msg(self):
-        self.outputLock.acquire()
-        length = len(self.guidewireMovingDistance)
-        ret = self.guidewireMovingDistance.pop(length-1)
-        self.outputLock.release()
-        return ret
-
-    def get_latest_guidewire_moving_distance_sequence_length(self):
-        self.outputLock.acquire()
-        length = len(self.guidewireMovingDistance)
-        self.outputLock.release()
-        return length   
- 
-    def append_new_catheter_move_message(self, msg):
-        self.inputLock.acquire()     
-        self.catheterMoveInstructionSequence.append(msg)
-        self.inputLock.release()
-
-    def fetch_latest_catheter_move_msg(self):
+    def fetch_controlInstruction(self):
         self.inputLock.acquire()
-        length = len(self.catheterMoveInstructionSequence)
-        ret = self.catheterMoveInstructionSequence.pop(length-1)
+        length = len(self.controlInstruction)
+        ret = self.controlInstruction.pop(length - 1)
         self.inputLock.release()
         return ret
 
-    def get_catheter_move_instruction_sequence_length(self):
+    def get_controlInstruction_length(self):
         self.inputLock.acquire()
-        length = len(self.catheterMoveInstructionSequence)
+        length = len(self.controlInstruction)
         self.inputLock.release()
         return length
-
-    def append_new_guidewire_progress_move_message(self, msg):
-        self.inputLock.acquire()
-        self.guidewireProgressInstructionSequence.append(msg)
-        self.inputLock.release()
-
-    def fetch_latest_guidewire_progress_move_msg(self):
-        self.inputLock.acquire()
-        length = len(self.guidewireProgressInstructionSequence)
-        ret = self.guidewireProgressInstructionSequence.pop(length-1)
-        self.inputLock.release()
-        return ret
-
-    def get_guidewire_progress_instruction_sequence_length(self):
-        self.inputLock.acquire()
-        length = len(self.guidewireProgressInstructionSequence)
-        self.inputLock.release()
-        return length
-
-    def append_new_guidewire_rotate_move_message(self, msg):
-        self.inputLock.acquire()
-        self.guidewireRotateInstructionSequence.append(msg)
-        self.inputLock.release()
-
-    def fetch_latest_guidewire_rotate_move_msg(self):
-        self.inputLock.acquire()
-        length = len(self.guidewireRotateInstructionSequence)
-        ret = self.guidewireRotateInstructionSequence.pop(length-1)
-        self.inputLock.release()
-        return ret
-
-    def get_guidewire_rotate_instruction_sequence_length(self):
-        self.inputLock.acquire()
-        length = len(self.guidewireRotateInstructionSequence)
-        self.inputLock.release()
-        return length
-
-    def append_new_contrast_media_push_move_message(self, msg):
-        self.inputLock.acquire()
-        self.contrastMediaPushInstructionSequence.append(msg)
-        self.inputLock.release()
-
-    def fetch_latest_contrast_media_push_move_msg(self):
-        self.inputLock.acquire()
-        length = len(self.contrastMediaPushInstructionSequence)
-        ret = self.contrastMediaPushInstructionSequence.pop(length-1)
-        self.inputLock.release()
-        return ret
-
-    def get_contrast_media_push_instruction_sequence_length(self):
-        self.inputLock.acquire()
-        length = len(self.contrastMediaPushInstructionSequence)
-        self.inputLock.release()
-        return length
-
-    def append_latest_retract_message(self, msg):
-        self.inputLock.acquire()
-        self.retractInstructionSequence.append(msg)
-        self.inputLock.release()
-
-    def fetch_latest_retract_msg(self):
-        self.inputLock.acquire()
-        length = len(self.retractInstructionSequence)
-        ret = self.retractInstructionSequence.pop(length-1)
-        self.inputLock.release()
-        return ret
-
-    def get_retract_instruction_sequence_length(self):
-        self.inputLock.acquire()
-        length = len(self.retractInstructionSequence)
-        self.inputLock.release()
-        return length
-
-    # get forcefeedbqck
-    def append_latest_forcefeedback_msg(self, msg):
-        self.outputLock.acquire()
-        self.forcefeedbackSequence.append(msg)
-        self.outputLock.release()
-
-    def fetch_latest_feedback_msg(self):
-        self.outputLock.acquire()
-        length = len(self.forcefeedbackSequence)
-        ret = self.forcefeedbackSequence.pop(length - 1)
-        self.outputLock.release()
-        return ret
-
-    def get_feedback_sequence_length(self):
-        self.outputLock.acquire()
-        length = len(self.forcefeedbackSequence)
-        self.outputLock.release()
-        return length
-
-
-    # -------------------------------------------------
-    # catheter and guidewire push together
-    # --------------------------------------------------
-    def get_catheter_guidewire_push_sequence_length(self):
-        self.inputLock.acquire()
-        length = len(self.catheter_guidewire_push_sequence)
-        self.inputLock.release()
-        return length
-
-    def get_fetch_latest_catheter_guidewire_push_msg(self):
-        self.inputLock.acquire()
-        length = len(self.catheter_guidewire_push_sequence)
-        ret = self.catheter_guidewire_push_sequence.pop(length - 1)
-        self.input.release()
-        return ret

@@ -11,6 +11,9 @@ class LienaCustomizedMessage(LienaMessage):
     def configure(self, rule):
         self.rule = rule
 
+    def get_value(self):
+        return self.v
+
     # for decoding
     def pop_uint8(self):
         v = self.v[self.index]

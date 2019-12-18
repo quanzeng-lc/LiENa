@@ -1,22 +1,21 @@
 import time
 from PyQt5.QtCore import QObject, pyqtSignal
-from LiENaStructure.LiENaMessage.LienaChannelClosedMessage import LienaChannelClosedMessage
-from LiENaStructure.LiENaMessage.LienaDisengagementMessage import LienaDisengagementMessage
-from LiENaStructure.LiENaMessage.LienaHandShakeCommitMessage import LienaHandShakeCommitMessage
-from LiENaStructure.LiENaMessage.LienaHeartbeatMessage import LienaHeartbeatMessage
-from LiENaStructure.LiENaMessage.LienaMotorMsg import LienaMotorMsg
-from LiENaStructure.LiENaMessage.LienaInjectionMsg import LienaInjectionMsg
-from LiENaStructure.LiENaMessage.LienaHandShakeMessage import LienaHandShakeMessage
-from LiENaStructure.LiENaMessage.LienaChannelOpenedMessage import LienaChannelOpenedMessage
-from LiENaStructure.LiENaMessage.LienaReHandshakeCommitMessage import LienaReHandshakeCommitMessage
-from LiENaStructure.LiENaMessage.lienaReHandshakeMessage import LienaReHandshakeMessage
-from LiENaStructure.LiENaMessageStructure.lienaInputMessageCache import LienaInputMessageCache
-from LiENaStructure.LiENaMessage.LienaDisengagementCommitMessage import LienaDisengagementCommitMessage
-from LiENaStructure.LiENaMessage.LienaChannelReOpenedMessage import LienaChannelReOpenedMessage
-from LiENaStructure.LiENaMessage.LienaNetworkQualityMessage import LienaNetworkQualityMessage
-from LiENaBasic.lienaDefinition import *
-
-from LiENaStructure.LiENaMessage.LienaControlInstruction import LienaControlInstruction
+from LiENa.LiENaStructure.LiENaMessage.LienaChannelClosedMessage import LienaChannelClosedMessage
+from LiENa.LiENaStructure.LiENaMessage.LienaCustomizedMessage import LienaCustomizedMessage
+from LiENa.LiENaStructure.LiENaMessage.LienaDisengagementMessage import LienaDisengagementMessage
+from LiENa.LiENaStructure.LiENaMessage.LienaHandShakeCommitMessage import LienaHandShakeCommitMessage
+from LiENa.LiENaStructure.LiENaMessage.LienaHeartbeatMessage import LienaHeartbeatMessage
+from LiENa.LiENaStructure.LiENaMessage.LienaMotorMsg import LienaMotorMsg
+from LiENa.LiENaStructure.LiENaMessage.LienaInjectionMsg import LienaInjectionMsg
+from LiENa.LiENaStructure.LiENaMessage.LienaHandShakeMessage import LienaHandShakeMessage
+from LiENa.LiENaStructure.LiENaMessage.LienaChannelOpenedMessage import LienaChannelOpenedMessage
+from LiENa.LiENaStructure.LiENaMessage.LienaReHandshakeCommitMessage import LienaReHandshakeCommitMessage
+from LiENa.LiENaStructure.LiENaMessage.lienaReHandshakeMessage import LienaReHandshakeMessage
+from LiENa.LiENaStructure.LiENaMessageStructure.lienaInputMessageCache import LienaInputMessageCache
+from LiENa.LiENaStructure.LiENaMessage.LienaDisengagementCommitMessage import LienaDisengagementCommitMessage
+from LiENa.LiENaStructure.LiENaMessage.LienaChannelReOpenedMessage import LienaChannelReOpenedMessage
+from LiENa.LiENaStructure.LiENaMessage.LienaNetworkQualityMessage import LienaNetworkQualityMessage
+from LiENa.LiENaBasic.lienaDefinition import *
 
 
 class LienaDecoder(QObject):
@@ -33,7 +32,7 @@ class LienaDecoder(QObject):
     handshakeCommitMessageArrived = pyqtSignal(LienaHandShakeCommitMessage)
     passiveNTPClockSynchronisationMessageArrived = pyqtSignal(LienaNetworkQualityMessage)
     motivateNTPClockSynchronisationMessageArrived = pyqtSignal(LienaNetworkQualityMessage)
-    controlMessageArrived = pyqtSignal(LienaControlInstruction)
+    customizedMessageArrived = pyqtSignal(LienaCustomizedMessage)
 
     def __init__(self, motivate, local_device_id, target_device_id):
         super(LienaDecoder, self).__init__()
@@ -47,46 +46,46 @@ class LienaDecoder(QObject):
         self.addr = None
 
     def analyse(self, datagram):
-        customized_message_id = datagram.get_message_id()
+        message_id = datagram.get_message_id()
         # target_id = datagram.get_target_id()
 
         if DEBUG:
-            print("analyse | customized message id", customized_message_id)
+            print("analyse | customized message id", message_id)
 
-        if customized_message_id == LIENA_SESSION_MANAGEMENT_HANDSHAKE_MESSAGE:
+        if message_id == LIENA_SESSION_MANAGEMENT_HANDSHAKE_MESSAGE:
             self.convert_lienadatagram_to_handshake_message(datagram)
 
-        elif customized_message_id == LIENA_SESSION_MANAGEMENT_HANDSHAKE_COMMIT_MESSAGE:
+        elif message_id == LIENA_SESSION_MANAGEMENT_HANDSHAKE_COMMIT_MESSAGE:
             self.convert_lienadatagram_to_handshakecommitmessage(datagram)
 
-        elif customized_message_id == LIENA_SESSION_MANAGEMENT_DISENGAGEMENT_MESSAGE:
+        elif message_id == LIENA_SESSION_MANAGEMENT_DISENGAGEMENT_MESSAGE:
             self.convert_lienadatagram_to_disengagementmessage(datagram)
 
-        elif customized_message_id == LIENA_SESSION_MANAGEMENT_CHANNEL_OPENED_MESSAGE:
+        elif message_id == LIENA_SESSION_MANAGEMENT_CHANNEL_OPENED_MESSAGE:
             self.convert_lienadatagram_to_channel_opened_message(datagram)
 
-        elif customized_message_id == LIENA_SESSION_MANAGEMENT_CHANNEL_CLOSED_MESSAGE:
+        elif message_id == LIENA_SESSION_MANAGEMENT_CHANNEL_CLOSED_MESSAGE:
             self.convert_lienadatagram_to_channel_closed_message(datagram)
 
-        elif customized_message_id == LIENA_SESSION_MANAGEMENT_DISENGAGEMENTCOMMIT_MESSAGE:
+        elif message_id == LIENA_SESSION_MANAGEMENT_DISENGAGEMENTCOMMIT_MESSAGE:
             self.convert_lienadatagram_to_disengagement_commit_message(datagram)
 
-        elif customized_message_id == LIENA_SESSION_MANAGEMENT_HEARTBEAT_MESSAGE:
+        elif message_id == LIENA_SESSION_MANAGEMENT_HEARTBEAT_MESSAGE:
             self.convert_lienadatagram_to_heartbeat_message(datagram)
 
-        elif customized_message_id == LIENA_SESSION_MANAGEMENT_REHANDSHAKE_MESSAGE:
+        elif message_id == LIENA_SESSION_MANAGEMENT_REHANDSHAKE_MESSAGE:
             self.convert_lienadatagram_to_rehandshake_message(datagram)
 
-        elif customized_message_id == LIENA_SESSION_MANAGEMENT_REHANDSHAKECOMMIT_MESSAGE:
+        elif message_id == LIENA_SESSION_MANAGEMENT_REHANDSHAKECOMMIT_MESSAGE:
             self.convert_lienadatagram_to_rehandshake_commit_message(datagram)
 
-        elif customized_message_id == LIENA_SESSION_MANAGEMENT_CHANNEL_REOPENED_MESSAGE:
+        elif message_id == LIENA_SESSION_MANAGEMENT_CHANNEL_REOPENED_MESSAGE:
             self.convert_lienadatagram_to_channel_reopened_message(datagram)
 
-        elif customized_message_id == LIENA_SESSION_MANAGEMENT_NTP_CLOCK_SYNCHRONIZATION_MESSAGE:
+        elif message_id == LIENA_SESSION_MANAGEMENT_NTP_CLOCK_SYNCHRONIZATION_MESSAGE:
             self.convert_lienadatagram_to_network_quality_message(datagram)
 
-        elif customized_message_id == NORMAN_ENDOVASCULAR_ROBOTIC_CONTROL_INSTRUCTION:
+        elif message_id == NORMAN_ENDOVASCULAR_ROBOTIC_CONTROL_INSTRUCTION:
             self.convert_lienadatagram_to_endovascular_control_instruction(datagram)
 
     def convert_lienadatagram_to_endovascular_control_instruction(self, datagram):
@@ -97,33 +96,11 @@ class LienaDecoder(QObject):
         dlc = datagram.get_dlc()
         body = datagram.get_body()
 
-        ci = LienaControlInstruction(message_id, target_id, origin_id, time_stamps, dlc)
-
-        gwts = 0
-        if int(body[2]) == 0:
-            gwts = -1 * (int(body[3])*256 + int(body[4]))
-            ci.set_guidewire_translational_speed(gwts)
-        elif int(body[2]) == 1:
-            gwts =  1 * (int(body[3])*256 + int(body[4]))
-            ci.set_guidewire_translational_speed(gwts)
-
-        gwrs = 0
-        if int(body[7]) == 0:
-            gwrs = -1 * (int(body[8]) * 256 + int(body[9]))
-            ci.set_guidewire_rotational_speed(gwrs)
-        elif int(body[7]) == 1:
-            gwrs = 1 * (int(body[8]) * 256 + int(body[9]))
-            ci.set_guidewire_rotational_speed(gwrs)
-        
-        chrs = 0
-        if int(body[13]) == 0:
-            chrs = -1 * (int(body[14]) * 256 + int(body[15]))
-            ci.set_catheter_translational_speed(chrs)
-        elif int(body[13]) == 1:
-            chrs = 1 * (int(body[14]) * 256 + int(body[15]))
-            ci.set_catheter_translational_speed(chrs)
-        print ("convert_lienadatagram_to_endovascular_control_instruction", gwts, gwrs, chrs)
-        self.controlMessageArrived.emit(ci)
+        msg = LienaCustomizedMessage(message_id, target_id, origin_id, time_stamps, dlc)
+        # msg.configure("uint8, ")
+        for cara in body:
+            msg.append_uint8(cara)
+        self.customizedMessageArrived.emit(msg)
 
     def convert_lienadatagram_to_network_quality_message(self, datagram):
         message_id = datagram.get_message_id()

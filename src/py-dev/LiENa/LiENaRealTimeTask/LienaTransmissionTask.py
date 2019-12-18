@@ -5,11 +5,11 @@ import time
 import os
 import sys
 
-from LiENaStructure.LiENaDatagram.LienaEncoder import LienaEncoder
-from LiENaStructure.LiENaDatagramStructure.LienaOutputQueue import LienaOutputQueue
-from LiENaStructure.LiENaMessage.LienaHandShakeMessage import LienaHandShakeMessage
-from LiENaStructure.LiENaMessage.LienaHandShakeCommitMessage import LienaHandShakeCommitMessage
-from LiENaBasic.lienaDefinition import *
+from LiENa.LiENaStructure.LiENaDatagram.LienaEncoder import LienaEncoder
+from LiENa.LiENaStructure.LiENaDatagramStructure.LienaOutputQueue import LienaOutputQueue
+from LiENa.LiENaStructure.LiENaMessage.LienaHandShakeMessage import LienaHandShakeMessage
+from LiENa.LiENaStructure.LiENaMessage.LienaHandShakeCommitMessage import LienaHandShakeCommitMessage
+from LiENa.LiENaBasic.lienaDefinition import *
 
 
 class LienaTransmissionTask:

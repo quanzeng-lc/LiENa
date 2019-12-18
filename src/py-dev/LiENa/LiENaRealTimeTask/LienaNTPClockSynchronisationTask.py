@@ -2,9 +2,9 @@
 from PyQt5.QtCore import QObject, pyqtSignal
 import threading
 import time
-from LiENaBasic.lienaDefinition import *
-from LiENaStructure.LiENaDatagram.LienaDatagram import LienaDatagram
-from LiENaStructure.LiENaMessage.LienaNetworkQualityMessage import LienaNetworkQualityMessage
+from LiENa.LiENaBasic.lienaDefinition import *
+from LiENa.LiENaStructure.LiENaDatagram.LienaDatagram import LienaDatagram
+from LiENa.LiENaStructure.LiENaMessage.LienaNetworkQualityMessage import LienaNetworkQualityMessage
 
 
 class LienaNTPClockSynchronisationTask(QObject):

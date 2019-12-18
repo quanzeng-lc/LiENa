@@ -1,11 +1,11 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
-from LiENaBasic.lienaGlobal import LienaGlobal
-from LiENaDistributedSystem.lienaDistributedSystem import LienaDistributedSystem
-from LiENaStructure.LiENaMessageStructure.lienaInputMessageCache import LienaInputMessageCache
-from LiENaStructure.LiENaMessageStructure.lienaOutputMessageCache import LienaOutputMessageCache
-from LiENaSocket.LienaTcpServer import LienaTcpServer
-from LiENaBasic.lienaDefinition import *
+from LiENa.LiENaBasic.lienaGlobal import LienaGlobal
+from LiENa.LiENaDistributedSystem.lienaDistributedSystem import LienaDistributedSystem
+from LiENa.LiENaStructure.LiENaMessageStructure.lienaInputMessageCache import LienaInputMessageCache
+from LiENa.LiENaStructure.LiENaMessageStructure.lienaOutputMessageCache import LienaOutputMessageCache
+from LiENa.LiENaSocket.LienaTcpServer import LienaTcpServer
+from LiENa.LiENaBasic.lienaDefinition import *
 from PyQt5.QtCore import QObject, pyqtSignal
 import time
 
@@ -125,13 +125,11 @@ class Liena(QObject):
             print("restart server")
         self.tcpServer.restart()
 
-    def generate_input_cache(self):
-        inputMessageCache = LienaInputMessageCache()
-        return inputMessageCache
+    def get_input_cache(self):
+        return self.inputMessageCache
 
-    def generate_output_cache(self):
-        outputMessageCache = LienaOutputMessageCache()
-        return outputMessageCache
+    def get_output_cache(self):
+        return self.outputMessageCache
 
     def close(self):
         self.context.close_system()
