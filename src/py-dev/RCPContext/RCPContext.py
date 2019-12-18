@@ -122,6 +122,7 @@ class RCPContext:
                     print ("parse_command:", gwts, gwrs, chrs)
                     self.controlInstruction.append(ci)
                 self.inputLock.release()
+            time.sleep(0.3)
 
     def real_time_feedback(self):
         while True:
@@ -138,7 +139,7 @@ class RCPContext:
             # self.sensingParameterSequence.append(parameter)
             # print 'length',len(self.sensingParameterSequence)
             # print "forcefeedback ", parameter.getForceFeedback(), "torquefeedback ", parameter.getTorqueFeedback()
-            time.sleep(0.03)
+            time.sleep(0.3)
 
     def decisionMaking(self):
         while True:
