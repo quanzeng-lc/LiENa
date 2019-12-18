@@ -17,6 +17,7 @@ from LiENa.LiENaStructure.LiENaMessage.lienaReHandshakeMessage import LienaReHan
 from LiENa.LiENaStructure.LiENaMessage.LienaDisengagementCommitMessage import LienaDisengagementCommitMessage
 from LiENa.LiENaStructure.LiENaMessage.LienaCustomizedMessage import LienaCustomizedMessage
 from LiENa.LiENaBasic.lienaDefinition import *
+from RCPContext.LienaControlInstruction import LienaControlInstruction
 
 
 class LienaDecodingTask(QObject):
@@ -78,7 +79,37 @@ class LienaDecodingTask(QObject):
         self.stand_by = True
 
     def notify_control_instruction(self, msg):
-        print("notify_control_instruction", self.inputMsgQue)
+
+        # -------------------------------------------------------
+        ci = LienaControlInstruction()
+
+        body = msg.get_value()
+
+        gwts = 0
+        if int(body[2]) == 0:
+            gwts = -1 * (int(body[3]) * 256 + int(body[4]))
+            ci.set_guidewire_translational_speed(gwts)
+        elif int(body[2]) == 1:
+            gwts = 1 * (int(body[3]) * 256 + int(body[4]))
+            ci.set_guidewire_translational_speed(gwts)
+
+        gwrs = 0
+        if int(body[7]) == 0:
+            gwrs = -1 * (int(body[8]) * 256 + int(body[9]))
+            ci.set_guidewire_rotational_speed(gwrs)
+        elif int(body[7]) == 1:
+            gwrs = 1 * (int(body[8]) * 256 + int(body[9]))
+            ci.set_guidewire_rotational_speed(gwrs)
+
+        chrs = 0
+        if int(body[13]) == 0:
+            chrs = -1 * (int(body[14]) * 256 + int(body[15]))
+            ci.set_catheter_translational_speed(chrs)
+        elif int(body[13]) == 1:
+            chrs = 1 * (int(body[14]) * 256 + int(body[15]))
+            ci.set_catheter_translational_speed(chrs)
+        print("notify_control_instruction:", gwts, gwrs, chrs)
+
         self.inputMsgQue.append(msg)
 
     def notify_channel_reopened_message_arrived(self, msg):

@@ -15,7 +15,7 @@ class LienaInputMessageCache:
         self.inputMessageCache[identifier].append(msg)
 
     def get_latest_message_by_index(self, identifier):
-        print("get_latest_message_by_index", self.inputMessageCache[identifier])
+        #print("get_latest_message_by_index", self.inputMessageCache[identifier])
         self.inputMessageCache[identifier].pop_back()
 
     def get_front_message_by_index(self, identifier):
