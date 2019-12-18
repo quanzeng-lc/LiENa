@@ -56,9 +56,10 @@ class LienaDistributedSystem(QObject):
         self.distributedModules.append(module)
         self.moduleIndex += 1
 
-    def configure_msg_Queue_pair_by(self,device_id, outputMegQue, inputMsgQue):
+    def configure_msg_sequence_pair_by(self, device_id, outputMegQue, inputMsgQue):
+        print ("configure_msg_sequence_pair_by", device_id)
         for i in len(self.distributedModules):
-            if self.distributedModules[i].get_device_id == device_id:
+            if self.distributedModules[i].get_device_id() == device_id:
                 self.distributedModules[i].configure_msg_Queue_Pair(outputMegQue, inputMsgQue)
 
     def notify_generate_new_msg_seg(self, device_id):

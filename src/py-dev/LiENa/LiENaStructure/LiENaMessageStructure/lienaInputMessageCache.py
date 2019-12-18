@@ -21,9 +21,9 @@ class LienaInputMessageCache:
         self.inputMessageCache[identifier].pop(0)
 
     def generate_new_msg_seq(self, device_id):
-        self.msgQ = LienaMessageQueue()
-        self.msgQ.set_device_id(device_id)
-        self.inputMessageCache.append(self.msgQ)
-        return self.msgQ
+        msgQ = LienaMessageQueue()
+        msgQ.set_device_id(device_id)
+        self.inputMessageCache.append(msgQ)
+        return msgQ
 
 
