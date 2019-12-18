@@ -91,36 +91,36 @@ class RCPContext:
             for i in range(cpt):
                 self.inputLock.acquire()
                 msg = self.input_cache.get_latest_message_by_index(i)
+                if msg is not None:
+                    ci = LienaControlInstruction()
 
-                ci = LienaControlInstruction()
+                    body = msg.get_value()
 
-                body = msg.get_value()
+                    gwts = 0
+                    if int(body[2]) == 0:
+                      gwts = -1 * (int(body[3])*256 + int(body[4]))
+                      ci.set_guidewire_translational_speed(gwts)
+                    elif int(body[2]) == 1:
+                      gwts =  1 * (int(body[3])*256 + int(body[4]))
+                      ci.set_guidewire_translational_speed(gwts)
 
-                gwts = 0
-                if int(body[2]) == 0:
-                  gwts = -1 * (int(body[3])*256 + int(body[4]))
-                  ci.set_guidewire_translational_speed(gwts)
-                elif int(body[2]) == 1:
-                  gwts =  1 * (int(body[3])*256 + int(body[4]))
-                  ci.set_guidewire_translational_speed(gwts)
+                    gwrs = 0
+                    if int(body[7]) == 0:
+                      gwrs = -1 * (int(body[8]) * 256 + int(body[9]))
+                      ci.set_guidewire_rotational_speed(gwrs)
+                    elif int(body[7]) == 1:
+                      gwrs = 1 * (int(body[8]) * 256 + int(body[9]))
+                      ci.set_guidewire_rotational_speed(gwrs)
 
-                gwrs = 0
-                if int(body[7]) == 0:
-                  gwrs = -1 * (int(body[8]) * 256 + int(body[9]))
-                  ci.set_guidewire_rotational_speed(gwrs)
-                elif int(body[7]) == 1:
-                  gwrs = 1 * (int(body[8]) * 256 + int(body[9]))
-                  ci.set_guidewire_rotational_speed(gwrs)
-
-                chrs = 0
-                if int(body[13]) == 0:
-                  chrs = -1 * (int(body[14]) * 256 + int(body[15]))
-                  ci.set_catheter_translational_speed(chrs)
-                elif int(body[13]) == 1:
-                  chrs = 1 * (int(body[14]) * 256 + int(body[15]))
-                  ci.set_catheter_translational_speed(chrs)
-                print ("parse_command:", gwts, gwrs, chrs)
-                self.controlInstruction.append(ci)
+                    chrs = 0
+                    if int(body[13]) == 0:
+                      chrs = -1 * (int(body[14]) * 256 + int(body[15]))
+                      ci.set_catheter_translational_speed(chrs)
+                    elif int(body[13]) == 1:
+                      chrs = 1 * (int(body[14]) * 256 + int(body[15]))
+                      ci.set_catheter_translational_speed(chrs)
+                    print ("parse_command:", gwts, gwrs, chrs)
+                    self.controlInstruction.append(ci)
                 self.inputLock.release()
 
     def real_time_feedback(self):
