@@ -42,9 +42,9 @@ class Liena(QObject):
         self.tcpServer.clientArrived.connect(self.create_reception_channel_by_address)
         # self.distributedSystem.generateNewMessagesequence.con
 
-        self.distributedSystem.generateNewMessagesequence[int].connect(self.generate_new_msgSeq_by)
+        self.distributedSystem.generateNewMessagesequence[int].connect(self.generate_new_msg_sequence_by)
 
-    def generate_new_msgSeq_by(self, device_id):
+    def generate_new_msg_sequence_by(self, device_id):
         self.distributedSystem.configure_msg_Queue_pair_by(device_id, self.outputMessageCache.generate_new_msg_seq(device_id), self.inputMessageCache.generate_new_msg_seq(device_id))
 
     # [0] ---------------------------------------------------------------------------------------------------------------------------

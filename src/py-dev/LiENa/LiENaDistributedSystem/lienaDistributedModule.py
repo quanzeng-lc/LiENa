@@ -206,11 +206,10 @@ class LienaDistributedModule(QObject):
     def launch_heartbeat_task(self, msg):
         if DEBUG:
             print("LienaDistributedModule | launch_heartbeat_task")
-        # msg.get_message_id()& 0xffffffff00000000>>32...
-        self.heartbeat_task = LienaHearBeatTask(self.output_queue, self.global_parameter)
-        self.heartbeat_task.launch()
 
         self.generateNewMessageSequence.emit(self.target_device_id)
+        self.heartbeat_task = LienaHearBeatTask(self.output_queue, self.global_parameter)
+        self.heartbeat_task.launch()
 
     def channel_repaired(self, msg):
         if DEBUG:
@@ -223,10 +222,10 @@ class LienaDistributedModule(QObject):
     def channel_opened(self, msg):
         if DEBUG:
             print("LienaDistributedModule | channel_open_request")
+        self.generateNewMessageSequence.emit(self.target_device_id)
         self.encoding_task.send_channel_opened_message()
         self.heartbeat_task = LienaHearBeatTask(self.output_queue, self.global_parameter)
         self.heartbeat_task.launch()
-        self.generateNewMessageSequence.emit(self.target_device_id)
 
     def channel_close_request(self, device_id):
         if DEBUG:

@@ -10,13 +10,13 @@ last edited: December 2018
 """
 
 import sys
-from PyQt5.QtWidgets import QApplication
+from PyQt5.QtCore import QCoreApplication
 from liena import Liena
 from LiENaBasic.lienaDefinition import *
 
 
 def main():
-    app = QApplication(sys.argv)
+    app = QCoreApplication(sys.argv)
 
     communication_stack = Liena()
     communication_stack.set_local_device_id(NORMAN_ENDOVASCULAR_ROBOTIC_VERSION_1)
