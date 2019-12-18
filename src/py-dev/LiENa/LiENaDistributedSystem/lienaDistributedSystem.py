@@ -72,6 +72,7 @@ class LienaDistributedSystem(QObject):
         module = LienaDistributedModule(self.moduleIndex, self.globalParameter)
 
         module.lostConnexion[int].connect(self.launch_recovery_procedure)
+        module.generateNewMessagesequence[int].connect(self.notify_generate_new_msg_seg)
         module.restartServer.connect(self.restart_server)
 
         module.set_device_id(target_device_id)
