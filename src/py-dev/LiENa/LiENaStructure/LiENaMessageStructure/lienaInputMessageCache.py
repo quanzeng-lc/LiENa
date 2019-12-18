@@ -3,7 +3,7 @@ from LiENa.LiENaStructure.LiENaMessageStructure.lienaMessageQueue import LienaMe
 
 class LienaInputMessageCache:
     def __init__(self):
-        self.inputMessageCache = list()
+        self.inputMessageCache = []
 
     def get_sequence_count(self):
         return len(self.inputMessageCache)
