@@ -7,7 +7,7 @@ from PyQt5.QtCore import QObject, pyqtSlot, pyqtSignal
 class LienaDistributedSystem(QObject):
 
     needToRestartServer = pyqtSignal()
-    generateNewMessagesequence = pyqtSignal(int)
+    generateNewMessageSequence = pyqtSignal(int)
 
     def __init__(self, global_parameter):
         super(LienaDistributedSystem, self).__init__()
@@ -50,7 +50,7 @@ class LienaDistributedSystem(QObject):
         module = LienaDistributedModule(self.moduleIndex, self.globalParameter)
         module.lostConnexion[int].connect(self.launch_recovery_procedure)
 
-        module.generateNewMessagesequence[int].connect(self.notify_generate_new_msg_seg)
+        module.generateNewMessageSequence[int].connect(self.notify_generate_new_msg_seg)
 
         module.generate_reception_channel(socket_for_reception)
         self.distributedModules.append(module)
@@ -63,7 +63,7 @@ class LienaDistributedSystem(QObject):
                 self.distributedModules[i].configure_msg_Queue_Pair(outputMegQue, inputMsgQue)
 
     def notify_generate_new_msg_seg(self, device_id):
-        self.generateNewMessagesequence.emit(device_id)
+        self.generateNewMessageSequence.emit(device_id)
 
     def restart_server(self):
         self.needToRestartServer.emit()
@@ -72,7 +72,7 @@ class LienaDistributedSystem(QObject):
         module = LienaDistributedModule(self.moduleIndex, self.globalParameter)
 
         module.lostConnexion[int].connect(self.launch_recovery_procedure)
-        module.generateNewMessagesequence[int].connect(self.notify_generate_new_msg_seg)
+        module.generateNewMessageSequence[int].connect(self.notify_generate_new_msg_seg)
         module.restartServer.connect(self.restart_server)
 
         module.set_device_id(target_device_id)
