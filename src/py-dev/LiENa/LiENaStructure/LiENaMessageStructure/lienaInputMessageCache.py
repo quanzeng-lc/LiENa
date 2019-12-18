@@ -8,9 +8,6 @@ class LienaInputMessageCache:
     def get_sequence_count(self):
         return len(self.inputMessageCache)
 
-    def add_message_sequence(self):
-        self.inputMessageCache.append([])
-
     def remove_message_cache_by_id(self, identifier):
         self.inputMessageCache.pop(identifier)
 
@@ -18,6 +15,7 @@ class LienaInputMessageCache:
         self.inputMessageCache[identifier].append(msg)
 
     def get_latest_message_by_index(self, identifier):
+        print("get_latest_message_by_index", self.inputMessageCache[identifier])
         self.inputMessageCache[identifier].pop_back()
 
     def get_front_message_by_index(self, identifier):

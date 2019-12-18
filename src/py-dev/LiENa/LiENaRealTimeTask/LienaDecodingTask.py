@@ -78,7 +78,7 @@ class LienaDecodingTask(QObject):
         self.stand_by = True
 
     def notify_control_instruction(self, msg):
-        print("notify_control_instruction")
+        print("notify_control_instruction", self.inputMsgQue)
         self.inputMsgQue.append(msg)
 
     def notify_channel_reopened_message_arrived(self, msg):
