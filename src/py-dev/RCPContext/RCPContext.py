@@ -4,7 +4,7 @@ import time
 from threading import Lock
 import csv
 
-from LienaControlInstruction import LienaControlInstruction
+from RCPContext.LienaControlInstruction import LienaControlInstruction
 from RCPControl.SensingParameter import SensingParameter
 from RCPControl.GlobalParameterType import GlobalParameterType
 
@@ -92,7 +92,7 @@ class RCPContext:
                 self.inputLock.acquire()
                 msg = self.input_cache.get_latest_message_by_index(i)
 
-                ci = LienaControlInstruction(msg.get_message_id(), msg.get_target_id(), msg.get_origin_id(), msg.get_time_stamps(), msg.get_dlc())
+                ci = LienaControlInstruction()
 
                 body = msg.get_value()
 

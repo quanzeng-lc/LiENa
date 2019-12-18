@@ -1,9 +1,7 @@
-from LiENa.LiENaStructure.LiENaMessage.LienaMessage import LienaMessage
 
 
-class LienaControlInstruction(LienaMessage):
-    def __init__(self, message_id, target_id, origin_id, timestamps, dlc):
-        LienaMessage.__init__(self, message_id, target_id, origin_id, timestamps, dlc)
+class LienaControlInstruction():
+    def __init__(self):
         self.guidewireTranslationalSpeed = 0
         self.guidewireRotationalSpeed = 0
         self.catheterTranslationalSpeed = 0

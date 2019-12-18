@@ -8,7 +8,6 @@ author: Cheng WANG
 
 last edited: January 2015
 """
-from RCPContext.RCPContext import RCPContext
 
 """
 import sys
@@ -45,6 +44,7 @@ import sys
 from PyQt5.QtCore import QCoreApplication
 from LiENa.liena import Liena
 from LiENa.LiENaBasic.lienaDefinition import *
+from RCPContext.RCPContext import RCPContext
 
 
 def main():
