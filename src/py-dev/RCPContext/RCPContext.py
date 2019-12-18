@@ -4,7 +4,7 @@ import time
 from threading import Lock
 import csv
 
-from RCPContext.LienaControlInstruction import LienaControlInstruction
+from LienaControlInstruction import LienaControlInstruction
 from RCPControl.SensingParameter import SensingParameter
 from RCPControl.GlobalParameterType import GlobalParameterType
 
