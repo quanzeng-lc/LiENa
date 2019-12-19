@@ -102,7 +102,7 @@ class Dispatcher(QObject):
         # speed parameters
         # ---------------------------------------------------------------------------------------------
         self.speedProgress = 10
-        self.speedRotate = 60
+        self.speedRotate = 30
         self.speedCatheter = 2
         self.rotateTime = 720 / self.speedRotate
         self.homeSpeed = 3
