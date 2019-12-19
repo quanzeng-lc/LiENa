@@ -178,20 +178,21 @@ class Dispatcher(QObject):
 
     def analyse(self):
         while True:
-            if self.infraredReflectiveSensor.read_current_state() == 2:
-                self.guidewireProgressMotor.set_expectedSpeed(0)
-                self.needToRetract = True
-                retract_task = threading.Thread(None, self.push_guidewire_back)
-                retract_task.start()
+            if self.needToRetract and self.guidewireProgressHome:
+                if self.infraredReflectiveSensor.read_current_state() == 2:
+                    self.guidewireProgressMotor.set_expectedSpeed(0)
+                    self.needToRetract = True
+                    retract_task = threading.Thread(None, self.push_guidewire_back)
+                    retract_task.start()
 
-            elif self.infraredReflectiveSensor.read_current_state() == 1:
-                self.guidewireProgressHome = True
-                home_task = threading.Thread(None, self.push_guidewire_home)
-                home_task.start()
+                elif self.infraredReflectiveSensor.read_current_state() == 1:
+                    self.guidewireProgressHome = True
+                    home_task = threading.Thread(None, self.push_guidewire_home)
+                    home_task.start()
 
-            elif self.global_state == 3:
-                self.guidewireProgressMotor.set_expectedSpeed(0)
-            time.sleep(0.1)
+                elif self.global_state == 3:
+                    self.guidewireProgressMotor.set_expectedSpeed(0)
+                time.sleep(0.1)
 
     def set_global_state(self, state):
         self.global_state = state
