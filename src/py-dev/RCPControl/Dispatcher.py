@@ -130,7 +130,7 @@ class Dispatcher(QObject):
         self.angioMotor.close_device()
 
     def hold(self):
-        
+
         if self.needToRetract or self.guidewireProgressHome:
             return
 
@@ -149,7 +149,7 @@ class Dispatcher(QObject):
         return self.switch.read_current_state()
 
     def execute(self, msg):
-        #pass
+        # pass
         print("in dispatcher", msg.get_guidewire_translational_speed(), msg.get_guidewire_rotational_speed(), msg.get_catheter_translational_speed())
 
         # emergency status switch
@@ -372,8 +372,7 @@ class Dispatcher(QObject):
     def push_guidewire_back(self):
         """
         the shifboard get back when guidewire progress
-	"""
-        # self.context.clear_guidewire_message()
+	    """
         self.draw_back_guidewire_curcuit_flag = False
 
         # self.gripperFront.gripper_chuck_loosen()
@@ -395,15 +394,13 @@ class Dispatcher(QObject):
         self.guidewireProgressMotor.set_expectedSpeed(-self.speedProgress)
         # time.sleep(3)
 
-        self.global_state = self.infraredReflectiveSensor.read_current_state()
-        while self.global_state != 1:
+        while self.infraredReflectiveSensor.read_current_state() != 1:
             # self.global_state = self.infraredReflectiveSensor.read_current_state()
             # if self.global_state == 4:
             # self.global_state = self.infraredReflectiveSensor.read_current_state()
             # continue
             time.sleep(0.5)
-            self.global_state = self.infraredReflectiveSensor.read_current_state()
-            print("retracting", self.global_state)
+            print("retracting", self.infraredReflectiveSensor.read_current_state(), self.global_state)
         print("back limitation arrived")
 
         self.guidewireProgressMotor.set_expectedSpeed(0)
