@@ -103,7 +103,7 @@ class RCPContext(QObject):
                     ci = LienaControlInstruction()
 
                     body = msg.get_value()
-
+                    print (int(body[0]))
                     if int(body[0]) == 0:
                         self.closeSystemMessageArrived.emit()
                     elif int(body[0]) == 1:

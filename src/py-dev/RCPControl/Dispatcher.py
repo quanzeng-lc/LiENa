@@ -127,6 +127,7 @@ class Dispatcher(QObject):
         self.angioMotor.close_device()
 
     def hold(self):
+        print ("hold")
         self.guidewireRotateMotor.standby()
         self.guidewireProgressMotor.standby()
         self.catheterMotor.standby()
@@ -143,7 +144,7 @@ class Dispatcher(QObject):
 
     def execute(self, msg):
         print("in dispatcher", msg.get_guidewire_translational_speed(), msg.get_guidewire_rotational_speed(), msg.get_catheter_translational_speed())
-
+        """
         # emergency status switch
         if self.get_my_status() == 1:
             self.hold()
@@ -179,6 +180,7 @@ class Dispatcher(QObject):
             elif self.global_state == 3:
                 self.guidewireProgressMotor.set_expectedSpeed(0)
                 return
+        """
 
     def set_global_state(self, state):
         self.global_state = state
