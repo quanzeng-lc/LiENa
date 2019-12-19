@@ -15,7 +15,7 @@ from RCPControl.Gripper import Gripper
 from RCPControl.MaxonMotor import MaxonMotor
 from RCPControl.InfraredReflectiveSensor import InfraredReflectiveSensor
 from RCPControl.EmergencySwitch import EmergencySwitch
-from RCPCom.FeedbackMsg import FeedbackMsg
+from RCPContext.LienaControlInstruction import LienaControlInstruction
 from RCPControl.SensingParameter import SensingParameter
 from RCPControl.GlobalParameterType import GlobalParameterType
 from RCPControl.Feedback import Feedback
@@ -29,7 +29,7 @@ class Dispatcher(object):
                          -- the control of GPIOs of the raspberryPi which connet motors, sensors and grippers
                          -- the distribution of tasks in different threads
                          -- the command and control of the actions of interventional robot in surgery   
-	author:Cheng WANG
+	    author:Cheng WANG
     """
 
     def __init__(self, context, local_mode=0):
@@ -71,14 +71,15 @@ class Dispatcher(object):
         # feedback
         #
         # -------------------------------------------------------------
-        portList = list(serial.tools.list_ports.comports())
+        port_list = list(serial.tools.list_ports.comports())
         portListUSB = list()
-        if len(portList) == 0:
+        if len(port_list) == 0:
             print("no serial port found")
         else:
-            for i in range(0, len(portList)):
-                port = list(portList[i])[0]
+            for i in range(0, len(port_list)):
+                port = list(port_list[i])[0]
                 portListUSB.append(port)
+
         # print len(portListUSB)
         self.forceFeedback = Feedback(portListUSB[0], 9600, 8, 'N', 1, self.context)
         self.torqueFeedback = Feedback(portListUSB[1], 9600, 8, 'N', 1, self.context)
@@ -110,18 +111,20 @@ class Dispatcher(object):
         # -------------------------------------------------------------------------
         # real time task to parse commandes in context
         # ---------------------------------------------------------------------------------
-        self.dispatchTask = threading.Thread(None, self.do_parse_command_in_context)
-        self.dispatchTask.start()
+        self.context.controlMessageArrived[LienaControlInstruction].connect(self.execute)
 
     #        self.aquirefeedbackTask = threading.Thread(None, self.aquirefeedback_context)
     #        self.aquirefeedbackTask.start()
+
+    def execute(self, msg):
+        print ("in dispatcher", msg.get_guidewire_translational_speed(), msg.get_guidewire_rotational_speed(),msg.get_catheter_translational_speed())
 
     def set_global_state(self, state):
         self.global_state = state
 
     def do_parse_command_in_context(self):
         """
-        determine system's status and start to decode or to close devices  	 
+            determine system's status and start to decode or to close devices
 	    """
         while self.flag:
             if not self.context.get_system_status():

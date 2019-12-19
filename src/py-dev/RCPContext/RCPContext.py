@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+
+from PyQt5.QtCore import QObject, pyqtSignal
 import threading
 import time
 from threading import Lock
@@ -10,6 +12,8 @@ from RCPControl.GlobalParameterType import GlobalParameterType
 
 
 class RCPContext:
+
+    controlMessageArrived = pyqtSignal(LienaControlInstruction)
 
     def __init__(self, input_cache, output_cache):
 
@@ -120,8 +124,10 @@ class RCPContext:
                     elif int(body[13]) == 1:
                       chrs = 1 * (int(body[14]) * 256 + int(body[15]))
                       ci.set_catheter_translational_speed(chrs)
-                    print ("parse_command:", gwts, gwrs, chrs)
-                    self.controlInstruction.append(ci)
+                    #print ("parse_command:", gwts, gwrs, chrs)
+                    self.controlMessageArrived.emit(ci)
+
+                    #self.controlInstruction.append(ci)
                 self.inputLock.release()
             time.sleep(0.3)
 
