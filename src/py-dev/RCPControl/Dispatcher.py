@@ -178,7 +178,7 @@ class Dispatcher(QObject):
 
     def analyse(self):
         while True:
-            if self.needToRetract and self.guidewireProgressHome:
+            if self.needToRetract or self.guidewireProgressHome is not True:
                 if self.infraredReflectiveSensor.read_current_state() == 2:
                     self.guidewireProgressMotor.set_expectedSpeed(0)
                     self.needToRetract = True
