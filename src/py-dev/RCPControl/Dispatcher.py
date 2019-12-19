@@ -130,6 +130,10 @@ class Dispatcher(QObject):
         self.angioMotor.close_device()
 
     def hold(self):
+        
+        if self.needToRetract or self.guidewireProgressHome:
+            return
+
         self.guidewireRotateMotor.standby()
         self.guidewireProgressMotor.standby()
         self.catheterMotor.standby()
@@ -162,7 +166,7 @@ class Dispatcher(QObject):
             if self.needToRetract or self.guidewireProgressHome:
                 return
 
-            #self.catheterMotor.set_expectedSpeed(msg.get_catheter_translational_speed() / 40.0)
+            self.catheterMotor.set_expectedSpeed(msg.get_catheter_translational_speed() / 40.0)
 
             self.guidewireProgressMotor.set_expectedSpeed(msg.get_guidewire_translational_speed() / 40.0)
 
