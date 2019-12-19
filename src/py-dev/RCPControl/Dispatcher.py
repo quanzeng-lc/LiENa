@@ -431,7 +431,7 @@ class Dispatcher(QObject):
         # time.sleep(4)
 
     def push_guidewire_home(self):
-        self.context.clear_guidewire_message()
+        #self.context.clear_guidewire_message()
         self.guidewireProgressMotor.enable()
         self.guidewireProgressMotor.set_expectedSpeed(self.homeSpeed)
         self.global_state = self.infraredReflectiveSensor.read_current_state()
@@ -443,7 +443,7 @@ class Dispatcher(QObject):
         # print "front limitation arrived"
 
         self.guidewireProgressMotor.set_expectedSpeed(0)
-        self.context.clear_guidewire_message()
+        #self.context.clear_guidewire_message()
         self.guidewireProgressHome = False
         # self.guidewireRotateMotor.rm_move_to_position(90, -8000)
         # time.sleep(4)
