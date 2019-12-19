@@ -11,7 +11,7 @@ from RCPControl.SensingParameter import SensingParameter
 from RCPControl.GlobalParameterType import GlobalParameterType
 
 
-class RCPContext:
+class RCPContext(QObject):
 
     controlMessageArrived = pyqtSignal(LienaControlInstruction)
 

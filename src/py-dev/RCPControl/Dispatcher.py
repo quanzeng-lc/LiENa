@@ -5,6 +5,7 @@ import threading
 import time
 import sys
 from enum import Enum
+from PyQt5.QtCore import QObject, pyqtSignal
 import serial.tools.list_ports
 from RCPContext.RCPContext import RCPContext
 from RCPControl.Motor.AdvanceOrientalMotor import AdvanceOrientalMotor
@@ -23,7 +24,7 @@ from RCPControl.Feedback import Feedback
 FORCEFEEDBACK = 6
 
 
-class Dispatcher(object):
+class Dispatcher(QObject):
     """
         description:this class plays an role in th command and control of the interventional robot which includes:
                          -- the control of GPIOs of the raspberryPi which connet motors, sensors and grippers
