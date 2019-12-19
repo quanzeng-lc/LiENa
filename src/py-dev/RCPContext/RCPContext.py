@@ -16,6 +16,7 @@ class RCPContext(QObject):
     controlMessageArrived = pyqtSignal(LienaControlInstruction)
 
     def __init__(self, input_cache, output_cache):
+        super(RCPContext, self).__init__()
 
         self.input_cache = input_cache
         self.output_cache = output_cache

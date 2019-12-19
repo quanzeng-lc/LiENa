@@ -34,6 +34,7 @@ class Dispatcher(QObject):
     """
 
     def __init__(self, context, local_mode=0):
+        super(Dispatcher, self).__init__()
         self.context = context
 
         # ---------------------------------------------------------------------------------------------
