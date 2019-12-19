@@ -142,8 +142,8 @@ class Dispatcher(QObject):
         return self.switch.read_current_state()
 
     def execute(self, msg):
-        pass
-        #print("in dispatcher", msg.get_guidewire_translational_speed(), msg.get_guidewire_rotational_speed(), msg.get_catheter_translational_speed())
+        #pass
+        print("in dispatcher", msg.get_guidewire_translational_speed(), msg.get_guidewire_rotational_speed(), msg.get_catheter_translational_speed())
         """
         # emergency status switch
         if self.get_my_status() == 1:
