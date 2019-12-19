@@ -127,7 +127,6 @@ class Dispatcher(QObject):
         self.angioMotor.close_device()
 
     def hold(self):
-        print ("hold")
         self.guidewireRotateMotor.standby()
         self.guidewireProgressMotor.standby()
         self.catheterMotor.standby()
