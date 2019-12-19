@@ -385,7 +385,7 @@ class Dispatcher(QObject):
         # self-tightening chunck
         self.gripperBack.gripper_chuck_fasten()
         time.sleep(1)
-        self.guidewireRotateMotor.set_expectedSpeed(self.speedRotate)  # +/loosen
+        self.guidewireRotateMotor.set_expectedSpeed(-1*self.speedRotate)  # +/loosen
         time.sleep(self.rotateTime)
         self.guidewireRotateMotor.set_expectedSpeed(0)
 
@@ -404,7 +404,7 @@ class Dispatcher(QObject):
         print("back limitation arrived")
 
         self.guidewireProgressMotor.set_expectedSpeed(0)
-        self.guidewireRotateMotor.set_expectedSpeed(-self.speedRotate)
+        self.guidewireRotateMotor.set_expectedSpeed(self.speedRotate)
         time.sleep(self.rotateTime)
         self.guidewireRotateMotor.set_expectedSpeed(0)
 
