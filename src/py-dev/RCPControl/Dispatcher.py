@@ -117,7 +117,7 @@ class Dispatcher(QObject):
         self.context.nonProvedControlMessageArrived.connect(self.hold)
         self.context.closeSystemMessageArrived.connect(self.close)
 
-        self.analyseTask = threading.Thread(None, self.aquirefeedback_context)
+        self.analyseTask = threading.Thread(None, self.analyse)
         self.analyseTask.start()
 
     #        self.aquirefeedbackTask = threading.Thread(None, self.aquirefeedback_context)
@@ -165,7 +165,7 @@ class Dispatcher(QObject):
             #self.catheterMotor.set_expectedSpeed(msg.get_catheter_translational_speed() / 40.0)
 
             self.guidewireProgressMotor.set_expectedSpeed(msg.get_guidewire_translational_speed() / 40.0)
-            
+
             self.guidewireRotateMotor.set_expectedSpeed(msg.get_guidewire_rotational_speed() / 40.0)
 
             # self.angioMotor.set_pos_speed(msg.get_speed() / 40.0)
@@ -187,8 +187,7 @@ class Dispatcher(QObject):
 
             elif self.global_state == 3:
                 self.guidewireProgressMotor.set_expectedSpeed(0)
-            time.sleep(0.05)
-
+            time.sleep(0.1)
 
     def set_global_state(self, state):
         self.global_state = state
