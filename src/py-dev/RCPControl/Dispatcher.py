@@ -114,12 +114,71 @@ class Dispatcher(QObject):
         # real time task to parse commandes in context
         # ---------------------------------------------------------------------------------
         self.context.controlMessageArrived[LienaControlInstruction].connect(self.execute)
+        self.context.nonProvedControlMessageArrived.connect(self.hold)
+        self.context.closeSystemMessageArrived.connect(self.close)
 
     #        self.aquirefeedbackTask = threading.Thread(None, self.aquirefeedback_context)
     #        self.aquirefeedbackTask.start()
 
+    def close(self):
+        self.guidewireRotateMotor.close_device()
+        self.guidewireProgressMotor.close_device()
+        self.catheterMotor.close_device()
+        self.angioMotor.close_device()
+
+    def hold(self):
+        self.guidewireRotateMotor.standby()
+        self.guidewireProgressMotor.standby()
+        self.catheterMotor.standby()
+        self.angioMotor.standby()
+
+    def enable(self):
+        self.guidewireRotateMotor.enable()
+        self.guidewireProgressMotor.enable()
+        self.catheterMotor.enable()
+        self.angioMotor.enable()
+
+    def get_my_status(self):
+        return self.switch.read_current_state()
+
     def execute(self, msg):
-        print ("in dispatcher", msg.get_guidewire_translational_speed(), msg.get_guidewire_rotational_speed(),msg.get_catheter_translational_speed())
+        print("in dispatcher", msg.get_guidewire_translational_speed(), msg.get_guidewire_rotational_speed(), msg.get_catheter_translational_speed())
+
+        # emergency status switch
+        if self.get_my_status() == 1:
+            self.hold()
+            return
+
+        elif self.get_my_status() == 0:
+            self.enable()
+            if self.decision_making() is not 1:
+                return
+
+            if self.needToRetract or self.guidewireProgressHome:
+                return
+
+            self.catheterMotor.set_expectedSpeed(msg.get_catheter_translational_speed())
+            self.guidewireProgressMotor.set_expectedSpeed(msg.get_guidewire_translational_speed())
+            self.guidewireRotateMotor.set_expectedSpeed(msg.get_guidewire_rotational_speed())
+
+            # self.angioMotor.set_pos_speed(msg.get_speed() / 40.0)
+            # self.angioMotor.set_position(msg.get_volume() / 4.5)
+            # self.angioMotor.pull_contrast_media()
+
+            if self.infraredReflectiveSensor.read_current_state() == 2:
+                self.guidewireProgressMotor.set_expectedSpeed(0)
+                self.needToRetract = True
+                retract_task = threading.Thread(None, self.push_guidewire_back)
+                retract_task.start()
+
+            elif self.infraredReflectiveSensor.read_current_state() == 1:
+                self.guidewireProgressHome = True
+                home_task = threading.Thread(None, self.push_guidewire_home)
+                home_task.start()
+
+            elif self.global_state == 3:
+                self.guidewireProgressMotor.set_expectedSpeed(0)
+                return
 
     def set_global_state(self, state):
         self.global_state = state
@@ -302,7 +361,7 @@ class Dispatcher(QObject):
         the shifboard get back when guidewire progress
 	"""
         # self.context.clear_guidewire_message()
-        self.draw_back_guidewire_curcuit_flag == False
+        self.draw_back_guidewire_curcuit_flag = False
 
         # self.gripperFront.gripper_chuck_loosen()
         # self.gripperBack.gripper_chuck_loosen()
@@ -341,7 +400,7 @@ class Dispatcher(QObject):
 
         self.gripperFront.gripper_chuck_loosen()
         self.gripperBack.gripper_chuck_loosen()
-        self.draw_back_guidewire_curcuit_flag == True
+        self.draw_back_guidewire_curcuit_flag = True
         # self.context.clear_guidewire_message()
         self.needToRetract = False
 
@@ -502,7 +561,7 @@ class Dispatcher(QObject):
 	"""
         self.gripperFront.gripper_chuck_loosen()
         self.gripperBack.gripper_chuck_loosen()
-        self.draw_back_guidewire_curcuit_flag == True
+        self.draw_back_guidewire_curcuit_flag = True
         self.needToRetract = False
 
         self.guidewireProgressMotor.set_expectedSpeed(self.speedProgress)
@@ -520,7 +579,7 @@ class Dispatcher(QObject):
         # time.sleep(4)
 
         # self.context.clear()
-        self.draw_back_guidewire_curcuit_flag == False
+        self.draw_back_guidewire_curcuit_flag = False
 
         # self.gripperFront.gripper_chuck_loosen()
         # self.gripperBack.gripper_chuck_loosen()
@@ -578,7 +637,7 @@ class Dispatcher(QObject):
         """
         the initialization of the status of robot
 	"""
-        self.draw_back_guidewire_curcuit_flag == False
+        self.draw_back_guidewire_curcuit_flag = False
 
         # self.gripperFront.gripper_chuck_loosen()
         # self.gripperBack.gripper_chuck_loosen()
@@ -611,7 +670,7 @@ class Dispatcher(QObject):
 
         self.gripperFront.gripper_chuck_loosen()
         self.gripperBack.gripper_chuck_loosen()
-        self.draw_back_guidewire_curcuit_flag == True
+        self.draw_back_guidewire_curcuit_flag = True
         self.needToRetract = False
 
     def catheter(self):

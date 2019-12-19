@@ -89,12 +89,12 @@ class RotateOrientalMotor(object):
         self.expectedSpeed = abs(speed)
    
     def standby(self):
-        if self.mv_enable == False:
+        if not self.mv_enable:
             return
         self.mv_enable = False
-    
+
     def enable(self):
-        if self.mv_enable == True:
+        if self.mv_enable:
             return
         self.mv_enable = True
 

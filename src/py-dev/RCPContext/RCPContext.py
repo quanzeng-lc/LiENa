@@ -14,6 +14,8 @@ from RCPControl.GlobalParameterType import GlobalParameterType
 class RCPContext(QObject):
 
     controlMessageArrived = pyqtSignal(LienaControlInstruction)
+    nonProvedControlMessageArrived = pyqtSignal()
+    closeSystemMessageArrived = pyqtSignal()
 
     def __init__(self, input_cache, output_cache):
         super(RCPContext, self).__init__()
@@ -102,35 +104,40 @@ class RCPContext(QObject):
 
                     body = msg.get_value()
 
-                    gwts = 0
-                    if int(body[2]) == 0:
-                      gwts = -1 * (int(body[3])*256 + int(body[4]))
-                      ci.set_guidewire_translational_speed(gwts)
-                    elif int(body[2]) == 1:
-                      gwts =  1 * (int(body[3])*256 + int(body[4]))
-                      ci.set_guidewire_translational_speed(gwts)
+                    if int(body[0]) == 0:
+                        self.closeSystemMessageArrived.emit()
+                    elif int(body[0]) == 1:
+                        self.nonProvedControlMessageArrived.emit()
+                    elif int(body[0]) == 2:
+                        gwts = 0
+                        if int(body[2]) == 0:
+                          gwts = -1 * (int(body[3])*256 + int(body[4]))
+                          ci.set_guidewire_translational_speed(gwts)
+                        elif int(body[2]) == 1:
+                          gwts =  1 * (int(body[3])*256 + int(body[4]))
+                          ci.set_guidewire_translational_speed(gwts)
 
-                    gwrs = 0
-                    if int(body[7]) == 0:
-                      gwrs = -1 * (int(body[8]) * 256 + int(body[9]))
-                      ci.set_guidewire_rotational_speed(gwrs)
-                    elif int(body[7]) == 1:
-                      gwrs = 1 * (int(body[8]) * 256 + int(body[9]))
-                      ci.set_guidewire_rotational_speed(gwrs)
+                        gwrs = 0
+                        if int(body[7]) == 0:
+                          gwrs = -1 * (int(body[8]) * 256 + int(body[9]))
+                          ci.set_guidewire_rotational_speed(gwrs)
+                        elif int(body[7]) == 1:
+                          gwrs = 1 * (int(body[8]) * 256 + int(body[9]))
+                          ci.set_guidewire_rotational_speed(gwrs)
 
-                    chrs = 0
-                    if int(body[13]) == 0:
-                      chrs = -1 * (int(body[14]) * 256 + int(body[15]))
-                      ci.set_catheter_translational_speed(chrs)
-                    elif int(body[13]) == 1:
-                      chrs = 1 * (int(body[14]) * 256 + int(body[15]))
-                      ci.set_catheter_translational_speed(chrs)
-                    #print ("parse_command:", gwts, gwrs, chrs)
-                    self.controlMessageArrived.emit(ci)
+                        chrs = 0
+                        if int(body[13]) == 0:
+                          chrs = -1 * (int(body[14]) * 256 + int(body[15]))
+                          ci.set_catheter_translational_speed(chrs)
+                        elif int(body[13]) == 1:
+                          chrs = 1 * (int(body[14]) * 256 + int(body[15]))
+                          ci.set_catheter_translational_speed(chrs)
+                        #print ("parse_command:", gwts, gwrs, chrs)
+                        self.controlMessageArrived.emit(ci)
 
                     #self.controlInstruction.append(ci)
                 self.inputLock.release()
-            time.sleep(0.3)
+            time.sleep(0.05)
 
     def real_time_feedback(self):
         while True:
