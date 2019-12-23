@@ -10,7 +10,7 @@ class LienaCustomizedMessage(LienaMessage):
 
     def define_body_length(self, l):
         for i in range(l):
-            self.append_uint8(0)
+            self.v.append(0)
 
     def configure(self, rule):
         self.rule = rule
