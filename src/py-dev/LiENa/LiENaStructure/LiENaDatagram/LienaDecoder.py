@@ -98,7 +98,7 @@ class LienaDecoder(QObject):
         body = datagram.get_body()
 
         msg = LienaCustomizedMessage(message_id, target_id, origin_id, time_stamps, dlc)
-        # msg.configure("uint8, ")
+        msg.define_body_length(len(body))
         for cara in body:
             msg.append_uint8(cara)
         self.customizedMessageArrived.emit(msg)
