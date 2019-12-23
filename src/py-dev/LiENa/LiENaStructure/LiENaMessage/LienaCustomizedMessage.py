@@ -8,10 +8,14 @@ class LienaCustomizedMessage(LienaMessage):
         self.rule = []
         self.v = bytearray()
 
+    def define_body_length(self, l):
+        for i in range(l):
+            self.append_uint8(0)
+
     def configure(self, rule):
         self.rule = rule
 
-    def get_value(self):
+    def get_message_body(self):
         return self.v
 
     # for decoding
@@ -48,13 +52,15 @@ class LienaCustomizedMessage(LienaMessage):
 
     # for encoding
     def append_uint8(self, v):
-        self.v.append(v)
+        self.v[self.index] = v
+        self.index += 1
 
     def append_uint16(self, v):
         v0 = v & 0xff00 >> 8
         v1 = v & 0x00ff
-        self.v.append(v0)
-        self.v.append(v1)
+        self.v[self.index] = v0
+        self.v[self.index+1] = v1
+        self.index += 2
 
     def append_uint32(self, v):
         v0 = v & 0xff000000 >> 24

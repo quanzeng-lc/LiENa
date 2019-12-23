@@ -19,7 +19,7 @@ from RCPControl.EmergencySwitch import EmergencySwitch
 from RCPContext.LienaControlInstruction import LienaControlInstruction
 from RCPControl.SensingParameter import SensingParameter
 from RCPControl.GlobalParameterType import GlobalParameterType
-from RCPControl.Feedback import Feedback
+from RCPControl.ForceSensor import ForceSensor
 
 FORCEFEEDBACK = 6
 
@@ -73,22 +73,17 @@ class Dispatcher(QObject):
         # feedback
         #
         # -------------------------------------------------------------
-        port_list = list(serial.tools.list_ports.comports())
-        portListUSB = list()
-        if len(port_list) == 0:
-            print("no serial port found")
-        else:
-            for i in range(0, len(port_list)):
-                port = list(port_list[i])[0]
-                portListUSB.append(port)
+        # port_list = list(serial.tools.list_ports.comports())
+        # portListUSB = list()
+        # if len(port_list) == 0:
+        #     print("no serial port found")
+        # else:
+        #     for i in range(0, len(port_list)):
+        #         port = list(port_list[i])[0]
+        #         portListUSB.append(port)
 
-        # print len(portListUSB)
-        self.forceFeedback = Feedback(portListUSB[0], 9600, 8, 'N', 1, self.context)
-        self.torqueFeedback = Feedback(portListUSB[1], 9600, 8, 'N', 1, self.context)
-        self.forceFeedback.setID(GlobalParameterType.FORCEFEEDBACK)
-        self.torqueFeedback.setID(GlobalParameterType.TORQUEFEEDBACK)
-        self.forceFeedback.start()
-        self.torqueFeedback.start()
+        self.translationalForceSensor = ForceSensor("/dev/ttyusb_force", 9600, 8, 'N', 1)
+        self.rotationalForceSensor = ForceSensor("/dev/ttyusb_torque", 9600, 8, 'N', 1)
 
         # ---------------------------------------------------------------------------------------------
         # EmergencySwitch
@@ -192,7 +187,14 @@ class Dispatcher(QObject):
 
                 elif self.global_state == 3:
                     self.guidewireProgressMotor.set_expectedSpeed(0)
-                time.sleep(0.1)
+            self.feedback()
+            time.sleep(0.1)
+
+    def feedback(self):
+        rf = self.rotationalForceSensor.get_value()
+        tf = self.translationalForceSensor.get_value()
+
+        self.context.real_time_feedback(0, 0, 0, 0, tf, rf, 0, 0, 0, 0, 0, 0)
 
     def set_global_state(self, state):
         self.global_state = state
@@ -234,7 +236,7 @@ class Dispatcher(QObject):
         # self-tightening chunck
         self.gripperBack.gripper_chuck_fasten()
         time.sleep(1)
-        self.guidewireRotateMotor.set_expectedSpeed(-1*self.speedRotate)  # +/loosen
+        self.guidewireRotateMotor.set_expectedSpeed(-1 * self.speedRotate)  # +/loosen
         time.sleep(self.rotateTime)
         self.guidewireRotateMotor.set_expectedSpeed(0)
 
@@ -280,7 +282,7 @@ class Dispatcher(QObject):
         # time.sleep(4)
 
     def push_guidewire_home(self):
-        #self.context.clear_guidewire_message()
+        # self.context.clear_guidewire_message()
         self.guidewireProgressMotor.enable()
         self.guidewireProgressMotor.set_expectedSpeed(self.homeSpeed)
         self.global_state = self.infraredReflectiveSensor.read_current_state()
@@ -292,7 +294,7 @@ class Dispatcher(QObject):
         # print "front limitation arrived"
 
         self.guidewireProgressMotor.set_expectedSpeed(0)
-        #self.context.clear_guidewire_message()
+        # self.context.clear_guidewire_message()
         self.guidewireProgressHome = False
         # self.guidewireRotateMotor.rm_move_to_position(90, -8000)
         # time.sleep(4)

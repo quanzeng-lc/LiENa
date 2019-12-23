@@ -8,7 +8,6 @@ class LienaMessageQueue:
         self.msgQueueLock = threading.Lock()
         self.msgQueue = list()
         self.index = 0
-        self.empty = 0
 
     def set_device_id(self, device_id):
         self.device_id = device_id
@@ -22,9 +21,10 @@ class LienaMessageQueue:
         self.msgQueueLock.release()
 
     def is_empty(self):
+        empty = 0
         if len(self.msgQueue) > 0:
-            self.empty = 1
-        return self.empty
+            empty = 1
+        return empty
 
     def get_size(self):
         self.msgQueueLock.acquire()

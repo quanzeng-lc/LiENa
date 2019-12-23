@@ -80,7 +80,6 @@ class LienaEncodingTask:
         datagram = self.encoder.encode(disengagement_message)
         self.output_queue.append(datagram)
 
-
     def send_rehandshake_commit_message(self):
         if DEBUG:
             print("LienaEncodingTask | send_rehandshake_commit_message")
@@ -178,7 +177,12 @@ class LienaEncodingTask:
                 time.sleep(1)
                 continue
 
-            # send system status to incoming client
+            if self.msgQueue is not None:
+                if self.msgQueue.is_empty() != 0:
+                    msg = self.msgQueue.pop_front()
+                    self.output_queue.append(self.encoder.encode_customized_message(msg))
+
+                    # send system status to incoming client
             # if self.output_queue.get_length() > 0:
             #     for cpt in range(0, self.output_queue.get_length()):
             #         print "decoding.."

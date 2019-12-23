@@ -11,8 +11,8 @@ class LienaOutputMessageCache:
     def remove_message_cache_by_id(self, identifier):
         self.outputMessageCache.pop(identifier)
 
-    def append_message_by_id(self, identifier, msg):
-        self.outputMessageCache[identifier].append(msg)
+    def write_message_by_index(self, index, msg):
+        self.outputMessageCache[index].append(msg)
 
     def get_latest_message_by_id(self, identifier):
         self.outputMessageCache[identifier].pop_back()
@@ -20,7 +20,7 @@ class LienaOutputMessageCache:
     def get_front_message_by_id(self, identifier):
         self.outputMessageCache[identifier].pop_front()
 
-    def generate_new_msg_seq(self, device_id):
+    def generate_new_msg_sequence(self, device_id):
         msgQ = LienaMessageQueue()
         msgQ.set_device_id(device_id)
         self.outputMessageCache.append(msgQ)

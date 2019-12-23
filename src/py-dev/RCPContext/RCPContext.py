@@ -6,6 +6,8 @@ import time
 from threading import Lock
 import csv
 
+from LiENa.LiENaBasic.lienaDefinition import *
+from LiENa.LiENaStructure.LiENaMessage.LienaCustomizedMessage import LienaCustomizedMessage
 from RCPContext.LienaControlInstruction import LienaControlInstruction
 from RCPControl.SensingParameter import SensingParameter
 from RCPControl.GlobalParameterType import GlobalParameterType
@@ -81,9 +83,6 @@ class RCPContext(QObject):
         parse_command_task = threading.Thread(None, self.parse_command)
         parse_command_task.start()
 
-        feedback_task = threading.Thread(None, self.real_time_feedback)
-        feedback_task.start()
-
         # ------ to be merged ----
         # decisionMaking_task = threading.Thread(None, self.decisionMaking)
         # decisionMaking_task.start()
@@ -102,7 +101,7 @@ class RCPContext(QObject):
 
                     ci = LienaControlInstruction()
 
-                    body = msg.get_value()
+                    body = msg.get_message_body()
                     if int(body[0]) == 0:
                         self.closeSystemMessageArrived.emit()
                     elif int(body[0]) == 1:
@@ -141,22 +140,48 @@ class RCPContext(QObject):
                 self.inputLock.release()
             time.sleep(0.05)
 
-    def real_time_feedback(self):
-        while True:
-            parameter = SensingParameter()
-            parameter.setTimestamps(10)
-            parameter.setForceFeedback(self.globalForceFeedback)
-            parameter.setTorqueFeedback(self.globalTorqueFeedback)
-            parameter.setDistanceFromChuckToCatheter(10)
-            parameter.setTelescopicRodLength(10)
-            parameter.setDistanceFromCatheterToGuidewire(10)
-            parameter.setGuidewireAngle(10)
-            parameter.setTranslationVelocity(10)
-            parameter.setRotationVelocity(10)
-            # self.sensingParameterSequence.append(parameter)
-            # print 'length',len(self.sensingParameterSequence)
-            # print "forcefeedback ", parameter.getForceFeedback(), "torquefeedback ", parameter.getTorqueFeedback()
-            time.sleep(0.3)
+    def get_current_time_in_microsecond(self):
+        return round((time.time() % 86400) * 1000000)
+
+    def real_time_feedback(self, gtv=0, grv=0, gtd=0, grd=0, gtf=0, grf=0, ctv=0, ctd=0, ctf=0, lvr=0, lis=0, ltf=0):
+
+        msg = LienaCustomizedMessage(NORMAN_ENDOVASCULAR_ROBOTIC_FEEDBACK_INFORMATION,
+                                     SIAT_COCKPIT_VERSION_1,
+                                     NORMAN_ENDOVASCULAR_ROBOTIC_VERSION_1,
+                                     self.get_current_time_in_microsecond(),
+                                     24)
+
+        msg.define_body_length(1024-HEAD_SIZE)
+        msg.append_uint16(gtv)
+        msg.append_uint16(grv)
+        msg.append_uint16(gtd)
+        msg.append_uint16(grd)
+        msg.append_uint16(gtf)
+        msg.append_uint16(grf)
+        msg.append_uint16(ctv)
+        msg.append_uint16(ctd)
+        msg.append_uint16(ctf)
+        msg.append_uint16(lvr)
+        msg.append_uint16(lis)
+        msg.append_uint16(ltf)
+
+        self.output_cache.write_message_by_index(0, msg)
+
+        # while True:
+        #     parameter = SensingParameter()
+        #     parameter.setTimestamps(10)
+        #     parameter.setForceFeedback(self.globalForceFeedback)
+        #     parameter.setTorqueFeedback(self.globalTorqueFeedback)
+        #     parameter.setDistanceFromChuckToCatheter(10)
+        #     parameter.setTelescopicRodLength(10)
+        #     parameter.setDistanceFromCatheterToGuidewire(10)
+        #     parameter.setGuidewireAngle(10)
+        #     parameter.setTranslationVelocity(10)
+        #     parameter.setRotationVelocity(10)
+        #     # self.sensingParameterSequence.append(parameter)
+        #     # print 'length',len(self.sensingParameterSequence)
+        #     # print "forcefeedback ", parameter.getForceFeedback(), "torquefeedback ", parameter.getTorqueFeedback()
+        #     time.sleep(0.3)
 
     def decisionMaking(self):
         while True:

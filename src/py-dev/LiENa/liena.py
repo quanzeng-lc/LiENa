@@ -45,7 +45,7 @@ class Liena(QObject):
         self.distributedSystem.generateNewMessageSequence[int].connect(self.generate_new_msg_sequence_by)
 
     def generate_new_msg_sequence_by(self, device_id):
-        self.distributedSystem.configure_msg_sequence_pair_by(device_id, self.outputMessageCache.generate_new_msg_seq(device_id), self.inputMessageCache.generate_new_msg_seq(device_id))
+        self.distributedSystem.configure_msg_sequence_pair_by(device_id, self.outputMessageCache.generate_new_msg_sequence(device_id), self.inputMessageCache.generate_new_msg_seq(device_id))
 
     # [0] ---------------------------------------------------------------------------------------------------------------------------
     def set_local_device_id(self, local_device_id):

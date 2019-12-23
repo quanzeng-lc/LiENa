@@ -35,7 +35,54 @@ class LienaEncoder:
             datagram = LienaDatagram(self.global_parameter.get_global_datagram_size(), self.encode_channel_reopened_message(message))
         elif message_type == LIENA_SESSION_MANAGEMENT_NTP_CLOCK_SYNCHRONIZATION_MESSAGE:
             datagram = LienaDatagram(self.global_parameter.get_global_datagram_size(), self.encode_network_quality_message(message))
+        return datagram
 
+    def encode_customized_message(self, message):
+
+        bytes_to_send = bytearray(self.global_parameter.get_global_datagram_size())
+
+        data_type_msb = message.get_message_id() // (2 ** 32)
+        data_type_lsb = message.get_message_id() % (2 ** 32)
+
+        bytes_to_send[0] = (data_type_msb & 0xff000000) >> 24
+        bytes_to_send[1] = (data_type_msb & 0x00ff0000) >> 16
+        bytes_to_send[2] = (data_type_msb & 0x0000ff00) >> 8
+        bytes_to_send[3] = (data_type_msb & 0x000000ff)
+        bytes_to_send[4] = (data_type_lsb & 0xff000000) >> 24
+        bytes_to_send[5] = (data_type_lsb & 0x00ff0000) >> 16
+        bytes_to_send[6] = (data_type_lsb & 0x0000ff00) >> 8
+        bytes_to_send[7] = (data_type_lsb & 0x000000ff)
+
+        bytes_to_send[8] = (message.get_target_id() & 0xff000000) >> 24
+        bytes_to_send[9] = (message.get_target_id() & 0x00ff0000) >> 16
+        bytes_to_send[10] = (message.get_target_id() & 0x0000ff00) >> 8
+        bytes_to_send[11] = (message.get_target_id() & 0x000000ff)
+
+        bytes_to_send[12] = (message.get_origin_id() & 0xff000000) >> 24
+        bytes_to_send[13] = (message.get_origin_id() & 0x00ff0000) >> 16
+        bytes_to_send[14] = (message.get_origin_id() & 0x0000ff00) >> 8
+        bytes_to_send[15] = (message.get_origin_id() & 0x000000ff)
+
+        bytes_to_send[16] = (message.get_timestamps() & 0xff00000000000000) >> 56
+        bytes_to_send[17] = (message.get_timestamps() & 0x00ff000000000000) >> 48
+        bytes_to_send[18] = (message.get_timestamps() & 0x0000ff0000000000) >> 40
+        bytes_to_send[19] = (message.get_timestamps() & 0x000000ff00000000) >> 32
+        bytes_to_send[20] = (message.get_timestamps() & 0x00000000ff000000) >> 24
+        bytes_to_send[21] = (message.get_timestamps() & 0x0000000000ff0000) >> 16
+        bytes_to_send[22] = (message.get_timestamps() & 0x000000000000ff00) >> 8
+        bytes_to_send[23] = (message.get_timestamps() & 0x00000000000000ff)
+
+        bytes_to_send[24] = (message.get_dlc() & 0xff000000) >> 24
+        bytes_to_send[25] = (message.get_dlc() & 0x00ff0000) >> 16
+        bytes_to_send[26] = (message.get_dlc() & 0x0000ff00) >> 8
+        bytes_to_send[27] = (message.get_dlc() & 0x000000ff)
+
+        body = message.get_message_body()
+
+        for x in range(28, self.global_parameter.get_global_datagram_size()):
+            bytes_to_send[x] = body[x-28]
+
+        datagram = LienaDatagram(self.global_parameter.get_global_datagram_size(), bytes_to_send)
         return datagram
 
     def encode_network_quality_message(self, message):
