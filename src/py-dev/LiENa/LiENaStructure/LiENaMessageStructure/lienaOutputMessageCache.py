@@ -12,7 +12,8 @@ class LienaOutputMessageCache:
         self.outputMessageCache.pop(identifier)
 
     def write_message_by_index(self, index, msg):
-        self.outputMessageCache[index].append(msg)
+        if len(self.outputMessageCache) > 0:
+            self.outputMessageCache[index].append(msg)
 
     def get_latest_message_by_id(self, identifier):
         self.outputMessageCache[identifier].pop_back()
