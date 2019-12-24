@@ -13,6 +13,13 @@ from RCPControl.SensingParameter import SensingParameter
 from RCPControl.GlobalParameterType import GlobalParameterType
 
 
+def positive_or_negtive(value):
+    if value > 0:
+        return 0
+    else:
+        return 1
+
+
 class RCPContext(QObject):
 
     controlMessageArrived = pyqtSignal(LienaControlInstruction)
@@ -152,18 +159,30 @@ class RCPContext(QObject):
                                      24)
 
         msg.define_body_length(1024-HEAD_SIZE)
-        msg.append_uint16(gtv)
-        msg.append_uint16(grv)
-        msg.append_uint16(gtd)
-        msg.append_uint16(grd)
-        msg.append_uint16(gtf)
-        msg.append_uint16(grf)
-        msg.append_uint16(ctv)
-        msg.append_uint16(ctd)
-        msg.append_uint16(ctf)
-        msg.append_uint16(lvr)
-        msg.append_uint16(lis)
-        msg.append_uint16(ltf)
+        msg.append_uint8(positive_or_negtive(gtv))
+        msg.append_uint16(abs(gtv))
+        msg.append_uint8(positive_or_negtive(grv))
+        msg.append_uint16(abs(grv))
+        msg.append_uint8(positive_or_negtive(gtd))
+        msg.append_uint16(abs(gtd))
+        msg.append_uint8(positive_or_negtive(grd))
+        msg.append_uint16(abs(grd))
+        msg.append_uint8(positive_or_negtive(gtf))
+        msg.append_uint16(abs(gtf))
+        msg.append_uint8(positive_or_negtive(grf))
+        msg.append_uint16(abs(grf))
+        msg.append_uint8(positive_or_negtive(ctv))
+        msg.append_uint16(abs(ctv))
+        msg.append_uint8(positive_or_negtive(ctd))
+        msg.append_uint16(abs(ctd))
+        msg.append_uint8(positive_or_negtive(ctf))
+        msg.append_uint16(abs(ctf))
+        msg.append_uint8(positive_or_negtive(lvr))
+        msg.append_uint16(abs(lvr))
+        msg.append_uint8(positive_or_negtive(lis))
+        msg.append_uint16(abs(lis))
+        msg.append_uint8(positive_or_negtive(ltf))
+        msg.append_uint16(abs(ltf))
         print(gtf, grf)
         self.output_cache.write_message_by_index(0, msg)
 
