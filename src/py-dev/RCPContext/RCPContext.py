@@ -156,7 +156,7 @@ class RCPContext(QObject):
                                      SIAT_COCKPIT_VERSION_1,
                                      NORMAN_ENDOVASCULAR_ROBOTIC_VERSION_1,
                                      self.get_current_time_in_microsecond(),
-                                     24)
+                                     36)
 
         msg.define_body_length(1024-HEAD_SIZE)
         msg.append_uint8(positive_or_negtive(gtv))
