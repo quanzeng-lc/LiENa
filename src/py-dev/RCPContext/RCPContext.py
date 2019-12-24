@@ -164,7 +164,7 @@ class RCPContext(QObject):
         msg.append_uint16(lvr)
         msg.append_uint16(lis)
         msg.append_uint16(ltf)
-
+        print(gtf, grf)
         self.output_cache.write_message_by_index(0, msg)
 
         # while True:
