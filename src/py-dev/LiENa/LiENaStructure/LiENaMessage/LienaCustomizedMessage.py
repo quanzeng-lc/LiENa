@@ -9,7 +9,7 @@ class LienaCustomizedMessage(LienaMessage):
         self.v = bytearray()
 
     def print_self(self):
-        print(int(self.v[12]),int(self.v[13]),int(self.v[14]),int(self.v[15]),int(self.v[16]),int(self.v[17]),)
+        print(int(self.v[12]), int(self.v[13]), int(self.v[14]), int(self.v[15]), int(self.v[16]), int(self.v[17]))
 
     def define_body_length(self, l):
         for i in range(l):
@@ -59,7 +59,7 @@ class LienaCustomizedMessage(LienaMessage):
         self.index += 1
 
     def append_uint16(self, v):
-        v0 = v & 0xff00 >> 8
+        v0 = (v & 0xff00) >> 8
         v1 = v & 0x00ff
         self.v[self.index] = v0
         self.v[self.index+1] = v1
