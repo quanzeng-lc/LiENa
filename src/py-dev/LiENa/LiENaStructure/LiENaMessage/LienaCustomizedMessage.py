@@ -8,6 +8,9 @@ class LienaCustomizedMessage(LienaMessage):
         self.rule = []
         self.v = bytearray()
 
+    def print_self(self):
+        print(int(self.v[12]),int(self.v[13]),int(self.v[14]),int(self.v[15]),int(self.v[16]),int(self.v[17]),)
+
     def define_body_length(self, l):
         for i in range(l):
             self.v.append(0)
