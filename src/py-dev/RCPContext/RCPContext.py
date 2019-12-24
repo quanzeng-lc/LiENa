@@ -183,7 +183,7 @@ class RCPContext(QObject):
         msg.append_uint16(abs(lis))
         msg.append_uint8(positive_or_negtive(ltf))
         msg.append_uint16(abs(ltf))
-        msg.print_self()
+        #msg.print_self()
         self.output_cache.write_message_by_index(0, msg)
 
         # while True:
