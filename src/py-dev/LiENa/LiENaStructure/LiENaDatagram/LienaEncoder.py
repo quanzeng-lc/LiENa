@@ -81,7 +81,7 @@ class LienaEncoder:
         for x in range(28, self.global_parameter.get_global_datagram_size()):
             bytes_to_send[x] = int(body[x-28])
 
-        print(int(bytes_to_send[40]), int(bytes_to_send[41]), int(bytes_to_send[42]), int(bytes_to_send[43]), int(bytes_to_send[44]), int(bytes_to_send[45]))
+        # print(int(bytes_to_send[40]), int(bytes_to_send[41]), int(bytes_to_send[42]), int(bytes_to_send[43]), int(bytes_to_send[44]), int(bytes_to_send[45]))
         datagram = LienaDatagram(self.global_parameter.get_global_datagram_size(), bytes_to_send)
         return datagram
 

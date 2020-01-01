@@ -145,7 +145,7 @@ class Dispatcher(QObject):
 
     def execute(self, msg):
         # pass
-        print("in dispatcher", msg.get_guidewire_translational_speed(), msg.get_guidewire_rotational_speed(), msg.get_catheter_translational_speed())
+        # print("in dispatcher", msg.get_guidewire_translational_speed(), msg.get_guidewire_rotational_speed(), msg.get_catheter_translational_speed())
 
         # emergency status switch
 
