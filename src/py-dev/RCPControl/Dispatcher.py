@@ -258,7 +258,7 @@ class Dispatcher(QObject):
 
         self.guidewireProgressMotor.set_expectedSpeed(0)
         self.guidewireRotateMotor.set_expectedSpeed(self.speedRotate)  # -
-        time.sleep(self.rotateTime+10)
+        time.sleep(self.rotateTime+5)
         self.guidewireRotateMotor.set_expectedSpeed(0)
 
         self.gripperFront.gripper_chuck_loosen()
@@ -607,7 +607,7 @@ class Dispatcher(QObject):
             self.gripperFront.gripper_chuck_loosen()
             self.gripperBack.gripper_chuck_fasten()
             self.guidewireRotateMotor.set_expectedSpeed(self.speedRotate)  # -/fasten
-            time.sleep(self.rotateTime+10)
+            time.sleep(self.rotateTime+5)
             self.guidewireRotateMotor.set_expectedSpeed(0)
             time.sleep(1)
             self.guidewireProgressMotor.set_expectedSpeed(-self.speedProgress)

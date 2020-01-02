@@ -50,7 +50,7 @@ class LienaTransmissionTask:
     def do_transmit(self):
         if self.outputQueue.get_length() > 0:
             datagram = self.outputQueue.get_front_array()
-            print("lienaTransmissionTask", datagram.get_origin_id())
+            # print("lienaTransmissionTask", datagram.get_origin_id())
 
             if datagram is None:
                 return
