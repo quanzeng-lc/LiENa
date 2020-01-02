@@ -582,7 +582,7 @@ class Dispatcher(QObject):
         # fasten front gripper
         self.gripperFront.gripper_chuck_loosen()
         # self-tightening chunck
-        self.gripperBack.gripper_chuck_fasten()
+        self.gripperBack.gripper_chuck_loosen()
         time.sleep(1)
         self.guidewireProgressMotor.set_expectedSpeed(-self.speedProgress)
         while self.infraredReflectiveSensor.read_current_state() != 1:
