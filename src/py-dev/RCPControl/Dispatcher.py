@@ -619,6 +619,10 @@ class Dispatcher(QObject):
         self.guidewire_back_flag = False
 
 
+dispatcher = Dispatcher()
+dispatcher.guidewire_back()
+
+
 # test push guidewire automatically for several times"
 """
 import sys        
