@@ -600,11 +600,12 @@ class Dispatcher(QObject):
             time.sleep(self.rotateTime)
             self.guidewireRotateMotor.set_expectedSpeed(0)
             time.sleep(1)
-
             self.guidewireProgressMotor.set_expectedSpeed(self.speedProgress)
             while self.infraredReflectiveSensor.read_current_state() != 2:
                 time.sleep(0.5)
                 print("retracting", self.infraredReflectiveSensor.read_current_state())
+            self.guidewireRotateMotor.set_expectedSpeed(0)
+
             self.gripperFront.gripper_chuck_loosen()
             self.gripperBack.gripper_chuck_fasten()
             self.guidewireRotateMotor.set_expectedSpeed(self.speedRotate)  # -/fasten
@@ -617,6 +618,7 @@ class Dispatcher(QObject):
                 print("retracting", self.infraredReflectiveSensor.read_current_state())
             print("back limitation arrived")
             self.guidewireProgressMotor.set_expectedSpeed(0)
+
         self.guidewire_back_flag = False
 
 
