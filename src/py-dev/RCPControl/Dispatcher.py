@@ -619,7 +619,7 @@ class Dispatcher(QObject):
         self.guidewire_back_flag = False
 
 
-dispatcher = Dispatcher()
+dispatcher = Dispatcher(1)
 dispatcher.guidewire_back()
 
 
