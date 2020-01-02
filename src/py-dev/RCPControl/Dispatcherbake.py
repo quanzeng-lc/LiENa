@@ -110,9 +110,9 @@ class Dispatcher(QObject):
         # -------------------------------------------------------------------------
         # real time task to parse commandes in context
         # ---------------------------------------------------------------------------------
-        self.context.controlMessageArrived[LienaControlInstruction].connect(self.execute)
-        self.context.nonProvedControlMessageArrived.connect(self.hold)
-        self.context.closeSystemMessageArrived.connect(self.close)
+        # self.context.controlMessageArrived[LienaControlInstruction].connect(self.execute)
+        # self.context.nonProvedControlMessageArrived.connect(self.hold)
+        # self.context.closeSystemMessageArrived.connect(self.close)
 
         self.analyseTask = threading.Thread(None, self.analyse)
         self.analyseTask.start()
@@ -189,7 +189,7 @@ class Dispatcher(QObject):
 
                 elif self.global_state == 3:
                     self.guidewireProgressMotor.set_expectedSpeed(0)
-            self.feedback()
+            # self.feedback()
             time.sleep(0.1)
 
     def feedback(self):
@@ -617,6 +617,11 @@ class Dispatcher(QObject):
             print("back limitation arrived")
             self.guidewireProgressMotor.set_expectedSpeed(0)
         self.guidewire_back_flag = False
+
+
+
+dispatcher = Dispatcher(1)
+dispatcher.guidewire_back()
 
 
 # test push guidewire automatically for several times"
