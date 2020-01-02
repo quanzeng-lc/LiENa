@@ -7,8 +7,8 @@ import sys
 from enum import Enum
 from PyQt5.QtCore import QObject, pyqtSignal
 import serial.tools.list_ports
-from RCPContext.RCPContext import RCPContext
 sys.path.append("../")
+from RCPContext.RCPContext import RCPContext
 from RCPControl.Motor.AdvanceOrientalMotor import AdvanceOrientalMotor
 from RCPControl.Motor.AngioOrientalMotor import AngioOrientalMotor
 from RCPControl.Motor.RotateOrientalMotor import RotateOrientalMotor
