@@ -114,8 +114,8 @@ class Dispatcher(QObject):
         # self.context.nonProvedControlMessageArrived.connect(self.hold)
         # self.context.closeSystemMessageArrived.connect(self.close)
 
-        self.analyseTask = threading.Thread(None, self.analyse)
-        self.analyseTask.start()
+        #self.analyseTask = threading.Thread(None, self.analyse)
+        #self.analyseTask.start()
 
     #        self.aquirefeedbackTask = threading.Thread(None, self.aquirefeedback_context)
     #        self.aquirefeedbackTask.start()
