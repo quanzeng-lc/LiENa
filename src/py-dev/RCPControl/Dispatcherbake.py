@@ -604,7 +604,7 @@ class Dispatcher(QObject):
             while self.infraredReflectiveSensor.read_current_state() != 2:
                 time.sleep(0.5)
                 print("retracting", self.infraredReflectiveSensor.read_current_state())
-            self.guidewireRotateMotor.set_expectedSpeed(0)
+            self.guidewireProgressMotor.set_expectedSpeed(0)
 
             self.gripperFront.gripper_chuck_loosen()
             self.gripperBack.gripper_chuck_fasten()
