@@ -47,6 +47,7 @@ class Dispatcher(QObject):
         self.draw_back_guidewire_curcuit_flag = True
         self.number_of_cycles = 0
         self.guidewireProgressHome = False
+        self.guidewire_back_flag = False
         # ---------------------------------------------------------------------------------------------
         # execution units of the interventional robot
         # ---------------------------------------------------------------------------------------------
@@ -96,7 +97,7 @@ class Dispatcher(QObject):
         # ---------------------------------------------------------------------------------------------
         # speed parameters
         # ---------------------------------------------------------------------------------------------
-        self.speedProgress = 10
+        self.speedProgress = 15
         self.speedRotate = 30
         self.speedCatheter = 2
         self.rotateTime = 720 / self.speedRotate
@@ -312,7 +313,7 @@ class Dispatcher(QObject):
     def draw_guidewire_back(self):
         """
         the shiftboard go back with drawing back guidewire
-	"""
+	    """
         self.guidewireRotateMotor.set_expectedSpeed(self.speedRotate)
         time.sleep(self.rotateTime)
         self.guidewireRotateMotor.set_expectedSpeed(0)
@@ -402,7 +403,7 @@ class Dispatcher(QObject):
     def push_and_pull(self):
         """
         the test of processing and drawing back guidewire for several times
-	"""
+	    """
         self.multitime_push_guidewire()
         self.multitime_draw_back_guidewire()
 
@@ -572,6 +573,49 @@ class Dispatcher(QObject):
             #print("data", forcevalue, torquevalue)
         """
 
+    def guidewire_back(self):
+        """
+        the shifboard get guidewire back
+        """
+        self.guidewire_back_flag = True
+        # fasten front gripper
+        self.gripperFront.gripper_chuck_loosen()
+        # self-tightening chunck
+        self.gripperBack.gripper_chuck_fasten()
+        time.sleep(1)
+        self.guidewireProgressMotor.set_expectedSpeed(-self.speedProgress)
+        while self.infraredReflectiveSensor.read_current_state() != 1:
+            time.sleep(0.5)
+            print("retracting", self.infraredReflectiveSensor.read_current_state())
+        print("back limitation arrived")
+
+        for i in range(2):
+            # two cycle
+            self.gripperFront.gripper_chuck_fasten()
+            self.gripperBack.gripper_chuck_loosen()
+            time.sleep(1)
+            self.guidewireRotateMotor.set_expectedSpeed(-1 * self.speedRotate)  # +/loosen
+            time.sleep(self.rotateTime)
+            self.guidewireRotateMotor.set_expectedSpeed(0)
+            time.sleep(1)
+
+            self.guidewireProgressMotor.set_expectedSpeed(self.speedProgress)
+            while self.infraredReflectiveSensor.read_current_state() != 2:
+                time.sleep(0.5)
+                print("retracting", self.infraredReflectiveSensor.read_current_state())
+            self.gripperFront.gripper_chuck_loosen()
+            self.gripperBack.gripper_chuck_fasten()
+            self.guidewireRotateMotor.set_expectedSpeed(self.speedRotate)  # -/fasten
+            time.sleep(self.rotateTime)
+            self.guidewireRotateMotor.set_expectedSpeed(0)
+            time.sleep(1)
+            self.guidewireProgressMotor.set_expectedSpeed(-self.speedProgress)
+            while self.infraredReflectiveSensor.read_current_state() != 1:
+                time.sleep(0.5)
+                print("retracting", self.infraredReflectiveSensor.read_current_state())
+            print("back limitation arrived")
+            self.guidewireProgressMotor.set_expectedSpeed(0)
+        self.guidewire_back_flag = False
 
 # test push guidewire automatically for several times"
 """
