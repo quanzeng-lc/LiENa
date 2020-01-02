@@ -110,9 +110,9 @@ class Dispatcher(QObject):
         # -------------------------------------------------------------------------
         # real time task to parse commandes in context
         # ---------------------------------------------------------------------------------
-        self.context.controlMessageArrived[LienaControlInstruction].connect(self.execute)
-        self.context.nonProvedControlMessageArrived.connect(self.hold)
-        self.context.closeSystemMessageArrived.connect(self.close)
+        # self.context.controlMessageArrived[LienaControlInstruction].connect(self.execute)
+        # self.context.nonProvedControlMessageArrived.connect(self.hold)
+        # self.context.closeSystemMessageArrived.connect(self.close)
 
         self.analyseTask = threading.Thread(None, self.analyse)
         self.analyseTask.start()
