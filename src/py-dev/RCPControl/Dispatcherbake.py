@@ -594,7 +594,7 @@ class Dispatcher(QObject):
         for i in range(2):
             # two cycle
             self.gripperFront.gripper_chuck_fasten()
-            self.gripperBack.gripper_chuck_loosen()
+            self.gripperBack.gripper_chuck_fasten()
             time.sleep(1)
             self.guidewireRotateMotor.set_expectedSpeed(-1 * self.speedRotate)  # +/loosen
             time.sleep(self.rotateTime)
