@@ -589,6 +589,7 @@ class Dispatcher(QObject):
             time.sleep(0.5)
             print("retracting", self.infraredReflectiveSensor.read_current_state())
         print("back limitation arrived")
+        self.guidewireProgressMotor.set_expectedSpeed(0)
 
         for i in range(2):
             # two cycle
