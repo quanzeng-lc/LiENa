@@ -8,6 +8,7 @@ from enum import Enum
 from PyQt5.QtCore import QObject, pyqtSignal
 import serial.tools.list_ports
 from RCPContext.RCPContext import RCPContext
+sys.path.append("../")
 from RCPControl.Motor.AdvanceOrientalMotor import AdvanceOrientalMotor
 from RCPControl.Motor.AngioOrientalMotor import AngioOrientalMotor
 from RCPControl.Motor.RotateOrientalMotor import RotateOrientalMotor
@@ -616,7 +617,6 @@ class Dispatcher(QObject):
             print("back limitation arrived")
             self.guidewireProgressMotor.set_expectedSpeed(0)
         self.guidewire_back_flag = False
-
 
 
 dispatcher = Dispatcher()
