@@ -68,7 +68,7 @@ class LienaDecodingTask(QObject):
         self.receptionTask = threading.Thread(None, self.decode)
 
     def set_input_msg_queue(self, inputMsgQue):
-        print("123")
+        # print("123")
         # self.decoder.set_input_cache(inputMsgQue)
         self.inputMsgQue = inputMsgQue
 
