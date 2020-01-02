@@ -189,7 +189,7 @@ class Dispatcher(QObject):
 
                 elif self.global_state == 3:
                     self.guidewireProgressMotor.set_expectedSpeed(0)
-            self.feedback()
+            # self.feedback()
             time.sleep(0.1)
 
     def feedback(self):
