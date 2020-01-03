@@ -591,7 +591,7 @@ class Dispatcher(QObject):
         print("back limitation arrived")
         self.guidewireProgressMotor.set_expectedSpeed(0)
 
-        for i in range(3):
+        for i in range(2):
             # two cycle
             self.gripperFront.gripper_chuck_fasten()
             self.gripperBack.gripper_chuck_fasten()
