@@ -258,7 +258,7 @@ class Dispatcher(QObject):
 
         self.guidewireProgressMotor.set_expectedSpeed(0)
         self.guidewireRotateMotor.set_expectedSpeed(self.speedRotate)
-        time.sleep(self.rotateTime)
+        time.sleep(self.rotateTime + 3)
         self.guidewireRotateMotor.set_expectedSpeed(0)
 
         self.gripperFront.gripper_chuck_loosen()
@@ -604,7 +604,7 @@ class Dispatcher(QObject):
             self.guidewireProgressMotor.set_expectedSpeed(self.speedProgress)
             while self.infraredReflectiveSensor.read_current_state() != 2:
                 time.sleep(0.5)
-                print("retracting", self.infraredReflectiveSensor.read_current_state())
+                print("advance", self.infraredReflectiveSensor.read_current_state())
             self.guidewireProgressMotor.set_expectedSpeed(0)
 
             self.gripperFront.gripper_chuck_loosen()
