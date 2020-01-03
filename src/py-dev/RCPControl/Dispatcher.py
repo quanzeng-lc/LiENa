@@ -590,7 +590,7 @@ class Dispatcher(QObject):
             print("retracting", self.infraredReflectiveSensor.read_current_state())
         print("back limitation arrived")
 
-        for i in range(2):
+        for i in range(3):
             # two cycle
             self.gripperFront.gripper_chuck_fasten()
             self.gripperBack.gripper_chuck_loosen()
