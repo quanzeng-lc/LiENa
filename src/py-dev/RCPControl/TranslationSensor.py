@@ -6,7 +6,7 @@ import serial
 from modbus_tk import modbus_rtu
 
 
-class ForceSensor(object):
+class TransLationSensor(object):
     
     def __init__(self, port, baudrate, bytesize, parity, stopbits):
         #serial parameter set
@@ -43,9 +43,9 @@ baudrate = 9600
 bytesize = 8
 parity = 'N'
 stopbits = 1
-forcefeedback = Feedback(forcePORT, baudrate, bytesize, parity, stopbits)
+transLation = TransLationSensor(forcePORT, baudrate, bytesize, parity, stopbits)
 while True:
-    forcevalue = forcefeedback.aquireForce()
+    transLation_value = transLation.aquireForce()
     time.sleep(0.01)
-    print("force", forcevalue)
+    print("force", transLation_value)
 """

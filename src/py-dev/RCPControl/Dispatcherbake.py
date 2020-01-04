@@ -21,6 +21,7 @@ from RCPContext.LienaControlInstruction import LienaControlInstruction
 from RCPControl.SensingParameter import SensingParameter
 from RCPControl.GlobalParameterType import GlobalParameterType
 from RCPControl.ForceSensor import ForceSensor
+from RCPControl.TranslationSensor import TransLationSensor
 
 FORCEFEEDBACK = 6
 
@@ -84,8 +85,10 @@ class Dispatcher(QObject):
         #         port = list(port_list[i])[0]
         #         portListUSB.append(port)
 
-        self.translationalForceSensor = ForceSensor("/dev/ttyusb_force", 9600, 8, 'N', 1)
-        self.rotationalForceSensor = ForceSensor("/dev/ttyusb_torque", 9600, 8, 'N', 1)
+        self.translational_force_sensor = ForceSensor("/dev/ttyusb_force", 9600, 8, 'N', 1)
+        self.rotational_force_sensor = ForceSensor("/dev/ttyusb_torque", 9600, 8, 'N', 1)
+        self.guidewire_translation = TransLationSensor("/dev/ttyusb_advance", 9600, 8, 'N', 1)
+        self.guidewire_translation = TransLationSensor("/dev/ttyusb_angio", 9600, 8, 'N', 1)
 
         # ---------------------------------------------------------------------------------------------
         # EmergencySwitch
@@ -193,8 +196,8 @@ class Dispatcher(QObject):
             time.sleep(0.1)
 
     def feedback(self):
-        rf = self.rotationalForceSensor.get_value()
-        tf = self.translationalForceSensor.get_value()
+        rf = self.rotational_force_sensor.get_value()
+        tf = self.translational_force_sensor.get_value()
 
         self.context.real_time_feedback(0, 0, 0, 0, tf, rf, 0, 0, 0, 0, 0, 0)
 
@@ -574,7 +577,7 @@ class Dispatcher(QObject):
             #print("data", forcevalue, torquevalue)
         """
 
-    def guidewire_back(self):
+    def guidewire_back(self, times):
         """
         the shifboard get guidewire back
         """
@@ -591,7 +594,7 @@ class Dispatcher(QObject):
         print("back limitation arrived")
         self.guidewireProgressMotor.set_expectedSpeed(0)
 
-        for i in range(1):
+        for i in range(self.number_of_cycles):
             # two cycle
             self.gripperFront.gripper_chuck_fasten()
             self.gripperBack.gripper_chuck_fasten()
@@ -624,17 +627,11 @@ class Dispatcher(QObject):
         self.guidewire_back_flag = False
 
 
-
-dispatcher = Dispatcher(1)
+# test push guidewire automatically for several times" and draw back for several times
+dispatcher = Dispatcher(1, 1)
+dispatcher.multitime_push_guidewire()
 dispatcher.guidewire_back()
 
-
-# test push guidewire automatically for several times"
-"""
-import sys        
-dispatcher =  Dispatcher(1, 1)
-dispatcher.multitime_push_guidewire()
-"""
 # test guidewire and cahteter advance by turns
 """
 import sys
