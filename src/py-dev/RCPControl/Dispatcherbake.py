@@ -545,8 +545,8 @@ class Dispatcher(QObject):
     def define_number_of_cycles(self):
         """
         define the number of cycels of the robot operation
-	"""
-        self.number_of_cycles = input("please input the number of cycles")
+	    """
+        self.number_of_cycles = int(input("please input the number of cycles"))
 
     """
     def aquirefeedback_context(self):
