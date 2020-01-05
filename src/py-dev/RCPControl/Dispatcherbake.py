@@ -102,7 +102,7 @@ class Dispatcher(QObject):
         # speed parameters
         # ---------------------------------------------------------------------------------------------
         self.speedProgress = 15
-        self.speedRotate = 30
+        self.speedRotate = 60
         self.speedCatheter = 2
         self.rotateTime = 360 / self.speedRotate
         self.homeSpeed = 3
@@ -261,7 +261,7 @@ class Dispatcher(QObject):
 
         self.guidewireProgressMotor.set_expectedSpeed(0)
         self.guidewireRotateMotor.set_expectedSpeed(self.speedRotate)
-        time.sleep(self.rotateTime + 3)
+        time.sleep(self.rotateTime + 2)
         self.guidewireRotateMotor.set_expectedSpeed(0)
 
         self.gripperFront.gripper_chuck_loosen()
@@ -613,7 +613,7 @@ class Dispatcher(QObject):
             self.gripperFront.gripper_chuck_loosen()
             self.gripperBack.gripper_chuck_fasten()
             self.guidewireRotateMotor.set_expectedSpeed(self.speedRotate)  # -/fasten
-            time.sleep(self.rotateTime+3)
+            time.sleep(self.rotateTime + 2)
             print("fasten")
             self.guidewireRotateMotor.set_expectedSpeed(0)
             time.sleep(1)
