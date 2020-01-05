@@ -102,6 +102,7 @@ class Dispatcher(QObject):
         # speed parameters
         # ---------------------------------------------------------------------------------------------
         self.speedProgress = 15
+        self.speedRetract = 2*self.speedProgress
         self.speedRotate = 60
         self.speedCatheter = 2
         self.rotateTime = 360 / self.speedRotate
@@ -247,7 +248,7 @@ class Dispatcher(QObject):
 
         # self.gripperFront.gripper_chuck_loosen()
         # time.sleep(1)
-        self.guidewireProgressMotor.set_expectedSpeed(-self.speedProgress)
+        self.guidewireProgressMotor.set_expectedSpeed(-self.speedRetract)
         # time.sleep(3)
 
         while self.infraredReflectiveSensor.read_current_state() != 1:
