@@ -577,7 +577,7 @@ class Dispatcher(QObject):
             #print("data", forcevalue, torquevalue)
         """
 
-    def guidewire_back(self, times):
+    def guidewire_back(self):
         """
         the shifboard get guidewire back
         """
