@@ -120,10 +120,10 @@ class MaxonMotor(object):
         #Type redefine!
         
         self.RMNodeId = USHORT(RMNodeId)
-        self.pDeviceName = CHAR(pDeviceName)
-        self.pProtocolStackName = CHAR(pProtocolStackName)
-        self.pInterfaceName = CHAR(pInterfaceName)
-        self.pPortName = CHAR(pPortName)
+        self.pDeviceName = CHAR(pDeviceName.encode('utf-8'))
+        self.pProtocolStackName = CHAR(pProtocolStackName.encode('utf-8'))
+        self.pInterfaceName = CHAR(pInterfaceName.encode('utf-8'))
+        self.pPortName = CHAR(pPortName.encode('utf-8'))
         self.lBaudrate = UINT(lBaudrate)
         self.RMHandle = HANDLE(0)
         self.errorCode = UINT(0)
