@@ -345,8 +345,9 @@ class MaxonMotor(object):
 ##################################################################################################################################################################################
 
 #test maxon motor to move on position mode
-#guidewireRotateMotor = MaxonMotor(2, "EPOS2", "MAXON SERIAL V2", "USB", "USB0", 1000000)
-#guidewireRotateMotor.rm_move_to_position(40,-8000)
-#time.sleep(6)
-#guidewireRotateMotor.close_device()
+guidewireRotateMotor = MaxonMotor(2, "EPOS2", "MAXON SERIAL V2", "USB", "USB0", 1000000)
+guidewireRotateMotor.rm_move(200)
+time.sleep(6)
+guidewireRotateMotor.rm_move(0)
+guidewireRotateMotor.close_device()
 
