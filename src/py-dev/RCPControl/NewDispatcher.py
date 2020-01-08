@@ -22,7 +22,7 @@ from RCPControl.SensingParameter import SensingParameter
 from RCPControl.GlobalParameterType import GlobalParameterType
 from RCPControl.ForceSensor import ForceSensor
 
-FORCEFEEDBACK = 6
+# FORCEFEEDBACK = 6
 
 
 class NewDispatcher(QObject):
@@ -140,6 +140,7 @@ class NewDispatcher(QObject):
         self.guidewireProgressMotor.standby()
         self.catheterMotor.standby()
         self.angioMotor.standby()
+        self.agencyMotor.rm_move(0)
 
     def enable(self):
         self.guidewireRotateMotor.enable()
@@ -148,7 +149,7 @@ class NewDispatcher(QObject):
         self.angioMotor.enable()
 
     def get_my_status(self):
-        return 0#self.switch.read_current_state()
+        return 0  # self.switch.read_current_state()
 
     def execute(self, msg):
         # pass
@@ -168,18 +169,27 @@ class NewDispatcher(QObject):
             if self.needToRetract or self.guidewireProgressHome:
                 return
 
-            self.catheterMotor.set_expectedSpeed(msg.get_catheter_translational_speed() / 40.0)
+            # self.catheterMotor.set_expectedSpeed(msg.get_catheter_translational_speed() / 40.0)
 
-            self.guidewireProgressMotor.set_expectedSpeed(msg.get_guidewire_translational_speed() / 40.0)
+            # self.guidewireProgressMotor.set_expectedSpeed(msg.get_guidewire_translational_speed() / 40.0)
 
-            self.guidewireRotateMotor.set_expectedSpeed(msg.get_guidewire_rotational_speed() / 40.0)
+            # self.guidewireRotateMotor.set_expectedSpeed(msg.get_guidewire_rotational_speed() / 40.0)
 
             # print("progress speed", msg.get_guidewire_translational_speed())
-            self.agencyMotor.rm_move(-1*int(msg.get_guidewire_translational_speed()*4))
+            velocity = self.transform_receive_value_into_velocity(msg.get_guidewire_translational_speed())
+            self.agencyMotor.rm_move(-1*velocity)
 
             # self.angioMotor.set_pos_speed(msg.get_speed() / 40.0)
             # self.angioMotor.set_position(msg.get_volume() / 4.5)
             # self.angioMotor.pull_contrast_media()
+
+    def transform_receive_value_into_velocity(self, receive_value):
+        velocity = 0
+        if receive_value < 0:
+            velocity = int((receive_value / 700)*8000)
+        else:
+            velocity = int((receive_value / 500)*8000)
+        return velocity
 
     def analyse(self):
         while True:
