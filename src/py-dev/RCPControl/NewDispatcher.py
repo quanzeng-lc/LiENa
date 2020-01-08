@@ -89,7 +89,7 @@ class NewDispatcher(QObject):
         #         portListUSB.append(port)
 
         self.translationalForceSensor = ForceSensor("/dev/ttyusb_force", 9600, 8, 'N', 1)
-        self.rotationalForceSensor = ForceSensor("/dev/ttyusb_torque", 9600, 8, 'N', 1)
+        # self.rotationalForceSensor = ForceSensor("/dev/ttyusb_torque", 9600, 8, 'N', 1)
 
         # ---------------------------------------------------------------------------------------------
         # EmergencySwitch
@@ -201,10 +201,10 @@ class NewDispatcher(QObject):
             time.sleep(0.1)
 
     def feedback(self):
-        rf = self.rotationalForceSensor.get_value()
+        # rf = self.rotationalForceSensor.get_value()
         tf = self.translationalForceSensor.get_value()
 
-        self.context.real_time_feedback(0, 0, 0, 0, tf, rf, 0, 0, 0, 0, 0, 0)
+        self.context.real_time_feedback(0, 0, 0, 0, tf, 0, 0, 0, 0, 0, 0, 0)
 
     def set_global_state(self, state):
         self.global_state = state
