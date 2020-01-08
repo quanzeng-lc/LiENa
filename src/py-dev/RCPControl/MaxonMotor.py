@@ -330,10 +330,10 @@ class MaxonMotor(object):
         positionModeDeceleration = UINT(1000)
         rt = self.ActivateProfileVelocityMode(self.RMHandle, self.RMNodeId, byref(self.errorCode))
         if rt == 1:
-            print("move", rt, "error code", self.errorCode)
+            print("ActivateProfileVelocityMode", rt, "error code", self.errorCode)
         rt = self.MoveWithVelocity(self.RMHandle, self.RMNodeId, LONG(TargetVelocity), byref(self.errorCode))
         if rt == 1:
-            print("move", rt, "error code", self.errorCode)
+            print("MoveWithVelocity", rt, "error code", self.errorCode)
         return Result        
 
 ##################################################################################################################################################################################
