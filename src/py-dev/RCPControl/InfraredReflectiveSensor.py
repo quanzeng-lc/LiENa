@@ -21,7 +21,7 @@ class InfraredReflectiveSensor(object):
 
         self.switch = EmergencySwitch()
         self.stateTask = threading.Thread(None, self.infraredReflectiveStatus)
-        self.stateTask.start()
+        #self.stateTask.start()
 
     def read_current_state(self):
         return self.status

@@ -148,7 +148,7 @@ class NewDispatcher(QObject):
         self.angioMotor.enable()
 
     def get_my_status(self):
-        return self.switch.read_current_state()
+        return 0#self.switch.read_current_state()
 
     def execute(self, msg):
         # pass
