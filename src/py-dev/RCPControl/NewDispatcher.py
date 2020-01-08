@@ -25,7 +25,7 @@ from RCPControl.ForceSensor import ForceSensor
 FORCEFEEDBACK = 6
 
 
-class Dispatcher(QObject):
+class NewDispatcher(QObject):
     """
         description:this class plays an role in th command and control of the interventional robot which includes:
                          -- the control of GPIOs of the raspberryPi which connet motors, sensors and grippers
@@ -35,7 +35,7 @@ class Dispatcher(QObject):
     """
 
     def __init__(self, context, local_mode=0):
-        super(Dispatcher, self).__init__()
+        super(NewDispatcher, self).__init__()
         self.context = context
 
         # ---------------------------------------------------------------------------------------------
@@ -65,6 +65,10 @@ class Dispatcher(QObject):
         self.angioMotor.open_device()
         self.gripperFront = Gripper(7)
         self.gripperBack = Gripper(8)
+
+        # seedinterventionSystem
+        self.agencyMotor = MaxonMotor(2, "EPOS2", "MAXON SERIAL v2", "USB", "USB0", 1000000)
+        self.particleMotor = MaxonMotor(1, "EPOS2", "MAXON SERIAL V2", "USB", "USB1", 1000000)
 
         # ---------------------------------------------------------------------------------------------
         # sensors
@@ -169,6 +173,9 @@ class Dispatcher(QObject):
             self.guidewireProgressMotor.set_expectedSpeed(msg.get_guidewire_translational_speed() / 40.0)
 
             self.guidewireRotateMotor.set_expectedSpeed(msg.get_guidewire_rotational_speed() / 40.0)
+
+            print("progress speed", msg.get_guidewire_translational_speed())
+            # self.agencyMotor.rm_move(msg.get_guidewire_translational_speed())
 
             # self.angioMotor.set_pos_speed(msg.get_speed() / 40.0)
             # self.angioMotor.set_position(msg.get_volume() / 4.5)

@@ -46,6 +46,7 @@ from LiENa.liena import Liena
 from LiENa.LiENaBasic.lienaDefinition import *
 from RCPContext.RCPContext import RCPContext
 from RCPControl.Dispatcher import Dispatcher
+from RCPControl.NewDispatcher import NewDispatcher
 
 
 def main():
@@ -58,8 +59,8 @@ def main():
 
     context = RCPContext(communication_stack.get_input_cache(), communication_stack.get_output_cache())
 
-    instruments = Dispatcher(context)
-
+    # instruments = Dispatcher(context)
+    instruments = NewDispatcher(context)
     sys.exit(app.exec_())
 
 
