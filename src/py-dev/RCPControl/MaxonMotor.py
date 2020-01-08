@@ -336,12 +336,13 @@ class MaxonMotor(object):
             print("MoveWithVelocity", rt, "error code", self.errorCode)
         return Result        
 
-##################################################################################################################################################################################
 
+##################################################################################################################################################################################
+"""
 #test maxon motor to move on position mode
 guidewireRotateMotor = MaxonMotor(2, "EPOS2", "MAXON SERIAL V2", "USB", "USB0", 1000000)
 guidewireRotateMotor.rm_move(-1000)
 time.sleep(6)
 guidewireRotateMotor.rm_move(0)
 guidewireRotateMotor.close_device()
-
+"""
