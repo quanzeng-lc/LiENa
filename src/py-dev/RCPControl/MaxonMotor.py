@@ -328,14 +328,15 @@ class MaxonMotor(object):
 #        positionModeSpeed = UINT(20)
         positionModeAcceleration = UINT(1000)
         positionModeDeceleration = UINT(1000)
-        self.ActivateProfileVelocityMode(self.RMHandle, self.RMNodeId, byref(self.errorCode))
-        self.MoveWithVelocity(self.RMHandle, self.RMNodeId, LONG(TargetVelocity), byref(self.errorCode))
-       
-	#if self.ActivateProfilePositionMode(self.RMHandle, self.RMNodeId, byref(self.errorCode)) != 0:
+        rt = self.ActivateProfileVelocityMode(self.RMHandle, self.RMNodeId, byref(self.errorCode))
+        print("code",rt)
+        rt = self.MoveWithVelocity(self.RMHandle, self.RMNodeId, LONG(TargetVelocity), byref(self.errorCode))
+        print("move", rt)
+	    #if self.ActivateProfilePositionMode(self.RMHandle, self.RMNodeId, byref(self.errorCode)) != 0:
             #if self.SetPositionProfile(self.RMHandle, self.RMNodeId, positionModeSpeed, positionModeAcceleration, positionModeDeceleration, byref(self.errorCode)) != 0:
                 #print self.SetPositionProfile(self.RMHandle, self.RMNodeId, positionModeSpeed, positionModeAcceleration, positionModeDeceleration, byref(self.errorCode))
                 #Result = 0
-		#print self.MoveToPosition(self.RMHandle, self.RMNodeId, LONG(targetRelativePosition), INT(0), INT(1), byref(self.errorCode))
+		        #print self.MoveToPosition(self.RMHandle, self.RMNodeId, LONG(targetRelativePosition), INT(0), INT(1), byref(self.errorCode))
                 #time.sleep(3)
                 #if self.MoveToPosition(self.RMHandle, self.RMNodeId, LONG(targetRelativePosition), INT(0), INT(1), byref(self.errorCode)) == 0:
                     #Result = 0
