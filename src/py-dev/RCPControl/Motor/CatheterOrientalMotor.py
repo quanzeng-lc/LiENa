@@ -164,7 +164,6 @@ class CatheterOrientalMotor(AdvanceMotor):
             self.pos_mode_interval = abs((self.roller_diameter*self.pi_efficient*self.deg_pulse) / (speed*180*2.0*2.0))
             self.pos_mod_expected_flag = 2
         elif speed == 0:
-            self.pos_mode_interval = 9999
             self.pos_mod_expected_flag = 0
         self.pos_mode_expectedSpeed = abs(speed)
 #	print self.pos_mode_expectedSpeed
