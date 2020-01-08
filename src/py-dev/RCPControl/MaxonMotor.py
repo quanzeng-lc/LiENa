@@ -329,7 +329,6 @@ class MaxonMotor(object):
         positionModeAcceleration = UINT(1000)
         positionModeDeceleration = UINT(1000)
         self.ActivateProfileVelocityMode(self.RMHandle, self.RMNodeId, byref(self.errorCode))
-
         self.MoveWithVelocity(self.RMHandle, self.RMNodeId, LONG(TargetVelocity), byref(self.errorCode))
        
 	#if self.ActivateProfilePositionMode(self.RMHandle, self.RMNodeId, byref(self.errorCode)) != 0:
@@ -346,7 +345,7 @@ class MaxonMotor(object):
 
 #test maxon motor to move on position mode
 guidewireRotateMotor = MaxonMotor(2, "EPOS2", "MAXON SERIAL V2", "USB", "USB0", 1000000)
-guidewireRotateMotor.rm_move(200)
+guidewireRotateMotor.rm_move(2000)
 time.sleep(6)
 guidewireRotateMotor.rm_move(0)
 guidewireRotateMotor.close_device()
