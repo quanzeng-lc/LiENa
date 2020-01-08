@@ -175,7 +175,7 @@ class NewDispatcher(QObject):
             self.guidewireRotateMotor.set_expectedSpeed(msg.get_guidewire_rotational_speed() / 40.0)
 
             print("progress speed", msg.get_guidewire_translational_speed())
-            # self.agencyMotor.rm_move(msg.get_guidewire_translational_speed())
+            self.agencyMotor.rm_move(-1*int(msg.get_guidewire_translational_speed()*4))
 
             # self.angioMotor.set_pos_speed(msg.get_speed() / 40.0)
             # self.angioMotor.set_position(msg.get_volume() / 4.5)
