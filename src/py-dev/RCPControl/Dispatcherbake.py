@@ -631,7 +631,7 @@ class Dispatcher(QObject):
 # test push guidewire automatically for several times" and draw back for several times
 dispatcher = Dispatcher(1, 1)
 dispatcher.multitime_push_guidewire()
-dispatcher.guidewire_back()
+# dispatcher.guidewire_back()
 
 # test guidewire and cahteter advance by turns
 """
