@@ -59,8 +59,8 @@ def main():
 
     context = RCPContext(communication_stack.get_input_cache(), communication_stack.get_output_cache())
 
-    # instruments = Dispatcher(context)
-    instruments = NewDispatcher(context)
+    instruments = Dispatcher(context)
+    # instruments = NewDispatcher(context)
     sys.exit(app.exec_())
 
 
