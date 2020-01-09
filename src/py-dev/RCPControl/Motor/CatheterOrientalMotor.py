@@ -254,15 +254,15 @@ class CatheterOrientalMotor(AdvanceMotor):
                 self.context.setGlobalParameter(self.hapticFeedbackID, self.expectedSpeed)
             time.sleep(0.03)
 
-"""
+
 motor1 = CatheterOrientalMotor()
 #motor1.set_position(50)
 #motor1.set_pos_mode_expectedSpeed(-5)
 start = time.time()
-motor1.set_expectedSpeed(2)
+motor1.set_expectedSpeed(3)
 time.sleep(10)
 motor1.stop()
 motor1.position_move()
 print(time.time()-start)
 #motor1.stop()
-"""
+
