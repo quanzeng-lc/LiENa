@@ -2,8 +2,8 @@
 # encoding: utf-8
 
 import sys
-sys.path("../../")
-sys.path("../")
+sys.path.append("../../")
+sys.path.append("../")
 import RPi.GPIO as GPIO
 import time
 import threading
