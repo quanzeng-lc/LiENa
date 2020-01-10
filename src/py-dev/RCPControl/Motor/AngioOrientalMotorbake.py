@@ -282,6 +282,6 @@ motor1.set_expectedSpeed(5)
 time.sleep(2)
 motor1.stop()
 #motor1.position_move()
-print time.time()-start
+print(time.time()-start)
 #motor1.stop()
 
