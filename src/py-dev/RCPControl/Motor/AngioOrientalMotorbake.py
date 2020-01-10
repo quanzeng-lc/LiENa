@@ -275,7 +275,6 @@ class AngioOrientalMotor(AdvanceMotor):
 
 motor1 = AngioOrientalMotor()
 motor1.enable()
-start = time.time()
 #motor1.set_position(40)
 #motor1.set_pos_mode_expectedSpeed(-5)
 print("enter!")
@@ -288,6 +287,7 @@ direction = input_array[0]
 velocity = abs(int(input_array[1]))
 move_time = int(input_array[2])
 print(direction, velocity, move_time)
+start = time.time()
 if direction == "forward":
     motor1.set_expectedSpeed(velocity)
 elif direction == "backward":
