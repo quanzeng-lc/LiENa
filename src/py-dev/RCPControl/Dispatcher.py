@@ -34,7 +34,7 @@ class Dispatcher(QObject):
 	    author:Cheng WANG
     """
 
-    def __init__(self, context, local_mode=0):
+    def __init__(self, context):
         super(Dispatcher, self).__init__()
         self.context = context
 

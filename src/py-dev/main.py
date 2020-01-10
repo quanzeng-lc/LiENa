@@ -46,7 +46,7 @@ from LiENa.liena import Liena
 from LiENa.LiENaBasic.lienaDefinition import *
 from RCPContext.RCPContext import RCPContext
 from RCPControl.Dispatcher import Dispatcher
-from RCPControl.NewDispatcher import NewDispatcher
+#from RCPControl.NewDispatcher import NewDispatcher
 
 
 def main():
