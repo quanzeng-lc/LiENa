@@ -278,17 +278,16 @@ motor1.enable()
 start = time.time()
 #motor1.set_position(40)
 #motor1.set_pos_mode_expectedSpeed(-5)
-input_value = input()
 print("enter!")
+input_value = input()
 input_array = input_value.split(" ")
-
 if len(input_array) != 3:
     motor1.close_device()
     sys.exit(1)
-
 direction = input_array[0]
 velocity = abs(int(input_array[1]))
 move_time = int(input_array[2])
+print(direction, velocity, move_time)
 if direction == "forward":
     motor1.set_expectedSpeed(velocity)
 elif direction == "backward":
