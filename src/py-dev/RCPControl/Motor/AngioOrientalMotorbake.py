@@ -269,7 +269,7 @@ class AngioOrientalMotor(AdvanceMotor):
                 self.context.setGlobalParameter(self.hapticFeedbackID, self.expectedSpeed)
             time.sleep(0.03)
 
-"""
+
 motor1 = AngioOrientalMotor()
 motor1.enable()
 start = time.time()
@@ -281,4 +281,4 @@ motor1.stop()
 #motor1.position_move()
 print time.time()-start
 #motor1.stop()
-"""
+
