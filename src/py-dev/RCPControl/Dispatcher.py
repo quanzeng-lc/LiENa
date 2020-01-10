@@ -164,7 +164,7 @@ class Dispatcher(QObject):
             if self.needToRetract or self.guidewireProgressHome:
                 return
 
-            self.catheterMotor.set_expectedSpeed(msg.get_catheter_translational_speed() / 40.0)
+            self.catheterMotor.set_expectedSpeed(msg.get_catheter_translational_speed() / 25.0)
 
             self.guidewireProgressMotor.set_expectedSpeed(msg.get_guidewire_translational_speed() / 40.0)
 
