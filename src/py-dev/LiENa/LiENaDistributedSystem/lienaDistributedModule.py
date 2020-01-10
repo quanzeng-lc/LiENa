@@ -356,7 +356,7 @@ class LienaDistributedModule(QObject):
 
             tcp_client = LienaTcpClient(addr, port)
             ret = tcp_client.connectera()
-
+            print ("generate_transmission_channel", ret)
             if ret == 0:
                 self.output_queue = LienaOutputQueue()
 
@@ -438,7 +438,6 @@ class LienaDistributedModule(QObject):
         return self.connection_status
 
     def terminate(self):
-
         try:
             self.socket_for_transmission.shutdown(2)
         except socket.error as msg_list:
