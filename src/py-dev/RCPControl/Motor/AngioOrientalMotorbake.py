@@ -296,5 +296,7 @@ time.sleep(move_time)
 motor1.stop()
 #motor1.position_move()
 print(time.time()-start)
+motor1.close_device()
+sys.exit(1)
 #motor1.stop()
 
