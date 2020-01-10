@@ -279,7 +279,9 @@ start = time.time()
 #motor1.set_position(40)
 #motor1.set_pos_mode_expectedSpeed(-5)
 input_value = input()
-input_array = input_value.split()
+print("enter!")
+input_array = input_value.split(" ")
+
 if len(input_array) != 3:
     motor1.close_device()
     sys.exit(1)
