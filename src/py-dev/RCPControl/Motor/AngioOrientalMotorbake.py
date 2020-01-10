@@ -284,7 +284,7 @@ if len(input_array) != 3:
     motor1.close_device()
     sys.exit(1)
 direction = input_array[0]
-velocity = abs(int(input_array[1]))
+velocity = abs(float(input_array[1]))
 move_time = int(input_array[2])
 print(direction, velocity, move_time)
 start = time.time()
