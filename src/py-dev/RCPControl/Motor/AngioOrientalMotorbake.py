@@ -1,6 +1,9 @@
 #!/usr/bin/env python
 # encoding: utf-8
 
+import sys
+sys.path.append("../")
+sys.path.append("../../")
 import RPi.GPIO as GPIO
 import time
 import threading
