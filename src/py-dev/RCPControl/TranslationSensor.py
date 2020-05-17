@@ -30,7 +30,7 @@ class TransLationSensor(object):
     def get_value(self):
         ret = 65530
         try:
-            output = self.master.execute(1, cst.READ_HOLDING_REGISTERS, 30, 2)
+            output = self.master.reaction(1, cst.READ_HOLDING_REGISTERS, 30, 2)
             bb = struct.unpack('>i', struct.pack('>HH', output[0], output[1]))
             ret = bb[0]
         except Exception as e:

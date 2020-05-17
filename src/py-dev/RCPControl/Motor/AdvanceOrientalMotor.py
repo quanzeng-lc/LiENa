@@ -7,14 +7,15 @@ import threading
 from RCPControl.Motor.AdvanceMotor import AdvanceMotor
 from RCPContext.RCPContext import RCPContext
 
+
 # max velocity 10 mm/s
 class AdvanceOrientalMotor(AdvanceMotor):
     def __init__(self):
         
         self.orientalMotorPushLock = threading.Lock()
         self.orientalMotorPullLock = threading.Lock()
-#       self.orientalMotorPositionPushLock = threading.Lock()
-#	self.orientalMotorPositionPullLock = threading.Lock()
+        # self.orientalMotorPositionPushLock = threading.Lock()
+        # self.orientalMotorPositionPullLock = threading.Lock()
         GPIO.setmode(GPIO.BCM)
         GPIO.setwarnings(False)
         self.pushIO = 20
@@ -22,10 +23,10 @@ class AdvanceOrientalMotor(AdvanceMotor):
         GPIO.setup(self.pushIO, GPIO.OUT, initial=GPIO.HIGH)
         GPIO.setup(self.pullIO, GPIO.OUT, initial=GPIO.HIGH)
         
-        # store the global oarameter
+        # store the global parameter
         self.context = None
 
-        # parametertype id
+        # parameter type id
         self.hapticFeedbackID = 0
 
         # mode choose/default mode: speed mode
@@ -52,11 +53,11 @@ class AdvanceOrientalMotor(AdvanceMotor):
         self.pos_mode_expectedSpeed = 0
         self.pos_mode_expeected_flag = 0
         self.pos_mode_interval = 9999
-	
+
         # actual speed mm/s
         self.actualVelocity = 0
 
-        # count the pulse to calculate the vilocity
+        # count the pulse to calculate the velocity
         self.pos_count = 0
 
         # enable
@@ -65,33 +66,35 @@ class AdvanceOrientalMotor(AdvanceMotor):
         if self.mode:
             self.moveTask = threading.Thread(None, self.continuous_move)
             self.moveTask.start()
-#	else:
-#	    self.moveTask = threading.Thread(None, self.continuous_move_position)
-#            self.moveTask.start()
+        # else:
+        #    self.moveTask = threading.Thread(None, self.continuous_move_position)
+        #    self.moveTask.start()
 
         # monitoring the motor status
         self.statusParameterTask = threading.Thread(None, self.statusMonitoring)
         #self.statusParameterTask.start()
 
-
+    # [1] open device
     def open_device(self):
-        if self.flag == True:
+        if self.flag:
             print("Motor is already open!")
             return 
         self.flag = True
 
+    # [2] close device
     def close_device(self):
         self.flag = False
 
+    # [3] standby
     def standby(self):
-        if self.mv_enable == False:
-            #print "Warning: Motor is alraedy not enable!"
+        if not self.mv_enable:
+            # print "Warning: Motor is alraedy not enable!"
             return
         self.mv_enable = False
     
     def enable(self):
-        if self.mv_enable == True:
-            #print "Warning: motor is already enable!"
+        if self.mv_enable:
+            # print "Warning: motor is already enable!"
             return 
         self.mv_enable = True
 

@@ -7,25 +7,22 @@ import sys
 from enum import Enum
 from PyQt5.QtCore import QObject, pyqtSignal
 import serial.tools.list_ports
+
 sys.path.append("../")
+
 from RCPContext.RCPContext import RCPContext
-from RCPControl.Motor.AdvanceOrientalMotor import AdvanceOrientalMotor
-from RCPControl.Motor.AngioOrientalMotor import AngioOrientalMotor
-from RCPControl.Motor.RotateOrientalMotor import RotateOrientalMotor
-from RCPControl.Motor.CatheterOrientalMotor import CatheterOrientalMotor
-from RCPControl.Gripper import Gripper
-from RCPControl.MaxonMotor import MaxonMotor
-from RCPControl.InfraredReflectiveSensor import InfraredReflectiveSensor
+
+from RCPControl.nmGuidewireControl import nmGuidewireControl
+from RCPControl.nmCatheterControl import nmCatheterControl
+from RCPControl.nmContrastMediaControl import nmContrastMediaControl
 from RCPControl.EmergencySwitch import EmergencySwitch
 from RCPContext.LienaControlInstruction import LienaControlInstruction
-from RCPControl.SensingParameter import SensingParameter
 from RCPControl.GlobalParameterType import GlobalParameterType
-from RCPControl.ForceSensor import ForceSensor
 
 FORCEFEEDBACK = 6
 
 
-class Dispatcher(QObject):
+class nmEndovascularRobot(QObject):
     """
         description:this class plays an role in th command and control of the interventional robot which includes:
                          -- the control of GPIOs of the raspberryPi which connet motors, sensors and grippers
@@ -35,69 +32,23 @@ class Dispatcher(QObject):
     """
 
     def __init__(self, context):
-        super(Dispatcher, self).__init__()
+        super(nmEndovascularRobot, self).__init__()
+
         self.context = context
 
-        # ---------------------------------------------------------------------------------------------
         # initialisation
-        # ---------------------------------------------------------------------------------------------
         self.flag = True
-        self.cptt = 0
         self.global_state = 0
-        self.needToRetract = False
-        self.draw_back_guidewire_curcuit_flag = True
+
         self.number_of_cycles = 0
         self.guidewireProgressHome = False
         self.guidewire_back_flag = False
-        # ---------------------------------------------------------------------------------------------
-        # execution units of the interventional robot
-        # ---------------------------------------------------------------------------------------------
-        self.guidewireProgressMotor = AdvanceOrientalMotor()
-        self.guidewireProgressMotor.open_device()
-        self.guidewireProgressMotor.setParameterTypeID(GlobalParameterType.TRANSLATIONVELOCITY)
-        self.guidewireProgressMotor.open_device()
-        self.guidewireRotateMotor = RotateOrientalMotor()
-        self.guidewireRotateMotor.setParameterTypeID(GlobalParameterType.ROTATIONVELOCITY)
-        self.guidewireRotateMotor.open_device()
-        self.catheterMotor = CatheterOrientalMotor()
-        self.catheterMotor.open_device()
-        self.angioMotor = AngioOrientalMotor()
-        self.angioMotor.open_device()
-        self.gripperFront = Gripper(7)
-        self.gripperBack = Gripper(8)
 
-        # ---------------------------------------------------------------------------------------------
-        # sensors
-        # ---------------------------------------------------------------------------------------------
-        self.infraredReflectiveSensor = InfraredReflectiveSensor()
-
-        # --------------------------------------------------------------
-        # feedback
-        #
-        # -------------------------------------------------------------
-        # port_list = list(serial.tools.list_ports.comports())
-        # portListUSB = list()
-        # if len(port_list) == 0:
-        #     print("no serial port found")
-        # else:
-        #     for i in range(0, len(port_list)):
-        #         port = list(port_list[i])[0]
-        #         portListUSB.append(port)
-
-        self.translationalForceSensor = ForceSensor("/dev/ttyusb_force", 9600, 8, 'N', 1)
-        self.rotationalForceSensor = ForceSensor("/dev/ttyusb_torque", 9600, 8, 'N', 1)
-
-        # ---------------------------------------------------------------------------------------------
-        # EmergencySwitch
-        # ---------------------------------------------------------------------------------------------
-        self.switch = EmergencySwitch()
         self.emSwitch = 1
         self.lastSwitch = 0
         self.em_count = 0
 
-        # ---------------------------------------------------------------------------------------------
         # speed parameters
-        # ---------------------------------------------------------------------------------------------
         self.speedProgress = 15
         self.speedRetract = 2 * self.speedProgress
         self.speedRotate = 30
@@ -108,25 +59,46 @@ class Dispatcher(QObject):
         # self.position_cgf = 1
         # self.position_cgb = 2
 
-        # -------------------------------------------------------------------------
-        # real time task to parse commandes in context
-        # ---------------------------------------------------------------------------------
-        self.context.controlMessageArrived[LienaControlInstruction].connect(self.execute)
+        # sub-module
+        self.guidewireControl = nmGuidewireControl()
+        self.catheterControl = nmCatheterControl()
+        self.contrastMediaControl = nmContrastMediaControl()
+        self.switch = EmergencySwitch()
+
+        # real time task to parse commands in context
+        self.feedbackTask = threading.Thread(None, self.feedback)
+        self.feedbackTask.start()
+
+        self.open()
+
+        # signal/slots
+        self.context.controlMessageArrived[LienaControlInstruction].connect(self.reaction)
         self.context.nonProvedControlMessageArrived.connect(self.hold)
         self.context.closeSystemMessageArrived.connect(self.close)
 
-        self.analyseTask = threading.Thread(None, self.analyse)
-        self.analyseTask.start()
+    # ----------------------------------------------------------------------------------------------------
+    # disable all sub-module of the execution unit
+    def open(self):
+        self.guidewireControl.open()
+        self.catheterControl.open()
+        self.contrastMediaControl.open()
 
-    #        self.aquirefeedbackTask = threading.Thread(None, self.aquirefeedback_context)
-    #        self.aquirefeedbackTask.start()
+    # ----------------------------------------------------------------------------------------------------
+    # enable all sub-module of the execution unit
+    def enable(self):
+        self.guidewireControl.enable()
+        self.catheterControl.enable()
+        self.contrastMediaControl.enable()
 
+    # ----------------------------------------------------------------------------------------------------
+    # disable all sub-module of the execution unit
     def close(self):
-        self.guidewireRotateMotor.close_device()
-        self.guidewireProgressMotor.close_device()
-        self.catheterMotor.close_device()
-        self.angioMotor.close_device()
+        self.guidewireControl.close()
+        self.catheterControl.close()
+        self.contrastMediaControl.close()
 
+    # ----------------------------------------------------------------------------------------------------
+    # all sub-control-module enter into standby status
     def hold(self):
 
         if self.needToRetract or self.guidewireProgressHome:
@@ -137,77 +109,44 @@ class Dispatcher(QObject):
         self.catheterMotor.standby()
         self.angioMotor.standby()
 
-    def enable(self):
-        self.guidewireRotateMotor.enable()
-        self.guidewireProgressMotor.enable()
-        self.catheterMotor.enable()
-        self.angioMotor.enable()
-
-    def get_my_status(self):
+    # ----------------------------------------------------------------------------------------------------
+    # to check the emergency switch status.
+    def get_robot_status(self):
         return self.switch.read_current_state()
 
-    def execute(self, msg):
-        # pass
-        # print("in dispatcher", msg.get_guidewire_translational_speed(), msg.get_guidewire_rotational_speed(), msg.get_catheter_translational_speed())
+    # ----------------------------------------------------------------------------------------------------
+    # execute action according to the incoming message
+    def reaction(self, msg):
 
-        # emergency status switch
-
-        if self.get_my_status() == 1:
+        if self.get_robot_status() == 1:
             self.hold()
             return
 
-        elif self.get_my_status() == 0:
+        elif self.get_robot_status() == 0:
             self.enable()
+
             if self.decision_making() is not 1:
                 return
 
-            if self.needToRetract or self.guidewireProgressHome:
-                return
+            self.catheterControl.set_translational_speed(msg.get_catheter_translational_speed() / 25.0)
+            self.guidewireControl.set_both(msg.get_guidewire_translational_speed() / 40.0, msg.get_guidewire_rotational_speed() / 40.0)
+            self.contrastMediaControl.execute(msg.get_speed(), msg.get_volume())
 
-            self.catheterMotor.set_expectedSpeed(msg.get_catheter_translational_speed() / 25.0)
-
-            self.guidewireProgressMotor.set_expectedSpeed(msg.get_guidewire_translational_speed() / 40.0)
-
-            self.guidewireRotateMotor.set_expectedSpeed(msg.get_guidewire_rotational_speed() / 40.0)
-
-            # self.angioMotor.set_pos_speed(msg.get_speed() / 40.0)
-            # self.angioMotor.set_position(msg.get_volume() / 4.5)
-            # self.angioMotor.pull_contrast_media()
-
-    def analyse(self):
-        while True:
-            if self.needToRetract or self.guidewireProgressHome is not True:
-                if self.infraredReflectiveSensor.read_current_state() == 2:
-                    self.guidewireProgressMotor.set_expectedSpeed(0)
-                    self.needToRetract = True
-                    retract_task = threading.Thread(None, self.push_guidewire_back)
-                    retract_task.start()
-
-                elif self.infraredReflectiveSensor.read_current_state() == 1:
-                    self.guidewireProgressHome = True
-                    home_task = threading.Thread(None, self.push_guidewire_home)
-                    home_task.start()
-
-                elif self.global_state == 3:
-                    self.guidewireProgressMotor.set_expectedSpeed(0)
-            self.feedback()
-            time.sleep(0.1)
-
+    # ----------------------------------------------------------------------------------------------------
+    # acquire feedback information
     def feedback(self):
-        rf = self.rotationalForceSensor.get_value()
-        tf = self.translationalForceSensor.get_value()
-
-        self.context.real_time_feedback(0, 0, 0, 0, tf, rf, 0, 0, 0, 0, 0, 0)
+        while True:
+            tf, rf = self.guidewireControl.get_haptic_information()
+            self.context.real_time_feedback(0, 0, 0, 0, tf, rf, 0, 0, 0, 0, 0, 0)
+            time.sleep(0.1)
 
     def set_global_state(self, state):
         self.global_state = state
 
     def decision_making(self):
         ret = 1
-
         # determine control availability
         # ret = self.context.getGlobalDecisionMade()
-
         return ret
 
     def push_contrast_agent(self):
@@ -223,99 +162,23 @@ class Dispatcher(QObject):
         self.angioMotor.set_position(self.position_cgb / 4.5)
         self.angioMotor.pull_contrast_media()
 
-    def push_guidewire_back(self):
-        """
-        the shifboard get back when guidewire progress
-	    """
-        self.draw_back_guidewire_curcuit_flag = False
-
-        # self.gripperFront.gripper_chuck_loosen()
-        # self.gripperBack.gripper_chuck_loosen()
-        # time.sleep(1)
-
-        # fasten front gripper
-        self.gripperFront.gripper_chuck_fasten()
-
-        # self-tightening chunck
-        self.gripperBack.gripper_chuck_fasten()
-        time.sleep(1)
-        self.guidewireRotateMotor.set_expectedSpeed(-1 * self.speedRotate)  # +/loosen
-        time.sleep(self.rotateTime)
-        self.guidewireRotateMotor.set_expectedSpeed(0)
-
-        # self.gripperFront.gripper_chuck_loosen()
-        # time.sleep(1)
-        self.guidewireProgressMotor.set_expectedSpeed(-self.speedProgress)
-        # time.sleep(3)
-
-        while self.infraredReflectiveSensor.read_current_state() != 1:
-            # self.global_state = self.infraredReflectiveSensor.read_current_state()
-            # if self.global_state == 4:
-            # self.global_state = self.infraredReflectiveSensor.read_current_state()
-            # continue
-            time.sleep(0.5)
-            print("retracting", self.infraredReflectiveSensor.read_current_state(), self.global_state)
-        print("back limitation arrived")
-
-        self.guidewireProgressMotor.set_expectedSpeed(0)
-        self.guidewireRotateMotor.set_expectedSpeed(self.speedRotate)  # -
-        time.sleep(self.rotateTime + 3)
-        self.guidewireRotateMotor.set_expectedSpeed(0)
-
-        self.gripperFront.gripper_chuck_loosen()
-        self.gripperBack.gripper_chuck_loosen()
-        self.draw_back_guidewire_curcuit_flag = True
-        # self.context.clear_guidewire_message()
-        self.needToRetract = False
-
     def push_guidewire_advance(self):
-        """
-        the shiftboard advance with pushing guidewire
-	"""
-        # self.context.clear_guidewire_message()
         self.guidewireProgressMotor.set_expectedSpeed(self.speedProgress)
         self.global_state = self.infraredReflectiveSensor.read_current_state()
         while self.global_state != 2:
             time.sleep(0.5)
             self.global_state = self.infraredReflectiveSensor.read_current_state()
-        # print "pushing", self.global_state
-        # print "front limitation arrived"
-        self.guidewireProgressMotor.set_expectedSpeed(0)
-        # self.guidewireRotateMotor.rm_move_to_position(90, -8000)
-        # time.sleep(4)
-
-    def push_guidewire_home(self):
-        # self.context.clear_guidewire_message()
-        self.guidewireProgressMotor.enable()
-        self.guidewireProgressMotor.set_expectedSpeed(self.homeSpeed)
-        self.global_state = self.infraredReflectiveSensor.read_current_state()
-        while self.global_state == 1:
-            time.sleep(0.5)
-            print("home")
-            self.global_state = self.infraredReflectiveSensor.read_current_state()
-        # print "pushing", self.global_state
-        # print "front limitation arrived"
 
         self.guidewireProgressMotor.set_expectedSpeed(0)
-        # self.context.clear_guidewire_message()
-        self.guidewireProgressHome = False
-        # self.guidewireRotateMotor.rm_move_to_position(90, -8000)
-        # time.sleep(4)
 
     def multitime_push_guidewire(self):
-        """
-        the process of pushing guidewire for several times
-	"""
         self.define_number_of_cycles()
         for i in range(0, self.number_of_cycles):
             self.push_guidewire_advance()
-            self.push_guidewire_back()
+            self.prepare_for_another_tour()
             print(i)
 
     def draw_guidewire_back(self):
-        """
-        the shiftboard go back with drawing back guidewire
-	    """
         self.guidewireRotateMotor.set_expectedSpeed(self.speedRotate)
         time.sleep(self.rotateTime)
         self.guidewireRotateMotor.set_expectedSpeed(0)
@@ -537,13 +400,10 @@ class Dispatcher(QObject):
         self.draw_back_guidewire_curcuit_flag = True
         self.needToRetract = False
 
-    def catheter(self):
-        self.catheterMotor.set_expectedSpeed(self.speedCatheter)
-
     def define_number_of_cycles(self):
         """
         define the number of cycels of the robot operation
-	"""
+	    """
         self.number_of_cycles = input("please input the number of cycles")
 
     """
@@ -575,10 +435,8 @@ class Dispatcher(QObject):
             #print("data", forcevalue, torquevalue)
         """
 
+    """ 
     def guidewire_back(self):
-        """
-        the shifboard get guidewire back
-        """
         self.guidewire_back_flag = True
         # fasten front gripper
         self.gripperFront.gripper_chuck_loosen()
@@ -608,7 +466,7 @@ class Dispatcher(QObject):
             self.gripperFront.gripper_chuck_loosen()
             self.gripperBack.gripper_chuck_fasten()
             self.guidewireRotateMotor.set_expectedSpeed(self.speedRotate)  # -/fasten
-            time.sleep(self.rotateTime+5)
+            time.sleep(self.rotateTime + 5)
             self.guidewireRotateMotor.set_expectedSpeed(0)
             time.sleep(1)
             self.guidewireProgressMotor.set_expectedSpeed(-self.speedProgress)
@@ -618,7 +476,7 @@ class Dispatcher(QObject):
             print("back limitation arrived")
             self.guidewireProgressMotor.set_expectedSpeed(0)
         self.guidewire_back_flag = False
-
+    """
 
 # test push guidewire automatically for several times"
 """

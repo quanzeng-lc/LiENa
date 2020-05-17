@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # encoding utf-8
 
+
 class AdvanceMotor(object):
 
     # open device
@@ -22,7 +23,6 @@ class AdvanceMotor(object):
     # set the mode: speed mode or position mode
     def set_mode(self):
         pass
-
 
     def close_position_device(self):
         pass
