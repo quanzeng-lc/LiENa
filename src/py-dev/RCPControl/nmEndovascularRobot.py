@@ -17,7 +17,7 @@ from RCPControl.nmCatheterControl import nmCatheterControl
 from RCPControl.nmContrastMediaControl import nmContrastMediaControl
 from RCPControl.EmergencySwitch import EmergencySwitch
 from RCPContext.LienaControlInstruction import LienaControlInstruction
-from RCPControl.GlobalParameterType import GlobalParameterType
+# from RCPControl.GlobalParameterType import GlobalParameterType
 
 FORCEFEEDBACK = 6
 
@@ -40,6 +40,7 @@ class nmEndovascularRobot(QObject):
         self.flag = True
         self.global_state = 0
 
+        # ------
         self.number_of_cycles = 0
         self.guidewireProgressHome = False
         self.guidewire_back_flag = False
@@ -73,7 +74,7 @@ class nmEndovascularRobot(QObject):
 
         # signal/slots
         self.context.controlMessageArrived[LienaControlInstruction].connect(self.reaction)
-        self.context.nonProvedControlMessageArrived.connect(self.hold)
+        self.context.nonProvedControlMessageArrived.connect(self.standby)
         self.context.closeSystemMessageArrived.connect(self.close)
 
     # ----------------------------------------------------------------------------------------------------
@@ -84,13 +85,6 @@ class nmEndovascularRobot(QObject):
         self.contrastMediaControl.open()
 
     # ----------------------------------------------------------------------------------------------------
-    # enable all sub-module of the execution unit
-    def enable(self):
-        self.guidewireControl.enable()
-        self.catheterControl.enable()
-        self.contrastMediaControl.enable()
-
-    # ----------------------------------------------------------------------------------------------------
     # disable all sub-module of the execution unit
     def close(self):
         self.guidewireControl.close()
@@ -98,16 +92,18 @@ class nmEndovascularRobot(QObject):
         self.contrastMediaControl.close()
 
     # ----------------------------------------------------------------------------------------------------
+    # enable all sub-module of the execution unit
+    def enable(self):
+        self.guidewireControl.enable()
+        self.catheterControl.enable()
+        self.contrastMediaControl.enable()
+
+    # ----------------------------------------------------------------------------------------------------
     # all sub-control-module enter into standby status
-    def hold(self):
-
-        if self.needToRetract or self.guidewireProgressHome:
-            return
-
-        self.guidewireRotateMotor.standby()
-        self.guidewireProgressMotor.standby()
-        self.catheterMotor.standby()
-        self.angioMotor.standby()
+    def standby(self):
+        self.guidewireControl.standby()
+        self.catheterControl.standby()
+        self.contrastMediaControl.standby()
 
     # ----------------------------------------------------------------------------------------------------
     # to check the emergency switch status.
@@ -119,7 +115,7 @@ class nmEndovascularRobot(QObject):
     def reaction(self, msg):
 
         if self.get_robot_status() == 1:
-            self.hold()
+            self.standby()
             return
 
         elif self.get_robot_status() == 0:
@@ -127,7 +123,6 @@ class nmEndovascularRobot(QObject):
 
             if self.decision_making() is not 1:
                 return
-
             self.catheterControl.set_translational_speed(msg.get_catheter_translational_speed() / 25.0)
             self.guidewireControl.set_both(msg.get_guidewire_translational_speed() / 40.0, msg.get_guidewire_rotational_speed() / 40.0)
             self.contrastMediaControl.execute(msg.get_speed(), msg.get_volume())
@@ -136,6 +131,7 @@ class nmEndovascularRobot(QObject):
     # acquire feedback information
     def feedback(self):
         while True:
+
             tf, rf = self.guidewireControl.get_haptic_information()
             self.context.real_time_feedback(0, 0, 0, 0, tf, rf, 0, 0, 0, 0, 0, 0)
             time.sleep(0.1)
@@ -353,7 +349,7 @@ class nmEndovascularRobot(QObject):
     def catheter_back(self):
         """
         the process of guidewire and cathter  by turns for several times
-	"""
+	    """
         self.define_number_of_cycles()
         for i in range(0, self.number_of_cycles):
             self.draw_guidewire_back()
@@ -363,7 +359,7 @@ class nmEndovascularRobot(QObject):
     def initialization(self):
         """
         the initialization of the status of robot
-	"""
+	    """
         self.draw_back_guidewire_curcuit_flag = False
 
         # self.gripperFront.gripper_chuck_loosen()

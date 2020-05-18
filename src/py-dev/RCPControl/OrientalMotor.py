@@ -95,7 +95,7 @@ class OrientalMotor(object):
         while self.flag:            
             if self.mv_enable:
                 if self.expectedSpeedFlag == 0:
-		    time.sleep(0.1)
+		            time.sleep(0.1)
 
                 if self.expectedSpeedFlag == 1:
                     self.push()

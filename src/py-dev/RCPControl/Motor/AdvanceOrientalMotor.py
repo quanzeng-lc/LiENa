@@ -33,7 +33,6 @@ class AdvanceOrientalMotor(AdvanceMotor):
         self.mode = True
         # judge whether the motor is moving 
         self.is_moving = False
-
         self.flag = True
 
         # velocity mode
@@ -127,7 +126,6 @@ class AdvanceOrientalMotor(AdvanceMotor):
             else:
                 time.sleep(0.5)
 
-	    
     def rtz(self):
         GPIO.output(self.pushIO, True)
         GPIO.output(self.pullIO, True)

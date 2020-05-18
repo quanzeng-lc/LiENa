@@ -40,9 +40,7 @@ class nmGuidewireControl(QObject):
         self.analyseTask.start()
 
     def open(self):
-        self.guidewireProgressMotor.setParameterTypeID(GlobalParameterType.TRANSLATIONVELOCITY)
         self.guidewireProgressMotor.open_device()
-        self.guidewireRotateMotor.setParameterTypeID(GlobalParameterType.ROTATIONVELOCITY)
         self.guidewireRotateMotor.open_device()
 
     def close(self):
@@ -64,7 +62,7 @@ class nmGuidewireControl(QObject):
                 if self.infraredReflectiveSensor.read_current_state() == 2:
                     self.guidewireControl.set_translational_speed(0)
                     self.needToRetract = True
-                    retract_task = threading.Thread(None, self.guidewireControl.prepare_for_another_tour)
+                    retract_task = threading.Thread(None, self.prepare_for_another_tour)
                     retract_task.start()
 
                 elif self.infraredReflectiveSensor.read_current_state() == 1:
@@ -95,7 +93,6 @@ class nmGuidewireControl(QObject):
     def prepare_for_another_tour(self):
 
         self.inRetractStatus = False
-
         # fasten front gripper
         self.gripperFront.gripper_chuck_fasten()
 
@@ -133,10 +130,8 @@ class nmGuidewireControl(QObject):
         self.guidewireProgressMotor.set_expectedSpeed(translation_speed)
 
     def set_both(self, translation_speed, rotational_speed):
-
         if self.needToRetract or self.guidewireProgressHome:
             return
-
         self.guidewireProgressMotor.set_expectedSpeed(translation_speed)
         self.guidewireRotateMotor.set_expectedSpeed(rotational_speed)
 

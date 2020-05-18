@@ -27,13 +27,13 @@ class CatheterOrientalMotor(AdvanceMotor):
         
         self.context = None
 
-        #parametertype id
+        # parametertype id
         self.hapticFeedbackID = 0
 
-	#mode choose
+        # mode choose
         self.mode = True
 
-        #velocity mode
+        # velocity mode
         self.expectedSpeed = 0   # mm/s
         self.flag = True
         self.expectedSpeedFlag = 0

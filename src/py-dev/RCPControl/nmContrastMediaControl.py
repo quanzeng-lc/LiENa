@@ -10,7 +10,7 @@ class nmContrastMediaControl(QObject):
     def open(self):
         self.angioMotor.open_device()
 
-    def disable(self):
+    def close(self):
         self.angioMotor.close_device()
 
     def enable(self):
@@ -20,6 +20,7 @@ class nmContrastMediaControl(QObject):
         self.angioMotor.standby()
 
     def execute(self, _volume, _speed):
+
         self.angioMotor.set_pos_speed(_speed / 40.0)
         self.angioMotor.set_position(_volume / 4.5)
         self.angioMotor.pull_contrast_media()
