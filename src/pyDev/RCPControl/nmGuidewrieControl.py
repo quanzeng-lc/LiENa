@@ -1,12 +1,12 @@
 from PyQt5.QtCore import QObject, pyqtSignal
 
-from RCPControl.Motor.AdvanceOrientalMotor import AdvanceOrientalMotor
-from RCPControl.Motor.RotateOrientalMotor import RotateOrientalMotor
-from RCPControl.Gripper import Gripper
-from RCPControl.ForceSensor import ForceSensor
-from RCPControl.InfraredReflectiveSensor import InfraredReflectiveSensor
-from RCPControl.SensingParameter import SensingParameter
-from time import time
+from Motor.AdvanceOrientalMotor import AdvanceOrientalMotor
+from Motor.RotateOrientalMotor import RotateOrientalMotor
+from Gripper import Gripper
+from ForceSensor import ForceSensor
+from InfraredReflectiveSensor import InfraredReflectiveSensor
+from SensingParameter import SensingParameter
+import time
 import threading
 
 
@@ -107,10 +107,12 @@ class nmGuidewireControl(QObject):
         time.sleep(1)
 
         self.guidewireRotateMotor.set_expectedSpeed(-1 * self.speedRotate)  # +/loosen
+        self.guidewireRotateMotor.start_move()
         time.sleep(self.rotateTime)
         self.guidewireRotateMotor.set_expectedSpeed(0)
 
         self.guidewireProgressMotor.set_expectedSpeed(-self.speedProgress)
+        self.guidewireProgressMotor.start_move()
         # time.sleep(3)
 
         while self.infraredReflectiveSensor.read_current_state() != 1:
@@ -167,11 +169,11 @@ class nmGuidewireControl(QObject):
         """
         define the number of cycels of the robot operation
         """
-        self.number_of_cycles = input("please input the number of cycles")
+        self.number_of_cycles = int(input("please input the number of cycles"))
 
     #   test push guidewire automatically for several times"
 
-    import sys
+import sys
 
-    guidewireControl = nmGuidewireControl()
-    guidewireControl.multitime_push_guidewire()
+guidewireControl = nmGuidewireControl()
+guidewireControl.multitime_push_guidewire()

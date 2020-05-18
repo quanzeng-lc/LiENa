@@ -3,7 +3,7 @@
 import RPi.GPIO as GPIO
 import time
 import threading
-from RCPContext.RCPContext import RCPContext
+#from RCPContext.RCPContext import RCPContext
 
 
 class RotateOrientalMotor(object):

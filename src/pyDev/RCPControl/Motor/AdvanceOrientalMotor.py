@@ -4,8 +4,8 @@
 import RPi.GPIO as GPIO
 import time
 import threading
-from pyDev.RCPControl.Motor.AdvanceMotor import AdvanceMotor
-from pyDev.RCPContext.RCPContext import RCPContext
+from Motor.AdvanceMotor import AdvanceMotor
+#from pyDev.RCPContext.RCPContext import RCPContext
 
 
 # max velocity 10 mm/s
@@ -28,6 +28,7 @@ class AdvanceOrientalMotor(AdvanceMotor):
 
         self.open_flag = True
         # enable
+        
         self.mv_enable = True
 
         # default:velocity
