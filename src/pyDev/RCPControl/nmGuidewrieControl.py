@@ -152,7 +152,9 @@ class nmGuidewireControl(QObject):
     #   test guidewire advance
     def push_guidewire_advance(self):
         self.guidewireProgressMotor.set_expectedSpeed(self.speedProgress)
+        self.guidewireProgressMotor.start_move()
         self.global_state = self.infraredReflectiveSensor.read_current_state()
+        self.guidewireRotateMotor.start_move()
         while self.global_state != 2:
             time.sleep(0.5)
             self.global_state = self.infraredReflectiveSensor.read_current_state()
@@ -174,6 +176,5 @@ class nmGuidewireControl(QObject):
     #   test push guidewire automatically for several times"
 
 import sys
-
 guidewireControl = nmGuidewireControl()
 guidewireControl.multitime_push_guidewire()
