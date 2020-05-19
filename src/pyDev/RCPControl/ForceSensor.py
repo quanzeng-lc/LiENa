@@ -52,4 +52,4 @@ while True:
     force_value = force_feedback1.get_value()
     torque_value = force_feedback2.get_value()
     time.sleep(0.01)
-    print("force", force_value, torque_value)
+    print(force_value, torque_value)
