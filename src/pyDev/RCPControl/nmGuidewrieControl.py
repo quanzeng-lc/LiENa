@@ -113,6 +113,7 @@ class nmGuidewireControl(QObject):
         self.guidewireRotateMotor.set_expectedSpeed(-1 * self.speedRotate)  # +/loosen
         time.sleep(self.rotateTime)
         self.guidewireRotateMotor.set_expectedSpeed(0)
+        time.sleep(1)
 
         self.guidewireProgressMotor.set_expectedSpeed(-self.speedProgress)
         self.guidewireProgressMotor.start_move()
