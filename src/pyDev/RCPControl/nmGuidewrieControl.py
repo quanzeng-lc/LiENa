@@ -74,12 +74,10 @@ class nmGuidewireControl(QObject):
                     self.needToRetract = True
                     retract_task = threading.Thread(None, self.prepare_for_another_tour)
                     retract_task.start()
-
                 elif self.infraredReflectiveSensor.read_current_state() == 1:
                     self.guidewireProgressHome = True
                     home_task = threading.Thread(None, self.push_guidewire_home)
                     home_task.start()
-
                 elif self.global_state == 3:
                     self.guidewireProgressMotor.set_expectedSpeed(0)
 
