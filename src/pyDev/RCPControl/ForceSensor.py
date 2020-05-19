@@ -40,13 +40,16 @@ class ForceSensor(object):
 
 #self.translationalForceSensor = ForceSensor("/dev/ttyusb_force", 9600, 8, 'N', 1)
 #self.rotationalForceSensor = ForceSensor("/dev/ttyusb_torque", 9600, 8, 'N', 1)
-force_port = "/dev/ttyusb_force"
+force_port1 = "/dev/ttyusb_force"
+force_port2 = "/dev/ttyusb_force"
 baud_rate = 9600
 byte_size = 8
 parity = 'N'
 stop_bits = 1
-force_feedback = ForceSensor(force_port, baud_rate, byte_size, parity, stop_bits)
+force_feedback1 = ForceSensor(force_port1, baud_rate, byte_size, parity, stop_bits)
+force_feedback2 = ForceSensor(force_port2, baud_rate, byte_size, parity, stop_bits)
 while True:
-    force_value = force_feedback.get_value()
+    force_value = force_feedback1.get_value()
+    torque_value = force_feedback2.get_value()
     time.sleep(0.01)
-    print("force", force_value)
+    print("force", force_value, torque_value)
