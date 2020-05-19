@@ -12,6 +12,9 @@ import csv
 
 
 class nmGuidewireControl(QObject):
+
+    #controlMessageArrived = pyqtSignal()
+
     def __init__(self):
         super(nmGuidewireControl, self).__init__()
 
@@ -44,6 +47,8 @@ class nmGuidewireControl(QObject):
 
         self.force_quire_task = threading.Thread(None, self.force_quire)
         #self.force_quire_task.start()
+
+        #self.controlMessageArrived[LienaControlInstruction].connect(self.reaction)
 
     def open(self):
         self.guidewireProgressMotor.open_device()
@@ -135,6 +140,8 @@ class nmGuidewireControl(QObject):
         self.inRetractStatus = True
         # self.context.clear_guidewire_message()
         self.needToRetract = False
+        if self.number_of_cycles > 0:
+            self.push_guidewire_advance()
 
     def set_rotational_speed(self, rotational_speed):
         self.guidewireRotateMotor.set_expectedSpeed(rotational_speed)
@@ -182,9 +189,8 @@ class nmGuidewireControl(QObject):
 
     def multitime_push_guidewire(self):
         self.define_number_of_cycles()
-        while True:
-            if self.number_of_cycles > 0 and not self.needToRetract:
-                self.push_guidewire_advance()
+        self.push_guidewire_advance()
+
 
 import sys
 guidewireControl = nmGuidewireControl()
