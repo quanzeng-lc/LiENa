@@ -37,7 +37,7 @@ class ForceSensor(object):
             print("serial abnormal:", e)
         return ret
 
-
+"""
 #self.translationalForceSensor = ForceSensor("/dev/ttyusb_force", 9600, 8, 'N', 1)
 #self.rotationalForceSensor = ForceSensor("/dev/ttyusb_torque", 9600, 8, 'N', 1)
 force_port1 = "/dev/ttyusb_force"
@@ -53,3 +53,4 @@ while True:
     torque_value = force_feedback2.get_value()
     time.sleep(0.01)
     print(force_value, torque_value)
+"""

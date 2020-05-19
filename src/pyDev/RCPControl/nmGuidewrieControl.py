@@ -159,10 +159,13 @@ class nmGuidewireControl(QObject):
             for var in data:
                 # for x in tmpData:
                 #    print x
-                with open(path, 'a+') as f:
-                    csv_writer = csv.writer(f)
-                    csv_writer.writerow(str(var))
-                    # f.write(tmpData[0])
+                tmpData = list()
+                tmpData.append(str(var(1)))
+                tmpData.append(str(var(2)))
+            with open(path, 'a+') as f:
+                csv_writer = csv.writer(f)
+                csv_writer.writerow(tmpData)
+                # f.write(tmpData[0])
             time.sleep(0.01)
 
 ##############################
