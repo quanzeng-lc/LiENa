@@ -156,10 +156,11 @@ class nmGuidewireControl(QObject):
             data = self.get_haptic_information()
             path = "./hapticFeedback.csv"
             print(data)
+            tmpData = list()
             for var in data:
                 # for x in tmpData:
                 #    print x
-                tmpData = list()
+
                 tmpData.append(str(var(1)))
                 tmpData.append(str(var(2)))
             with open(path, 'a+') as f:
