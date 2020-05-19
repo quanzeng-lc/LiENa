@@ -106,26 +106,24 @@ class AdvanceOrientalMotor(AdvanceMotor):
             self.expectedSpeedFlag = 0
 
     def continuous_move(self):
-        if not self.mv_mode:
-            return
-        while True:
-            if self.mv_enable:
-                if self.vel_start_flag:
-                    # print('...')
-                    self.is_moving = True
-                    if self.expectedSpeedFlag == 0:
-                        time.sleep(0.1)
+        if self.mv_mode:
+            while True:
+                if self.mv_enable:
+                    if self.vel_start_flag:
+                        # print('...')
+                        self.is_moving = True
+                        if self.expectedSpeedFlag == 0:
+                            time.sleep(0.1)
+                        if self.expectedSpeedFlag == 1:
+                            self.push()
+                        if self.expectedSpeedFlag == 2:
+                            self.pull()
+                    else:
                         break
-                    if self.expectedSpeedFlag == 1:
-                        self.push()
-                    if self.expectedSpeedFlag == 2:
-                        self.pull()
                 else:
-                    break
-            else:
-                time.sleep(0.05)
-        self.is_moving = False
+                    time.sleep(0.05)
         self.vel_start_flag = False
+        self.is_moving = False
 
     def push(self):
         interval = 0
@@ -176,15 +174,14 @@ class AdvanceOrientalMotor(AdvanceMotor):
         #   print self.pos_mode_expectedSpeed
 
     def position_move(self):
-        if self.mv_mode:
-            return
-        if self.pos_mode_expected_flag == 1:
-            self.position_push()
-        elif self.pos_mode_expected_flag == 2:
-            self.position_pull()
-        else:
-            self.position = 0
-            self.distance_pulse = 0
+        if not self.mv_mode:
+            if self.pos_mode_expected_flag == 1:
+                self.position_push()
+            elif self.pos_mode_expected_flag == 2:
+                self.position_pull()
+            else:
+                self.position = 0
+                self.distance_pulse = 0
         self.pos_start_flag = False
         self.is_moving = False
 
@@ -242,10 +239,12 @@ class AdvanceOrientalMotor(AdvanceMotor):
     def stop(self):
         if self.mv_mode:
             self.vel_start_flag = False
+            self.is_moving = False
             time.sleep(0.01)
             self.vel_move_task = threading.Thread(None, self.continuous_move)
         else:
             self.pos_start_flag = False
+            self.is_moving = False
             time.sleep(0.01)
             self.pos_move_task = threading.Thread(None, self.position_move)
 
