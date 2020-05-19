@@ -167,8 +167,8 @@ class nmGuidewireControl(QObject):
             self.push_guidewire_advance()
             self.prepare_for_another_tour()
             print(i)
-        self.guidewireProgressMotor.stop()
-        self.guidewireRotateMotor.stop()
+        #self.guidewireProgressMotor.stop()
+        #self.guidewireRotateMotor.stop()
 
     def define_number_of_cycles(self):
         """
