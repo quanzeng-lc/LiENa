@@ -38,7 +38,9 @@ class ForceSensor(object):
         return ret
 
 
-force_port = "/dev/ttyUSB0"
+#self.translationalForceSensor = ForceSensor("/dev/ttyusb_force", 9600, 8, 'N', 1)
+#self.rotationalForceSensor = ForceSensor("/dev/ttyusb_torque", 9600, 8, 'N', 1)
+force_port = "/dev/ttyusb_force"
 baud_rate = 9600
 byte_size = 8
 parity = 'N'
