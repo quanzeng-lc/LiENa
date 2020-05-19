@@ -157,8 +157,8 @@ class nmGuidewireControl(QObject):
             path = "./hapticFeedback.csv"
             print(data)
             tmpData = list()
-            tmpData.append(str(data(1)))
-            tmpData.append(str(data(2)))
+            tmpData.append(str(data[1]))
+            tmpData.append(str(data[2]))
             with open(path, 'a+') as f:
                 csv_writer = csv.writer(f)
                 csv_writer.writerow(data)
