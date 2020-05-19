@@ -154,6 +154,7 @@ class nmGuidewireControl(QObject):
     def force_quire(self):
         while True:
             data = self.get_haptic_information()
+            """
             path = "./hapticFeedback.csv"
             #print(data)
             tmpData = list()
@@ -164,7 +165,7 @@ class nmGuidewireControl(QObject):
                 csv_writer.writerow(data)
                 # f.write(tmpData[0])
             time.sleep(0.01)
-
+            """
 ##############################
     #   test guidewire advance
     def push_guidewire_advance(self):
