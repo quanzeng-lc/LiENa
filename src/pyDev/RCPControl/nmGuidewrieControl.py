@@ -155,7 +155,7 @@ class nmGuidewireControl(QObject):
         while True:
             data = self.get_haptic_information()
             path = "./hapticFeedback.csv"
-            print(data)
+            #print(data)
             tmpData = list()
             tmpData.append(str(data[0]))
             tmpData.append(str(data[1]))
