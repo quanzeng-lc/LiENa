@@ -111,6 +111,7 @@ class nmGuidewireControl(QObject):
         time.sleep(1)
 
         self.guidewireRotateMotor.set_expectedSpeed(-1 * self.speedRotate)  # +/loosen
+        self.guidewireRotateMotor.start_move()
         time.sleep(self.rotateTime)
         self.guidewireRotateMotor.set_expectedSpeed(0)
         time.sleep(1)
@@ -175,8 +176,8 @@ class nmGuidewireControl(QObject):
         self.guidewireProgressMotor.set_expectedSpeed(self.speedProgress)
         self.guidewireProgressMotor.start_move()
         self.global_state = self.infraredReflectiveSensor.read_current_state()
-        self.guidewireRotateMotor.set_expectedSpeed(self.speedRotate)
-        self.guidewireRotateMotor.start_move()
+        #self.guidewireRotateMotor.set_expectedSpeed(self.speedRotate)
+        #self.guidewireRotateMotor.start_move()
         while self.global_state != 2:
             time.sleep(0.5)
             self.global_state = self.infraredReflectiveSensor.read_current_state()
