@@ -19,6 +19,7 @@ class RotateOrientalMotor(object):
 
         # count the pulse to calculate the rotating speed deg/s
         self.context = None
+
         # parametertype id
         self.hapticFeedbackID = 0
 
@@ -94,7 +95,7 @@ class RotateOrientalMotor(object):
     def continuous_move(self):
         if self.mv_mode:
             while True:
-                print("expectedSpeedFlag", self.expectedSpeedFlag)
+                #print("expectedSpeedFlag", self.expectedSpeedFlag)
                 if self.mv_enable:
                     if self.vel_start_flag:
                         self.is_moving = True
@@ -134,7 +135,7 @@ class RotateOrientalMotor(object):
         time.sleep(interval)
         # self.count += 1
 
-    # Position Mode    #############################1
+    # Position Mode
     def set_position(self, angle):
         if not self.mv_mode:
             self.rotate_angle = abs(angle)

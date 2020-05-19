@@ -43,7 +43,7 @@ class nmGuidewireControl(QObject):
         self.enable()
 
         self.analyseTask = threading.Thread(None, self.analyse)
-        self.analyseTask.start()
+        #self.analyseTask.start()
 
         self.force_quire_task = threading.Thread(None, self.force_quire)
         #self.force_quire_task.start()
@@ -178,8 +178,8 @@ class nmGuidewireControl(QObject):
 
     #   test guidewire advance
     def push_guidewire_advance(self):
-        self.guidewireRotateMotor.set_expectedSpeed(0)
-        self.guidewireRotateMotor.start_move()
+        # self.guidewireRotateMotor.set_expectedSpeed(0)
+        # self.guidewireRotateMotor.start_move()
         self.guidewireProgressMotor.set_expectedSpeed(self.speedProgress)
         self.guidewireProgressMotor.start_move()
 
