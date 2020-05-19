@@ -8,6 +8,7 @@ from InfraredReflectiveSensor import InfraredReflectiveSensor
 from SensingParameter import SensingParameter
 import time
 import threading
+import csv
 
 
 class nmGuidewireControl(QObject):
@@ -40,6 +41,9 @@ class nmGuidewireControl(QObject):
 
         self.analyseTask = threading.Thread(None, self.analyse)
         self.analyseTask.start()
+
+        self.force_quire_task = threading.Thread(None, self.force_quire)
+        self.force_quire_task.start()
 
     def open(self):
         self.guidewireProgressMotor.open_device()
@@ -146,6 +150,20 @@ class nmGuidewireControl(QObject):
         rf = self.rotationalForceSensor.get_value()
         tf = self.translationalForceSensor.get_value()
         return tf, rf
+
+    def force_quire(self):
+        while True:
+            self.storingDataLock.acquire()
+            data = self.get_haptic_information()
+            path = "./hapticFeedback.csv"
+            for var in data:
+                # for x in tmpData:
+                #    print x
+                with open(path, 'a+') as f:
+                    csv_writer = csv.writer(f)
+                    csv_writer.writerow(var)
+                    # f.write(tmpData[0])
+            time.sleep(0.01)
 
 ##############################
     #   test guidewire advance
