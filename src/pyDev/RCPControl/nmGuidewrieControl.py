@@ -102,13 +102,11 @@ class nmGuidewireControl(QObject):
         self.inRetractStatus = False
         # fasten front gripper
         self.gripperFront.gripper_chuck_fasten()
-
         # self-tightening chunck
         self.gripperBack.gripper_chuck_fasten()
         time.sleep(1)
 
         self.guidewireRotateMotor.set_expectedSpeed(-1 * self.speedRotate)  # +/loosen
-        self.guidewireRotateMotor.start_move()
         time.sleep(self.rotateTime)
         self.guidewireRotateMotor.set_expectedSpeed(0)
 
