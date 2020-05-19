@@ -153,7 +153,6 @@ class nmGuidewireControl(QObject):
 
     def force_quire(self):
         while True:
-            self.storingDataLock.acquire()
             data = self.get_haptic_information()
             path = "./hapticFeedback.csv"
             for var in data:
