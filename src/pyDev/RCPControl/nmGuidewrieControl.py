@@ -85,6 +85,7 @@ class nmGuidewireControl(QObject):
         # self.context.clear_guidewire_message()
         self.guidewireProgressMotor.enable()
         self.guidewireProgressMotor.set_expectedSpeed(self.homeSpeed)
+        self.guidewireProgressMotor.start_move()
         self.global_state = self.infraredReflectiveSensor.read_current_state()
         while self.global_state == 1:
             time.sleep(0.5)
