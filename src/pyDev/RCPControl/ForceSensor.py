@@ -1,5 +1,5 @@
 import struct
-
+import time
 import modbus_tk
 import modbus_tk.defines as cst
 import serial
@@ -37,15 +37,14 @@ class ForceSensor(object):
             print("serial abnormal:", e)
         return ret
 
-"""
-forcePORT = "/dev/ttyUSB0"
-baudrate = 9600
-bytesize = 8
+
+force_port = "/dev/ttyUSB0"
+baud_rate = 9600
+byte_size = 8
 parity = 'N'
-stopbits = 1
-forcefeedback = Feedback(forcePORT, baudrate, bytesize, parity, stopbits)
+stop_bits = 1
+force_feedback = ForceSensor(force_port, baud_rate, byte_size, parity, stop_bits)
 while True:
-    forcevalue = forcefeedback.aquireForce()
+    force_value = force_feedback.get_value()
     time.sleep(0.01)
-    print("force", forcevalue)
-"""
+    print("force", force_value)
