@@ -17,9 +17,9 @@ class nmGuidewireControl(QObject):
 
         self.needToRetract = False
         self.inRetractStatus = True
-        self.speedProgress = 15
+        self.speedProgress = 30
         self.speedRetract = 2 * self.speedProgress
-        self.speedRotate = 30
+        self.speedRotate = 300
         self.rotateTime = 360 / self.speedRotate
         self.homeSpeed = 3
         self.number_of_cycles = 0
