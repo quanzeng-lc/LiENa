@@ -12,8 +12,8 @@ class RotateOrientalMotor(object):
         self.orientalMotorPullLock = threading.Lock()
         GPIO.setmode(GPIO.BCM)
         GPIO.setwarnings(False)
-        self.pushIO = 14
-        self.pullIO = 15
+        self.pushIO = 10
+        self.pullIO = 9
         GPIO.setup(self.pushIO, GPIO.OUT, initial=GPIO.HIGH)
         GPIO.setup(self.pullIO, GPIO.OUT, initial=GPIO.HIGH)
 
