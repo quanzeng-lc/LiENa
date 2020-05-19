@@ -99,7 +99,6 @@ class RotateOrientalMotor(object):
                         self.is_moving = True
                         if self.expectedSpeedFlag == 0:
                             time.sleep(0.1)
-                            break
                         if self.expectedSpeedFlag == 1:
                             self.push()
                         if self.expectedSpeedFlag == 2:
