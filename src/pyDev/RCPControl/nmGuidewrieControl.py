@@ -40,7 +40,7 @@ class nmGuidewireControl(QObject):
         self.enable()
 
         self.analyseTask = threading.Thread(None, self.analyse)
-        self.analyseTask.start()
+        #self.analyseTask.start()
 
         self.force_quire_task = threading.Thread(None, self.force_quire)
         self.force_quire_task.start()
@@ -81,7 +81,7 @@ class nmGuidewireControl(QObject):
                     home_task.start()
 
                 elif self.global_state == 3:
-                    self.guidewireControl.set_translational_speed(0)
+                    self.guidewireProgressMotor.set_expectedSpeed(0)
 
             time.sleep(0.05)
 
@@ -170,6 +170,7 @@ class nmGuidewireControl(QObject):
     def push_guidewire_advance(self):
         self.gripperFront.gripper_chuck_loosen()
         self.gripperBack.gripper_chuck_loosen()
+
         self.guidewireProgressMotor.set_expectedSpeed(self.speedProgress)
         self.guidewireProgressMotor.start_move()
         self.global_state = self.infraredReflectiveSensor.read_current_state()
