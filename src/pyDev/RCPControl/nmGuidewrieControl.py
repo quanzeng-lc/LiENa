@@ -43,7 +43,7 @@ class nmGuidewireControl(QObject):
         self.enable()
 
         self.analyseTask = threading.Thread(None, self.analyse)
-        #self.analyseTask.start()
+        self.analyseTask.start()
 
         self.force_quire_task = threading.Thread(None, self.force_quire)
         #self.force_quire_task.start()
