@@ -178,6 +178,8 @@ class nmGuidewireControl(QObject):
 
     #   test guidewire advance
     def push_guidewire_advance(self):
+        self.guidewireRotateMotor.set_expectedSpeed(0)
+        self.guidewireRotateMotor.start_move()
         self.guidewireProgressMotor.set_expectedSpeed(self.speedProgress)
         self.guidewireProgressMotor.start_move()
 
