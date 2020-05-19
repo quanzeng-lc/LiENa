@@ -63,6 +63,7 @@ class nmGuidewireControl(QObject):
         self.guidewireRotateMotor.enable()
 
     def start_move(self):
+        print("haha")
         self.guidewireProgressMotor.start_move()
         self.guidewireRotateMotor.start_move()
 
