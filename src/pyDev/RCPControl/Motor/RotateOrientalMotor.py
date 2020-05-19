@@ -97,6 +97,7 @@ class RotateOrientalMotor(object):
                 if self.mv_enable:
                     if self.vel_start_flag:
                         self.is_moving = True
+                        print("expectedSpeedFlag", self.expectedSpeedFlag)
                         if self.expectedSpeedFlag == 0:
                             time.sleep(0.1)
                         if self.expectedSpeedFlag == 1:
