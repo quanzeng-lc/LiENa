@@ -168,6 +168,8 @@ class nmGuidewireControl(QObject):
 ##############################
     #   test guidewire advance
     def push_guidewire_advance(self):
+        self.gripperFront.gripper_chuck_loosen()
+        self.gripperBack.gripper_chuck_loosen()
         self.guidewireProgressMotor.set_expectedSpeed(self.speedProgress)
         self.guidewireProgressMotor.start_move()
         self.global_state = self.infraredReflectiveSensor.read_current_state()
