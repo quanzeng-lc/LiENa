@@ -40,10 +40,10 @@ class nmGuidewireControl(QObject):
         self.enable()
 
         self.analyseTask = threading.Thread(None, self.analyse)
-        #self.analyseTask.start()
+        self.analyseTask.start()
 
         self.force_quire_task = threading.Thread(None, self.force_quire)
-        self.force_quire_task.start()
+        #self.force_quire_task.start()
 
     def open(self):
         self.guidewireProgressMotor.open_device()
@@ -73,6 +73,7 @@ class nmGuidewireControl(QObject):
                 if self.infraredReflectiveSensor.read_current_state() == 2:
                     self.guidewireProgressMotor.set_expectedSpeed(0)
                     self.needToRetract = True
+                    self.number_of_cycles -= 1
                     retract_task = threading.Thread(None, self.prepare_for_another_tour)
                     retract_task.start()
                 elif self.infraredReflectiveSensor.read_current_state() == 1:
@@ -82,7 +83,7 @@ class nmGuidewireControl(QObject):
                 elif self.global_state == 3:
                     self.guidewireProgressMotor.set_expectedSpeed(0)
 
-            time.sleep(0.05)
+            time.sleep(0.5)
 
     def push_guidewire_home(self):
         # self.context.clear_guidewire_message()
@@ -167,30 +168,11 @@ class nmGuidewireControl(QObject):
                 # f.write(tmpData[0])
             time.sleep(0.01)
             """
-##############################
+
     #   test guidewire advance
     def push_guidewire_advance(self):
-        self.gripperFront.gripper_chuck_loosen()
-        self.gripperBack.gripper_chuck_loosen()
-
         self.guidewireProgressMotor.set_expectedSpeed(self.speedProgress)
         self.guidewireProgressMotor.start_move()
-        self.global_state = self.infraredReflectiveSensor.read_current_state()
-        #self.guidewireRotateMotor.set_expectedSpeed(self.speedRotate)
-        #self.guidewireRotateMotor.start_move()
-        while self.global_state != 2:
-            time.sleep(0.5)
-            self.global_state = self.infraredReflectiveSensor.read_current_state()
-        self.guidewireProgressMotor.set_expectedSpeed(0)
-
-    def multitime_push_guidewire(self):
-        self.define_number_of_cycles()
-        for i in range(0, self.number_of_cycles):
-            self.push_guidewire_advance()
-            self.prepare_for_another_tour()
-            print(i)
-        #self.guidewireProgressMotor.stop()
-        #self.guidewireRotateMotor.stop()
 
     def define_number_of_cycles(self):
         """
@@ -198,7 +180,11 @@ class nmGuidewireControl(QObject):
         """
         self.number_of_cycles = int(input("please input the number of cycles"))
 
-    #   test push guidewire automatically for several times"
+    def multitime_push_guidewire(self):
+        self.define_number_of_cycles()
+        while True:
+            if self.number_of_cycles > 0 and not self.needToRetract:
+                self.push_guidewire_advance()
 
 import sys
 guidewireControl = nmGuidewireControl()

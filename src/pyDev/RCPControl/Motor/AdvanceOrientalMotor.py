@@ -110,7 +110,6 @@ class AdvanceOrientalMotor(AdvanceMotor):
             while True:
                 if self.mv_enable:
                     if self.vel_start_flag:
-                        # print('...')
                         self.is_moving = True
                         if self.expectedSpeedFlag == 0:
                             time.sleep(0.1)
