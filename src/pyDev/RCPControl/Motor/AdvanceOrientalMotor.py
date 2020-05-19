@@ -225,7 +225,7 @@ class AdvanceOrientalMotor(AdvanceMotor):
         self.mv_mode = False if mode == 0 else True
 
     def start_move(self):
-        if self.is_moving():
+        if self.is_moving:
             return
         if self.mv_mode:
             self.vel_start_flag = True
@@ -248,7 +248,7 @@ class AdvanceOrientalMotor(AdvanceMotor):
             time.sleep(0.01)
             self.pos_move_task = threading.Thread(None, self.position_move)
 
-    def is_moving(self):
+    def is_moving_flag(self):
         if self.is_moving:
             return True
         else:
