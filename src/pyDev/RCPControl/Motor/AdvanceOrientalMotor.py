@@ -22,9 +22,9 @@ class AdvanceOrientalMotor(AdvanceMotor):
         GPIO.setup(self.pushIO, GPIO.OUT, initial=GPIO.HIGH)
         GPIO.setup(self.pullIO, GPIO.OUT, initial=GPIO.HIGH)
 
-        # store the global oarameter
+        # store the global parameter
         self.context = None
-        # parametertype id
+        # parameter type id
         self.hapticFeedbackID = 0
 
         self.open_flag = True
@@ -48,7 +48,7 @@ class AdvanceOrientalMotor(AdvanceMotor):
         self.vel_start_flag = mp.Value('i', 0)
         self.count = 0
         # high/low level time interval
-        self.vel_mode_interval = 0
+        self.vel_mode_interval = mp.Value('i', 0)
 
         # position mode
         self.position = 0
@@ -67,7 +67,7 @@ class AdvanceOrientalMotor(AdvanceMotor):
         # if self.mv_mode:
         #self.vel_move_task = threading.Thread(None, self.continuous_move)
         #self.pos_move_task = threading.Thread(None, self.position_move)
-        self.vel_move_task = mp.Process(target=self.continuous_move, args=(self.mv_mode, self.mv_enable, self.vel_start_flag, self.expectedSpeedFlag, self.is_moving))
+        self.vel_move_task = mp.Process(target=self.continuous_move, args=(self.mv_mode, self.mv_enable, self.vel_start_flag, self.expectedSpeedFlag, self.is_moving, self.vel_mode_interval))
         self.pos_move_task = mp.Process(None, self.position_move)
 
 
@@ -109,19 +109,19 @@ class AdvanceOrientalMotor(AdvanceMotor):
         else:
             self.expectedSpeedFlag = 0
 
-    def continuous_move(self, mv_mode, mv_enable, vel_start_flag, expectedSpeedFlag, is_moving):
+    def continuous_move(self, mv_mode, mv_enable, vel_start_flag, expectedSpeedFlag, is_moving, vel_mode_interval):
         if mv_mode.value:
             while True:
                 if mv_enable.value:
                     if vel_start_flag.value:
-                        print('haha')
+                        print('ha ha')
                         is_moving.value = True
                         if expectedSpeedFlag.value == 0:
                             time.sleep(0.1)
                         if expectedSpeedFlag.value == 1:
-                            self.push()
+                            self.push(vel_mode_interval)
                         if expectedSpeedFlag.value == 2:
-                            self.pull()
+                            self.pull(vel_mode_interval)
                     else:
                         break
                 else:
@@ -129,24 +129,16 @@ class AdvanceOrientalMotor(AdvanceMotor):
         vel_start_flag.value = 0
         is_moving.value = 0
 
-    def push(self):
-        interval = 0
-        if self.expectedSpeed.value == 0:
-            return
-        else:
-            interval = self.vel_mode_interval
+    def push(self, vel_mode_interval):
+        interval = vel_mode_interval.value
         GPIO.output(self.pushIO, False)
         time.sleep(interval)
         GPIO.output(self.pushIO, True)
         time.sleep(interval)
         # self.count += 1
 
-    def pull(self):
-        interval = 0
-        if self.expectedSpeed.value == 0:
-            return
-        else:
-            interval = self.vel_mode_interval
+    def pull(self, vel_mode_interval):
+        interval = vel_mode_interval.value
         GPIO.output(self.pullIO, False)
         time.sleep(interval)
         GPIO.output(self.pullIO, True)
@@ -243,7 +235,7 @@ class AdvanceOrientalMotor(AdvanceMotor):
             self.pos_move_task.start()
 
     def stop(self):
-        if self.mv_mode:
+        if self.mv_mode.value:
             self.vel_start_flag = 0
             self.is_moving = 0
             time.sleep(0.01)
