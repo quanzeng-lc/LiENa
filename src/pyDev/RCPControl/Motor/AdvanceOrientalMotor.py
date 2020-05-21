@@ -4,6 +4,7 @@
 import RPi.GPIO as GPIO
 import time
 import threading
+import multiprocessing as mp
 from Motor.AdvanceMotor import AdvanceMotor
 #from pyDev.RCPContext.RCPContext import RCPContext
 
@@ -29,13 +30,13 @@ class AdvanceOrientalMotor(AdvanceMotor):
         self.open_flag = True
         # enable
         
-        self.mv_enable = True
+        self.mv_enable = mp.Value('i', 1)
 
         # default:velocity
         # mode choose/default mode: speed mode
-        self.mv_mode = True
+        self.mv_mode = mp.Value('i', 1)
         # judge whether the motor is moving
-        self.is_moving = False
+        self.is_moving = mp.Value('i', 0)
 
         # the distance for every circle
         self.dis_circle = 5  # mm
@@ -43,8 +44,8 @@ class AdvanceOrientalMotor(AdvanceMotor):
 
         # velocity mode
         self.expectedSpeed = 0
-        self.expectedSpeedFlag = 0
-        self.vel_start_flag = False
+        self.expectedSpeedFlag = mp.Value('i', 0)
+        self.vel_start_flag = mp.Value('i', 0)
         self.count = 0
         # high/low level time interval
         self.vel_mode_interval = 0
@@ -64,8 +65,11 @@ class AdvanceOrientalMotor(AdvanceMotor):
         self.pos_count = 0
 
         # if self.mv_mode:
-        self.vel_move_task = threading.Thread(None, self.continuous_move)
-        self.pos_move_task = threading.Thread(None, self.position_move)
+        #self.vel_move_task = threading.Thread(None, self.continuous_move)
+        #self.pos_move_task = threading.Thread(None, self.position_move)
+        self.vel_move_task = mp.Process(target=self.continuous_move, args=(self.mv_mode, self.mv_enable, self.vel_start_flag, self.expectedSpeedFlag, self.is_moving))
+        self.pos_move_task = mp.Process(None, self.position_move)
+
 
     def open_device(self):
         if self.open_flag:
@@ -80,53 +84,54 @@ class AdvanceOrientalMotor(AdvanceMotor):
         self.open_flag = False
 
     def standby(self):
-        if not self.mv_enable:
+        if not self.mv_enable.value:
             # print "Warning: Motor is alraedy not enable!"
             return
-        self.mv_enable = False
+        self.mv_enable = 0
 
     def enable(self):
-        if self.mv_enable:
+        if self.mv_enable.value:
             # print "Warning: motor is already enable!"
             return
-        self.mv_enable = True
+        self.mv_enable = 1
 
     def set_expectedSpeed(self, speed):
-        if self.mv_mode:
+        if self.mv_mode.value:
             if speed > 0:
-                self.expectedSpeedFlag = 1
+                self.expectedSpeedFlag.value = 1
                 self.vel_mode_interval = (self.dis_circle * self.deg_pulse) / (speed * 360 * 2.0)
             elif speed < 0:
-                self.expectedSpeedFlag = 2
+                self.expectedSpeedFlag.value = 2
                 self.vel_mode_interval = abs((self.dis_circle * self.deg_pulse) / (speed * 360 * 2.0))
             elif speed == 0:
-                self.expectedSpeedFlag = 0
+                self.expectedSpeedFlag.value = 0
             self.expectedSpeed = abs(speed)
         else:
             self.expectedSpeedFlag = 0
 
-    def continuous_move(self):
-        if self.mv_mode:
+    def continuous_move(self, mv_mode, mv_enable, vel_start_flag, expectedSpeedFlag, is_moving):
+        if mv_mode.value:
             while True:
-                if self.mv_enable:
-                    if self.vel_start_flag:
-                        self.is_moving = True
-                        if self.expectedSpeedFlag == 0:
+                if mv_enable.value:
+                    if vel_start_flag.value:
+                        print('haha')
+                        is_moving.value = True
+                        if expectedSpeedFlag.value == 0:
                             time.sleep(0.1)
-                        if self.expectedSpeedFlag == 1:
+                        if expectedSpeedFlag.value == 1:
                             self.push()
-                        if self.expectedSpeedFlag == 2:
+                        if expectedSpeedFlag.value == 2:
                             self.pull()
                     else:
                         break
                 else:
                     time.sleep(0.05)
-        self.vel_start_flag = False
-        self.is_moving = False
+        vel_start_flag.value = 0
+        is_moving.value = 0
 
     def push(self):
         interval = 0
-        if self.expectedSpeed == 0:
+        if self.expectedSpeed.value == 0:
             return
         else:
             interval = self.vel_mode_interval
@@ -138,7 +143,7 @@ class AdvanceOrientalMotor(AdvanceMotor):
 
     def pull(self):
         interval = 0
-        if self.expectedSpeed == 0:
+        if self.expectedSpeed.value == 0:
             return
         else:
             interval = self.vel_mode_interval
@@ -221,15 +226,17 @@ class AdvanceOrientalMotor(AdvanceMotor):
                 break
 
     def set_mode(self, mode):
-        self.mv_mode = False if mode == 0 else True
+        #self.mv_mode = False if mode == 0 else True
+        self.mv_mode.value = mode
 
     def start_move(self):
-        if self.is_moving:
+        if self.is_moving.value:
             return
-        if self.mv_mode:
-            self.vel_start_flag = True
+        if self.mv_mode.value:
+            self.vel_start_flag.value = 1
             time.sleep(0.01)
             self.vel_move_task.start()
+            print("vel start!")
         else:
             self.pos_start_flag = True
             time.sleep(0.01)
@@ -237,15 +244,17 @@ class AdvanceOrientalMotor(AdvanceMotor):
 
     def stop(self):
         if self.mv_mode:
-            self.vel_start_flag = False
-            self.is_moving = False
+            self.vel_start_flag = 0
+            self.is_moving = 0
             time.sleep(0.01)
-            self.vel_move_task = threading.Thread(None, self.continuous_move)
+            #self.vel_move_task = threading.Thread(None, self.continuous_move)
+            #self.vel_move_task = mp.Process(None, self.continuous_move)
         else:
             self.pos_start_flag = False
             self.is_moving = False
             time.sleep(0.01)
-            self.pos_move_task = threading.Thread(None, self.position_move)
+            #self.pos_move_task = threading.Thread(None, self.position_move)
+            self.vel_move_task = mp.Process(None, self.continuous_move)
 
     def is_moving_flag(self):
         if self.is_moving:

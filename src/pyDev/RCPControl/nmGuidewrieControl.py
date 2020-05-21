@@ -46,7 +46,7 @@ class nmGuidewireControl(QObject):
         self.analyseTask.start()
 
         self.force_quire_task = threading.Thread(None, self.force_quire)
-        #self.force_quire_task.start()
+        self.force_quire_task.start()
 
         #self.controlMessageArrived[LienaControlInstruction].connect(self.reaction)
 
