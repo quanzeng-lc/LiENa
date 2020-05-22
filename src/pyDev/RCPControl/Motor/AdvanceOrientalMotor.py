@@ -130,6 +130,7 @@ class AdvanceOrientalMotor(AdvanceMotor):
 
     def push(self, vel_mode_interval):
         interval = vel_mode_interval.value
+        print(interval)
         GPIO.output(self.pushIO, False)
         time.sleep(interval)
         GPIO.output(self.pushIO, True)
@@ -138,6 +139,7 @@ class AdvanceOrientalMotor(AdvanceMotor):
 
     def pull(self, vel_mode_interval):
         interval = vel_mode_interval.value
+        print(interval)
         GPIO.output(self.pullIO, False)
         time.sleep(interval)
         GPIO.output(self.pullIO, True)
