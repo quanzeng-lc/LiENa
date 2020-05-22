@@ -78,7 +78,6 @@ class nmGuidewireControl(QObject):
                 if self.infraredReflectiveSensor.read_current_state() == 2:
                     self.guidewireProgressMotor.set_expectedSpeed(0)
                     self.needToRetract = True
-                    self.number_of_cycles -= 1
                     retract_task = threading.Thread(None, self.prepare_for_another_tour)
                     retract_task.start()
                 elif self.infraredReflectiveSensor.read_current_state() == 1:
@@ -139,6 +138,7 @@ class nmGuidewireControl(QObject):
         self.inRetractStatus = True
         # self.context.clear_guidewire_message()
         self.needToRetract = False
+        self.number_of_cycles -= 1
         print("number_of_cycles", self.number_of_cycles)
         if self.number_of_cycles > 0:
             self.push_guidewire_advance()
@@ -182,6 +182,7 @@ class nmGuidewireControl(QObject):
         # self.guidewireRotateMotor.start_move()
         self.guidewireProgressMotor.set_expectedSpeed(self.speedProgress)
         self.guidewireProgressMotor.start_move()
+        print("advance")
 
     def define_number_of_cycles(self):
         """
