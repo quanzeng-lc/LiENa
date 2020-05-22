@@ -189,7 +189,7 @@ class nmGuidewireControl(QObject):
         """
         define the number of cycels of the robot operation
         """
-        self.number_of_cycles = int(input("please input the number of cycles"))
+        self.number_of_cycles = int(input("please input the number of cycles:"))
 
     def multitime_push_guidewire(self):
         self.define_number_of_cycles()
