@@ -108,6 +108,7 @@ class AdvanceOrientalMotor(AdvanceMotor):
             self.expectedSpeed = abs(speed)
         else:
             self.expectedSpeedFlag.value = 0
+        print('expectedSpeedFlag', self.expectedSpeedFlag.value)
 
     def continuous_move(self, mv_mode, mv_enable, vel_start_flag, expectedSpeedFlag, is_moving, vel_mode_interval):
         if mv_mode.value:
@@ -116,6 +117,7 @@ class AdvanceOrientalMotor(AdvanceMotor):
                     if vel_start_flag.value:
                         # print('ha ha')
                         is_moving.value = True
+                        # print('expectedSpeedFlag', expectedSpeedFlag.value)
                         if expectedSpeedFlag.value == 0:
                             time.sleep(0.5)
                             print("ha ha")
