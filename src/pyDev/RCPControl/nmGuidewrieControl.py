@@ -76,7 +76,6 @@ class nmGuidewireControl(QObject):
             # self.needToRetract or self.guidewireProgressHome is true : forbid
             if not(self.needToRetract or self.guidewireProgressHome):
                 if self.infraredReflectiveSensor.read_current_state() == 2:
-                    self.guidewireProgressMotor.set_expectedSpeed(0)
                     self.needToRetract = True
                     retract_task = threading.Thread(None, self.prepare_for_another_tour)
                     retract_task.start()
@@ -106,6 +105,7 @@ class nmGuidewireControl(QObject):
 
     def prepare_for_another_tour(self):
 
+        self.guidewireProgressMotor.set_expectedSpeed(0)
         self.inRetractStatus = False
         # fasten front gripper
         self.gripperFront.gripper_chuck_fasten()
