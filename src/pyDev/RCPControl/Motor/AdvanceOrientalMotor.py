@@ -95,6 +95,7 @@ class AdvanceOrientalMotor(AdvanceMotor):
         self.mv_enable = 1
 
     def set_expectedSpeed(self, speed):
+        print('set_expectedSpeed')
         if self.mv_mode.value:
             if speed > 0:
                 self.expectedSpeedFlag.value = 1

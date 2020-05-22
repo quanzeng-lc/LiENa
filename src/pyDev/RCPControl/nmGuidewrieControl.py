@@ -27,7 +27,7 @@ class nmGuidewireControl(QObject):
         self.homeSpeed = 3
         self.number_of_cycles = 0
         self.guidewireProgressHome = False
-        self.global_state = False
+        self.global_state = 0
 
         self.guidewireProgressMotor = AdvanceOrientalMotor()
         self.guidewireRotateMotor = RotateOrientalMotor()
@@ -182,7 +182,6 @@ class nmGuidewireControl(QObject):
         # self.guidewireRotateMotor.start_move()
         self.guidewireProgressMotor.set_expectedSpeed(self.speedProgress)
         self.guidewireProgressMotor.start_move()
-        print("advance")
 
     def define_number_of_cycles(self):
         """
