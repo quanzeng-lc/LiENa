@@ -116,7 +116,7 @@ class AdvanceOrientalMotor(AdvanceMotor):
                         # print('ha ha')
                         is_moving.value = True
                         if expectedSpeedFlag.value == 0:
-                            time.sleep(0.1)
+                            time.sleep(0.5)
                         if expectedSpeedFlag.value == 1:
                             self.push(vel_mode_interval)
                         if expectedSpeedFlag.value == 2:
@@ -124,7 +124,7 @@ class AdvanceOrientalMotor(AdvanceMotor):
                     else:
                         break
                 else:
-                    time.sleep(0.05)
+                    time.sleep(0.5)
         vel_start_flag.value = 0
         is_moving.value = 0
 
