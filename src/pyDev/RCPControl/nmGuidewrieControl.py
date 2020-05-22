@@ -73,7 +73,7 @@ class nmGuidewireControl(QObject):
 
     def analyse(self):
         while True:
-            if not(self.needToRetract and self.guidewireProgressHome):
+            if not(self.needToRetract or self.guidewireProgressHome):
                 if self.infraredReflectiveSensor.read_current_state() == 2:
                     self.guidewireProgressMotor.set_expectedSpeed(0)
                     self.needToRetract = True
