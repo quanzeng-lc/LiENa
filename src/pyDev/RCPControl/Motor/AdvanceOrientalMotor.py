@@ -61,14 +61,14 @@ class AdvanceOrientalMotor(AdvanceMotor):
         # actual speed mm/s
         self.actualVelocity = 0
 
-        # count the pulse to calculate the vilocity
+        # count the pulse to calculate the velocity
         self.pos_count = 0
 
         # if self.mv_mode:
         #self.vel_move_task = threading.Thread(None, self.continuous_move)
         #self.pos_move_task = threading.Thread(None, self.position_move)
         self.vel_move_task = mp.Process(target=self.continuous_move, args=(self.mv_mode, self.mv_enable, self.vel_start_flag, self.expectedSpeedFlag, self.is_moving, self.vel_mode_interval))
-        self.pos_move_task = mp.Process(None, self.position_move)
+        self.pos_move_task = mp.Process(target=self.position_move, args=(self.mv_mode, self.pos_mode_expected_flag, self.distance_pulse, self.pos_start_flag, self.is_moving, self.pos_mode_interval))
 
     def open_device(self):
         if self.open_flag:
@@ -170,29 +170,29 @@ class AdvanceOrientalMotor(AdvanceMotor):
             self.pos_mode_expected_flag.value = 0
         #   print self.pos_mode_expectedSpeed
 
-    def position_move(self):
-        if not self.mv_mode.value:
-            if self.pos_mode_expected_flag.value == 1:
-                self.position_push()
-            elif self.pos_mode_expected_flag.value == 2:
-                self.position_pull()
+    def position_move(self, mv_mode, pos_mode_expected_flag, distance_pulse, pos_start_flag, is_moving, pos_mode_interval):
+        if not mv_mode.value:
+            if pos_mode_expected_flag.value == 1:
+                self.position_push(pos_mode_expected_flag, distance_pulse, pos_start_flag, is_moving, pos_mode_interval)
+            elif pos_mode_expected_flag.value == 2:
+                self.position_pull(pos_mode_expected_flag, distance_pulse, pos_start_flag, is_moving, pos_mode_interval)
             else:
-                self.distance_pulse = 0
-        self.pos_start_flag.value = False
-        self.is_moving.value = False
+                distance_pulse.value = 0
+        pos_start_flag.value = False
+        is_moving.value = False
 
-    def position_push(self):
+    def position_push(self, pos_mode_expected_flag, distance_pulse, pos_start_flag, is_moving, pos_mode_interval):
         interval = 0
-        if self.pos_mode_expected_flag.value == 0:
+        if pos_mode_expected_flag.value == 0:
             return
         else:
-            distance = self.distance_pulse.value
-            interval = self.pos_mode_interval.value
+            distance = distance_pulse.value
+            interval = pos_mode_interval.value
             # print(distance)
             # print(interval)
         for i in range(0, distance):
-            if self.pos_start_flag:
-                self.is_moving = True
+            if pos_start_flag.value:
+                is_moving.value = 1
                 GPIO.output(self.pushIO, False)
                 time.sleep(interval)
                 GPIO.output(self.pushIO, True)
@@ -200,16 +200,16 @@ class AdvanceOrientalMotor(AdvanceMotor):
             else:
                 break
 
-    def position_pull(self):
+    def position_pull(self, pos_mode_expected_flag, distance_pulse, pos_start_flag, is_moving, pos_mode_interval):
         interval = 0
-        if self.pos_mode_expected_flag == 0:
+        if pos_mode_expected_flag.value == 0:
             return
         else:
-            distance = self.distance_pulse
-            interval = self.pos_mode_interval
+            distance = distance_pulse.value
+            interval = pos_mode_interval.value
         for i in range(0, distance):
-            if self.pos_start_flag:
-                self.is_moving = True
+            if pos_start_flag.value:
+                is_moving.value = 1
                 GPIO.output(self.pullIO, False)
                 time.sleep(interval)
                 GPIO.output(self.pullIO, True)
@@ -239,14 +239,19 @@ class AdvanceOrientalMotor(AdvanceMotor):
             self.vel_start_flag.value = 0
             self.is_moving.value = 0
             time.sleep(0.01)
-            #self.vel_move_task = threading.Thread(None, self.continuous_move)
-            #self.vel_move_task = mp.Process(None, self.continuous_move)
+            # self.vel_move_task = threading.Thread(None, self.continuous_move)
+            self.vel_move_task = mp.Process(target=self.continuous_move, args=(
+            self.mv_mode, self.mv_enable, self.vel_start_flag, self.expectedSpeedFlag, self.is_moving,
+            self.vel_mode_interval))
+
         else:
             self.pos_start_flag.value = 0
             self.is_moving.value = 0
             time.sleep(0.01)
-            #self.pos_move_task = threading.Thread(None, self.position_move)
-            #self.vel_move_task = mp.Process(None, self.continuous_move)
+            # self.pos_move_task = threading.Thread(None, self.position_move)
+            self.pos_move_task = mp.Process(target=self.position_move, args=(
+            self.mv_mode, self.pos_mode_expected_flag, self.distance_pulse, self.pos_start_flag, self.is_moving,
+            self.pos_mode_interval))
 
     def is_moving_flag(self):
         if self.is_moving.value:
