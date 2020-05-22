@@ -98,15 +98,15 @@ class AdvanceOrientalMotor(AdvanceMotor):
         if self.mv_mode.value:
             if speed > 0:
                 self.expectedSpeedFlag.value = 1
-                self.vel_mode_interval = (self.dis_circle * self.deg_pulse) / (speed * 360 * 2.0)
+                self.vel_mode_interval.value = (self.dis_circle * self.deg_pulse) / (speed * 360 * 2.0)
             elif speed < 0:
                 self.expectedSpeedFlag.value = 2
-                self.vel_mode_interval = abs((self.dis_circle * self.deg_pulse) / (speed * 360 * 2.0))
+                self.vel_mode_interval.value = abs((self.dis_circle * self.deg_pulse) / (speed * 360 * 2.0))
             elif speed == 0:
                 self.expectedSpeedFlag.value = 0
             self.expectedSpeed = abs(speed)
         else:
-            self.expectedSpeedFlag = 0
+            self.expectedSpeedFlag.value = 0
 
     def continuous_move(self, mv_mode, mv_enable, vel_start_flag, expectedSpeedFlag, is_moving, vel_mode_interval):
         if mv_mode.value:
