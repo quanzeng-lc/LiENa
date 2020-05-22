@@ -140,6 +140,7 @@ class nmGuidewireControl(QObject):
         self.needToRetract = False
         self.number_of_cycles -= 1
         print("number_of_cycles", self.number_of_cycles)
+        time.sleep(2)
         if self.number_of_cycles > 0:
             self.push_guidewire_advance()
 
@@ -181,7 +182,6 @@ class nmGuidewireControl(QObject):
         # self.guidewireRotateMotor.set_expectedSpeed(0)
         # self.guidewireRotateMotor.start_move()
         self.guidewireProgressMotor.set_expectedSpeed(self.speedProgress)
-        print("speedProgress:", self.speedProgress)
         self.guidewireProgressMotor.start_move()
 
     def define_number_of_cycles(self):
