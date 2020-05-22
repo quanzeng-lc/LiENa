@@ -36,7 +36,6 @@ class nmGuidewireControl(QObject):
         self.gripperBack = Gripper(8)
 
         self.infraredReflectiveSensor = InfraredReflectiveSensor()
-
         self.translationalForceSensor = ForceSensor("/dev/ttyusb_force", 9600, 8, 'N', 1)
         self.rotationalForceSensor = ForceSensor("/dev/ttyusb_torque", 9600, 8, 'N', 1)
 
@@ -48,7 +47,7 @@ class nmGuidewireControl(QObject):
         self.force_quire_task = threading.Thread(None, self.force_quire)
         self.force_quire_task.start()
 
-        #self.controlMessageArrived[LienaControlInstruction].connect(self.reaction)
+        # self.controlMessageArrived[LienaControlInstruction].connect(self.reaction)
 
     def open(self):
         self.guidewireProgressMotor.open_device()
@@ -68,13 +67,13 @@ class nmGuidewireControl(QObject):
         self.guidewireRotateMotor.enable()
 
     def start_move(self):
-        print("haha")
+        print("ha ha start!")
         self.guidewireProgressMotor.start_move()
         self.guidewireRotateMotor.start_move()
 
     def analyse(self):
         while True:
-            if self.needToRetract or self.guidewireProgressHome is not True:
+            if not(self.needToRetract and self.guidewireProgressHome):
                 if self.infraredReflectiveSensor.read_current_state() == 2:
                     self.guidewireProgressMotor.set_expectedSpeed(0)
                     self.needToRetract = True
@@ -87,7 +86,6 @@ class nmGuidewireControl(QObject):
                     home_task.start()
                 elif self.global_state == 3:
                     self.guidewireProgressMotor.set_expectedSpeed(0)
-
             time.sleep(0.5)
 
     def push_guidewire_home(self):
