@@ -139,9 +139,10 @@ class nmGuidewireControl(QObject):
         # self.context.clear_guidewire_message()
         self.needToRetract = False
         self.number_of_cycles -= 1
-        print("number_of_cycles", self.number_of_cycles)
-        time.sleep(2)
+        # print("number_of_cycles", self.number_of_cycles)
         if self.number_of_cycles > 0:
+            while not(self.needToRetract or self.guidewireProgressHome):
+                time.sleep(0.5)
             self.push_guidewire_advance()
 
     def set_rotational_speed(self, rotational_speed):
