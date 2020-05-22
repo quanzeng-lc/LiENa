@@ -48,7 +48,7 @@ class AdvanceOrientalMotor(AdvanceMotor):
         self.vel_start_flag = mp.Value('i', 0)
         self.count = 0
         # high/low level time interval
-        self.vel_mode_interval = mp.Value('i', 0)
+        self.vel_mode_interval = mp.Value('f', 0)
 
         # position mode
         self.position = 0
@@ -56,7 +56,7 @@ class AdvanceOrientalMotor(AdvanceMotor):
         self.pos_mode_expectedSpeed = 0
         self.pos_mode_expected_flag = mp.Value('i', 0)
         self.pos_start_flag = mp.Value('i', 0)
-        self.pos_mode_interval = mp.Value('i', 0)
+        self.pos_mode_interval = mp.Value('f', 0)
 
         # actual speed mm/s
         self.actualVelocity = 0
