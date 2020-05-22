@@ -99,6 +99,7 @@ class AdvanceOrientalMotor(AdvanceMotor):
             if speed > 0:
                 self.expectedSpeedFlag.value = 1
                 self.vel_mode_interval.value = (self.dis_circle * self.deg_pulse) / (speed * 360 * 2.0)
+                print("expected_flag", self.expectedSpeedFlag)
             elif speed < 0:
                 self.expectedSpeedFlag.value = 2
                 self.vel_mode_interval.value = abs((self.dis_circle * self.deg_pulse) / (speed * 360 * 2.0))
