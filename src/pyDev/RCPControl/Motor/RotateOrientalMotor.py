@@ -95,7 +95,7 @@ class RotateOrientalMotor(object):
             self.expectedSpeedFlag = 0
 
     def continuous_move(self, mv_mode, mv_enable, vel_start_flag, expectedSpeedFlag, is_moving, vel_mode_interval):
-        if mv_mode.vale:
+        if mv_mode.value:
             while True:
                 if mv_enable.value:
                     if vel_start_flag.value:
