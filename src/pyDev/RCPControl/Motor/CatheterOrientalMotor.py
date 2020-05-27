@@ -7,8 +7,8 @@ sys.path.append("../")
 import RPi.GPIO as GPIO
 import time
 import threading
-from RCPControl.Motor.AdvanceMotor import AdvanceMotor
-from RCPContext.RCPContext import RCPContext
+from Motor.AdvanceMotor import AdvanceMotor
+
 
 # max velocity 10 mm/s
 class CatheterOrientalMotor(AdvanceMotor):
@@ -22,8 +22,6 @@ class CatheterOrientalMotor(AdvanceMotor):
         self.pullIO = 27
         GPIO.setup(self.pushIO, GPIO.OUT, initial=GPIO.HIGH)
         GPIO.setup(self.pullIO, GPIO.OUT, initial=GPIO.HIGH)
-
-        self.context = None
 
         # parametertype id
         self.hapticFeedbackID = 0
