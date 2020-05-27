@@ -103,9 +103,9 @@ class RotateOrientalMotor(object):
                         if expectedSpeedFlag.value == 0:
                             time.sleep(0.1)
                         if expectedSpeedFlag.value == 1:
-                            self.push()
+                            self.push(vel_mode_interval)
                         if expectedSpeedFlag.value == 2:
-                            self.pull()
+                            self.pull(vel_mode_interval)
                     else:
                         break
                 else:
