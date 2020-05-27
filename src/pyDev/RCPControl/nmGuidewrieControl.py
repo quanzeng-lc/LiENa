@@ -137,7 +137,6 @@ class nmGuidewireControl(QObject):
         self.inRetractStatus = True
         # self.context.clear_guidewire_message()
         self.needToRetract = False
-
         self.number_of_cycles -= 1
         if self.number_of_cycles > 0:
             print("number_of_cycles", self.number_of_cycles)
