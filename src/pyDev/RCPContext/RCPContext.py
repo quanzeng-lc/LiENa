@@ -115,7 +115,7 @@ class RCPContext(QObject):
                         self.nonProvedControlMessageArrived.emit()
                     elif int(body[0]) == 2:
 
-                        #print("message",int(body[0]), int(body[0]), int(body[1]), int(body[2]), int(body[3]), int(body[4]), int(body[5]), int(body[6]), int(body[7]), int(body[8]), int(body[9]))
+                        # print("message",int(body[0]), int(body[0]), int(body[1]), int(body[2]), int(body[3]), int(body[4]), int(body[5]), int(body[6]), int(body[7]), int(body[8]), int(body[9]))
 
                         gwts = 0
                         if int(body[2]) == 0:
@@ -140,10 +140,10 @@ class RCPContext(QObject):
                         elif int(body[13]) == 1:
                           chrs = 1 * (int(body[14]) * 256 + int(body[15]))
                           ci.set_catheter_translational_speed(chrs)
-                        #print ("parse_command:", gwts, gwrs, chrs)
+                        # print ("parse_command:", gwts, gwrs, chrs)
                         self.controlMessageArrived.emit(ci)
 
-                    #self.controlInstruction.append(ci)
+                    # self.controlInstruction.append(ci)
                 self.inputLock.release()
             time.sleep(0.05)
 

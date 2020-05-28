@@ -262,7 +262,7 @@ class AngioOrientalMotor(AdvanceMotor):
             return False
 
 
-"""
+
 motor1 = AngioOrientalMotor()
 start = time.time()
 motor1.set_expectedSpeed(5)
@@ -275,7 +275,7 @@ motor1.start_move()
 time.sleep(2)
 motor1.stop()
 print("time", time.time()-start)
-"""
+
 """
 motor1 = AngioOrientalMotor()
 start = time.time()
