@@ -5,7 +5,7 @@ import RPi.GPIO as GPIO
 import time
 import threading
 import random
-from EmergencySwitch import EmergencySwitch
+from RCPControl.EmergencySwitch import EmergencySwitch
 
 
 class InfraredReflectiveSensor(object):
