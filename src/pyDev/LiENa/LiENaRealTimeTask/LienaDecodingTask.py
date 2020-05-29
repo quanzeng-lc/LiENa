@@ -138,10 +138,9 @@ class LienaDecodingTask(QObject):
                 time.sleep(1)
                 continue
 
-            # send system status to incoming client
             if self.inputQueue.get_length() > 0:
                 datagram = self.inputQueue.get_latest_array()
-                self.decoder.get_meta_information(datagram)
+                self.decoder.analyse(datagram)
 
             time.sleep(self.rtPeriod)
 
