@@ -19,7 +19,6 @@ class nmGuidewireControl(QObject):
         super(nmGuidewireControl, self).__init__()
 
         self.needToRetract = False
-        self.inRetractStatus = True
         self.speedProgress = 30
         self.speedRetract = 2 * self.speedProgress
         self.speedRotate = 200
@@ -105,7 +104,6 @@ class nmGuidewireControl(QObject):
     def prepare_for_another_tour(self):
 
         self.guidewireProgressMotor.set_expectedSpeed(0)
-        self.inRetractStatus = False
         # fasten front gripper
         self.gripperFront.gripper_chuck_fasten()
         # self-tightening chunck
@@ -133,10 +131,10 @@ class nmGuidewireControl(QObject):
 
         self.gripperFront.gripper_chuck_loosen()
         self.gripperBack.gripper_chuck_loosen()
-        self.inRetractStatus = True
         # self.context.clear_guidewire_message()
+        # advance Home
+        self.push_guidewire_home()
         self.needToRetract = False
-        time.sleep(1)
         self.number_of_cycles -= 1
         if self.number_of_cycles > 0:
             while self.needToRetract or self.guidewireProgressHome:
@@ -159,6 +157,9 @@ class nmGuidewireControl(QObject):
         rf = self.rotationalForceSensor.get_value()
         tf = self.translationalForceSensor.get_value()
         return tf, rf
+
+    def get_guidewire_control_status(self):
+
 
     def force_quire(self):
         while True:
