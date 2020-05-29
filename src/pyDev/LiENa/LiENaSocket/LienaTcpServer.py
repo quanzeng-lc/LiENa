@@ -13,7 +13,7 @@ class LienaTcpServer(QObject):
         super(LienaTcpServer, self).__init__()
         self.globalParameter = global_parameter
 
-        self.port = 10703
+        self.port = 10704
         self.userNum = 0
         self.server_socket = None
         self.flag = True
