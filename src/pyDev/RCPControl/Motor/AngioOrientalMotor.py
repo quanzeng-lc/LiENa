@@ -4,8 +4,8 @@
 import RPi.GPIO as GPIO
 import time
 import threading
-#from pyDev.RCPControl.Motor.AdvanceMotor import AdvanceMotor
-from AdvanceMotor import AdvanceMotor
+from pyDev.RCPControl.Motor.AdvanceMotor import AdvanceMotor
+#from AdvanceMotor import AdvanceMotor
 
 
 # max velocity 10 mm/s
