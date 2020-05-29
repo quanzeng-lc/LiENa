@@ -1,5 +1,5 @@
 from PyQt5.QtCore import QObject, pyqtSignal
-from Motor.AngioOrientalMotor import AngioOrientalMotor
+from RCPControl.Motor.AngioOrientalMotor import AngioOrientalMotor
 
 
 class nmContrastMediaControl(QObject):
