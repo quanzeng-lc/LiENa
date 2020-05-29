@@ -117,7 +117,7 @@ class nmEndovascularRobot(QObject):
             self.enable()
             if self.decision_making() is not 1:
                 return
-
+            # if self.guidewireControl.get_guidewire_control_status():
             self.catheterControl.set_translational_speed(msg.get_catheter_translational_speed() / 25.0)
             self.catheterControl.start_move()
 
