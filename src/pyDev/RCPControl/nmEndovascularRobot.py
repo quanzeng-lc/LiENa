@@ -8,11 +8,11 @@ from enum import Enum
 from PyQt5.QtCore import QObject, pyqtSignal
 import serial.tools.list_ports
 sys.path.append("../")
-from RCPContext.RCPContext import RCPContext
-from nmGuidewireControl import nmGuidewireControl
-from nmCatheterControl import nmCatheterControl
-from nmContrastMediaControl import nmContrastMediaControl
-from EmergencySwitch import EmergencySwitch
+from RCPControl.RCPContext.RCPContext import RCPContext
+from RCPControl.nmGuidewireControl import nmGuidewireControl
+from RCPCOntrol.nmCatheterControl import nmCatheterControl
+from RCPControl.nmContrastMediaControl import nmContrastMediaControl
+from RCPControl.EmergencySwitch import EmergencySwitch
 from RCPContext.LienaControlInstruction import LienaControlInstruction
 # from RCPControl.GlobalParameterType import GlobalParameterType
 
