@@ -137,7 +137,6 @@ class LienaDecodingTask(QObject):
             if self.stand_by:
                 time.sleep(1)
                 continue
-
             if self.inputQueue.get_length() > 0:
                 datagram = self.inputQueue.get_latest_array()
                 self.decoder.analyse(datagram)
