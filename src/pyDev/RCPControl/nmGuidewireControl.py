@@ -105,7 +105,7 @@ class nmGuidewireControl(QObject):
         self.guidewireProgressMotor.set_expectedSpeed(0)
         # fasten front gripper
         self.gripperFront.gripper_chuck_fasten()
-        # self-tightening chunck
+        # self_tightening chunck
         self.gripperBack.gripper_chuck_fasten()
         time.sleep(1)
 
