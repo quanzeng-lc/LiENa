@@ -9,11 +9,11 @@ from PyQt5.QtCore import QObject, pyqtSignal
 import serial.tools.list_ports
 sys.path.append("../")
 from RCPContext.RCPContext import RCPContext
-from pyDev.RCPControl.nmGuidewireControl import nmGuidewireControl
-from pyDev.RCPControl.nmCatheterControl import nmCatheterControl
-from pyDev.RCPControl.nmContrastMediaControl import nmContrastMediaControl
-from pyDev.RCPControl.EmergencySwitch import EmergencySwitch
-from pyDev.RCPContext.LienaControlInstruction import LienaControlInstruction
+from RCPControl.nmGuidewireControl import nmGuidewireControl
+from RCPControl.nmCatheterControl import nmCatheterControl
+from RCPControl.nmContrastMediaControl import nmContrastMediaControl
+from RCPControl.EmergencySwitch import EmergencySwitch
+from RCPContext.LienaControlInstruction import LienaControlInstruction
 # from RCPControl.GlobalParameterType import GlobalParameterType
 
 FORCEFEEDBACK = 6
