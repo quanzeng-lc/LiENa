@@ -8,7 +8,7 @@ from enum import Enum
 from PyQt5.QtCore import QObject, pyqtSignal
 import serial.tools.list_ports
 from RCPContext.RCPContext import RCPContext
-from nmGuidewireControl import nmGuidewireControl
+from RCPControl.nmGuidewireControl import nmGuidewireControl
 from RCPControl.nmCatheterControl import nmCatheterControl
 from RCPControl.nmContrastMediaControl import nmContrastMediaControl
 from RCPControl.EmergencySwitch import EmergencySwitch
