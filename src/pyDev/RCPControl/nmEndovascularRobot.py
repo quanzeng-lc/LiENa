@@ -120,7 +120,7 @@ class nmEndovascularRobot(QObject):
             self.catheterControl.start_move()
 
             if not self.guidewireControl.guidewire_is_busy():
-                # print("reaction")
+                print("reaction", msg.get_guidewire_translational_speed())
                 self.guidewireControl.set_both(msg.get_guidewire_translational_speed() / 40.0, msg.get_guidewire_rotational_speed() / 40.0)
                 self.guidewireControl.start_move()
 
