@@ -159,7 +159,7 @@ class nmGuidewireControl(QObject):
         return tf, rf
 
     def get_guidewire_control_status(self):
-
+        pass
 
     def force_quire(self):
         while True:
