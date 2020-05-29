@@ -8,7 +8,7 @@ from enum import Enum
 from PyQt5.QtCore import QObject, pyqtSignal
 import serial.tools.list_ports
 sys.path.append("../")
-from RCPControl.RCPContext.RCPContext import RCPContext
+from RCPContext.RCPContext import RCPContext
 from RCPControl.nmGuidewireControl import nmGuidewireControl
 from RCPCOntrol.nmCatheterControl import nmCatheterControl
 from RCPControl.nmContrastMediaControl import nmContrastMediaControl
