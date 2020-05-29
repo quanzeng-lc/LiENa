@@ -1,6 +1,6 @@
 from PyQt5.QtCore import QObject, pyqtSignal
-from Motor.AdvanceOrientalMotor import AdvanceOrientalMotor
-from Motor.RotateOrientalMotor import RotateOrientalMotor
+from RCPControl.Motor.AdvanceOrientalMotor import AdvanceOrientalMotor
+from RCPControl.Motor.RotateOrientalMotor import RotateOrientalMotor
 from Gripper import Gripper
 from ForceSensor import ForceSensor
 from InfraredReflectiveSensor import InfraredReflectiveSensor
