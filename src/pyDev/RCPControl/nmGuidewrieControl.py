@@ -1,5 +1,4 @@
 from PyQt5.QtCore import QObject, pyqtSignal
-
 from Motor.AdvanceOrientalMotor import AdvanceOrientalMotor
 from Motor.RotateOrientalMotor import RotateOrientalMotor
 from Gripper import Gripper
