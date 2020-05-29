@@ -7,7 +7,7 @@ sys.path.append("../")
 import RPi.GPIO as GPIO
 import time
 import threading
-from Motor.AdvanceMotor import AdvanceMotor
+from AdvanceMotor import AdvanceMotor
 
 
 # max velocity 10 mm/s
