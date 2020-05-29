@@ -196,8 +196,6 @@ class nmGuidewireControl(QObject):
         self.push_guidewire_advance()
 
 
-"""
 import sys
 guidewireControl = nmGuidewireControl()
 guidewireControl.multitime_push_guidewire()
-"""
