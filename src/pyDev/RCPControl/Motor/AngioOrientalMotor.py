@@ -4,7 +4,7 @@
 import RPi.GPIO as GPIO
 import time
 import threading
-from pyDev.RCPControl.Motor.AdvanceMotor import AdvanceMotor
+from RCPControl.Motor.AdvanceMotor import AdvanceMotor
 #from AdvanceMotor import AdvanceMotor
 
 

@@ -5,7 +5,7 @@ import RPi.GPIO as GPIO
 import time
 import threading
 import multiprocessing as mp
-from AdvanceMotor import AdvanceMotor
+from RCPControl.Motor.AdvanceMotor import AdvanceMotor
 #from pyDev.RCPContext.RCPContext import RCPContext
 
 
