@@ -5,7 +5,6 @@ import threading
 import time
 from threading import Lock
 import csv
-
 from LiENa.LiENaBasic.lienaDefinition import *
 from LiENa.LiENaStructure.LiENaMessage.LienaCustomizedMessage import LienaCustomizedMessage
 from RCPContext.LienaControlInstruction import LienaControlInstruction
