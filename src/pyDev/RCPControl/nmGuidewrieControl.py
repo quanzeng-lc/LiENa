@@ -135,11 +135,11 @@ class nmGuidewireControl(QObject):
         # advance Home
         self.push_guidewire_home()
         self.needToRetract = False
-        self.number_of_cycles -= 1
-        if self.number_of_cycles > 0:
-            while self.needToRetract or self.guidewireProgressHome:
-                time.sleep(0.5)
-            self.push_guidewire_advance()
+        # self.number_of_cycles -= 1
+        # if self.number_of_cycles > 0:
+        #     while self.needToRetract or self.guidewireProgressHome:
+        #         time.sleep(0.5)
+        #     self.push_guidewire_advance()
 
     def set_rotational_speed(self, rotational_speed):
         self.guidewireRotateMotor.set_expectedSpeed(rotational_speed)
@@ -158,8 +158,8 @@ class nmGuidewireControl(QObject):
         tf = self.translationalForceSensor.get_value()
         return tf, rf
 
-    def get_guidewire_control_status(self):
-        pass
+    def guidewire_is_busy(self):
+        return self.needToRetract
 
     def force_quire(self):
         while True:
@@ -195,7 +195,8 @@ class nmGuidewireControl(QObject):
         self.define_number_of_cycles()
         self.push_guidewire_advance()
 
-
+"""
 import sys
 guidewireControl = nmGuidewireControl()
 guidewireControl.multitime_push_guidewire()
+"""

@@ -117,12 +117,12 @@ class nmEndovascularRobot(QObject):
             self.enable()
             if self.decision_making() is not 1:
                 return
-            # if self.guidewireControl.get_guidewire_control_status():
             self.catheterControl.set_translational_speed(msg.get_catheter_translational_speed() / 25.0)
             self.catheterControl.start_move()
 
-            self.guidewireControl.set_both(msg.get_guidewire_translational_speed() / 40.0, msg.get_guidewire_rotational_speed() / 40.0)
-            self.guidewireControl.start_move()
+            if not self.guidewireControl.guidewire_is_busy():
+                self.guidewireControl.set_both(msg.get_guidewire_translational_speed() / 40.0, msg.get_guidewire_rotational_speed() / 40.0)
+                self.guidewireControl.start_move()
 
             self.contrastMediaControl.execute(msg.get_speed(), msg.get_volume())
             self.contrastMediaControl.start_move()
