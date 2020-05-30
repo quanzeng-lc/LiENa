@@ -12,7 +12,7 @@ import csv
 
 class nmGuidewireControl(QObject):
 
-    #controlMessageArrived = pyqtSignal()
+    # controlMessageArrived = pyqtSignal()
 
     def __init__(self):
         super(nmGuidewireControl, self).__init__()
@@ -26,6 +26,7 @@ class nmGuidewireControl(QObject):
         self.number_of_cycles = 0
         self.guidewireProgressHome = False
         self.global_state = 0
+        self.guidewire_status = 0
 
         self.guidewireProgressMotor = AdvanceOrientalMotor()
         self.guidewireRotateMotor = RotateOrientalMotor()
@@ -101,7 +102,7 @@ class nmGuidewireControl(QObject):
         # time.sleep(4)
 
     def prepare_for_another_tour(self):
-
+        self.guidewire_status = 2
         self.guidewireProgressMotor.set_expectedSpeed(0)
         # fasten front gripper
         self.gripperFront.gripper_chuck_fasten()
@@ -134,6 +135,7 @@ class nmGuidewireControl(QObject):
         # advance Home
         self.push_guidewire_home()
         self.needToRetract = False
+        self.guidewire_status = 0
         # self.number_of_cycles -= 1
         # if self.number_of_cycles > 0:
         #     while self.needToRetract or self.guidewireProgressHome:
@@ -151,14 +153,15 @@ class nmGuidewireControl(QObject):
             return
         self.guidewireProgressMotor.set_expectedSpeed(translation_speed)
         self.guidewireRotateMotor.set_expectedSpeed(rotational_speed)
+        self.guidewire_status = 1
 
     def get_haptic_information(self):
         rf = self.rotationalForceSensor.get_value()
         tf = self.translationalForceSensor.get_value()
         return tf, rf
 
-    def guidewire_is_busy(self):
-        return self.needToRetract
+    def get_guidewire_status(self):
+        return self.guidewire_status
 
     def force_quire(self):
         while True:

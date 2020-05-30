@@ -6,6 +6,7 @@ class nmContrastMediaControl(QObject):
     def __init__(self):
         super(nmContrastMediaControl, self).__init__()
         self.angioMotor = AngioOrientalMotor()
+        self.angio_status = 0
 
     def open(self):
         self.angioMotor.open_device()
@@ -21,6 +22,7 @@ class nmContrastMediaControl(QObject):
 
     def set_translational_speed(self, speed):
         self.angioMotor.set_expectedSpeed(speed)
+        self.angio_status = 1
 
     def set_mode(self, mode):
         self.angioMotor.set_mode(mode)

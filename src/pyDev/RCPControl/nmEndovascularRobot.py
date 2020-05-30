@@ -36,6 +36,8 @@ class nmEndovascularRobot(QObject):
         self.flag = True
         self.global_state = 0
 
+        self.system_status = 0
+
         # ------
         self.number_of_cycles = 0
         self.guidewireProgressHome = False
@@ -119,11 +121,11 @@ class nmEndovascularRobot(QObject):
             self.catheterControl.set_translational_speed(msg.get_catheter_translational_speed() / 25.0)
             self.catheterControl.start_move()
 
-            if not self.guidewireControl.guidewire_is_busy():
-                print("reaction", msg.get_guidewire_translational_speed())
-                self.guidewireControl.set_both(msg.get_guidewire_translational_speed() / 40.0, msg.get_guidewire_rotational_speed() / 40.0)
+            if self.guidewireControl.get_status() != 2:
+                # print("reaction", msg.get_guidewire_translational_speed())
+                self.guidewireControl.set_both(msg.get_guidewire_translational_speed() / 40.0,
+                                               msg.get_guidewire_rotational_speed() / 40.0)
                 self.guidewireControl.start_move()
-
             #self.contrastMediaControl.execute(msg.get_speed(), msg.get_volume())
             #self.contrastMediaControl.start_move()
 
@@ -132,11 +134,36 @@ class nmEndovascularRobot(QObject):
     def feedback(self):
         while True:
             tf, rf = self.guidewireControl.get_haptic_information()
-            self.context.real_time_feedback(0, 0, 0, 0, tf, rf, 0, 0, 0, 0, 0, 0)
+            self.define_system_status()
+            self.context.real_time_feedback(self.system_status, 0, 0, 0, 0, tf, rf, 0, 0, 0, 0, 0, 0)
             time.sleep(0.1)
 
     def set_global_state(self, state):
         self.global_state = state
+
+    def define_system_status(self):
+        if self.guidewireControl.get_status() == 0:
+            self.system_status = self.system_status | 0x0000
+        elif self.guidewireControl.get_status() == 1:
+            self.system_status = self.system_status | 0x0010
+        elif self.guidewireControl.get_status() == 2:
+            self.system_status = self.system_status | 0x0020
+        elif self.guidewireControl.get_status() == 3:
+            self.system_status = self.system_status | 0x0030
+        elif self.guidewireControl.get_status() == 4:
+            self.system_status = self.system_status | 0x0040
+        if self.catheterControl.get_status() == 0:
+            self.system_status = self.system_status | 0x0000
+        elif self.catheterControl.get_status() == 1:
+            self.system_status = self.system_status | 0x0004
+        elif self.catheterControl.get_status() == 2:
+            self.system_status = self.system_status | 0x0008
+        if self.contrastMediaControl.get_status() == 0:
+            self.system_status = self.system_status | 0x0000
+        elif self.contrastMediaControl.get_status() == 1:
+            self.system_status = self.system_status | 0x0001
+        elif self.contrastMediaControl.get_status() == 2:
+            self.system_status = self.system_status | 0x0002
 
     def decision_making(self):
         ret = 1

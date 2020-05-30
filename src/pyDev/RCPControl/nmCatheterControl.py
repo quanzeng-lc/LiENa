@@ -12,6 +12,7 @@ class nmCatheterControl(QObject):
         super(nmCatheterControl, self).__init__()
         # micro-catheter control
         self.catheterMotor = CatheterOrientalMotor()
+        self.catheter_status = 0
         self.enable()
 
     def open(self):
@@ -28,6 +29,7 @@ class nmCatheterControl(QObject):
 
     def set_translational_speed(self, speed):
         self.catheterMotor.set_expectedSpeed(speed)
+        self.catheter_status = 1
 
     def set_mode(self, mode):
         self.catheterMotor.set_mode(mode)

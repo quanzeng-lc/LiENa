@@ -149,8 +149,7 @@ class RCPContext(QObject):
     def get_current_time_in_microsecond(self):
         return round((time.time() % 86400) * 1000000)
 
-    def real_time_feedback(self, gtv=0, grv=0, gtd=0, grd=0, gtf=0, grf=0, ctv=0, ctd=0, ctf=0, lvr=0, lis=0, ltf=0):
-
+    def real_time_feedback(self, sys_status=0, gtv=0, grv=0, gtd=0, grd=0, gtf=0, grf=0, ctv=0, ctd=0, ctf=0, lvr=0, lis=0, ltf=0):
         msg = LienaCustomizedMessage(NORMAN_ENDOVASCULAR_ROBOTIC_FEEDBACK_INFORMATION,
                                      SIAT_COCKPIT_VERSION_1,
                                      NORMAN_ENDOVASCULAR_ROBOTIC_VERSION_1,
@@ -158,6 +157,7 @@ class RCPContext(QObject):
                                      36)
 
         msg.define_body_length(1024-HEAD_SIZE)
+        msg.append_uint8(sys_status)
         msg.append_uint8(positive_or_negtive(gtv))
         msg.append_uint16(abs(gtv))
         msg.append_uint8(positive_or_negtive(grv))
