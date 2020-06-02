@@ -1,4 +1,5 @@
 from PyQt5.QtCore import QObject, pyqtSignal
+import time
 #from RCPControl.Motor.AngioOrientalMotor import AngioOrientalMotor
 from Motor.AngioOrientalMotor import AngioOrientalMotor
 
