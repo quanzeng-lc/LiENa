@@ -160,7 +160,7 @@ class nmGuidewireControl(QObject):
         tf = self.translationalForceSensor.get_value()
         return tf, rf
 
-    def get_guidewire_status(self):
+    def get_status(self):
         return self.guidewire_status
 
     def force_quire(self):

@@ -41,6 +41,8 @@ class nmContrastMediaControl(QObject):
     def set_translation_position_speed(self, speed):
         self.angioMotor.set_pos_mode_expectedSpeed(speed)
 
+    def get_status(self):
+        return self.angio_status
 
 # angio_control = nmContrastMediaControl()
 # angio_control.set_translational_speed(-5)
