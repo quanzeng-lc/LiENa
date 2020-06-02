@@ -252,7 +252,7 @@ class AngioOrientalMotor(object):
             self.vel_move_task = threading.Thread(None, self.continuous_move)
         else:
             self.pos_start_flag = False
-            self.sleep(0.01)
+            time.sleep(0.01)
             self.pos_move_task = threading.Thread(None, self.position_move)
 
     def is_moving_flag(self):
