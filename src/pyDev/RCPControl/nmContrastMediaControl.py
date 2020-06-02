@@ -43,7 +43,10 @@ class nmContrastMediaControl(QObject):
 
 
 angio_control = nmContrastMediaControl()
-angio_control.set_translational_speed(10)
+angio_control.set_translational_speed(-3)
+angio_control.start_move()
+time.sleep(3)
+angio_control.set_translational_speed(3)
 angio_control.start_move()
 time.sleep(3)
 angio_control.set_translational_speed(0)
