@@ -163,6 +163,9 @@ class nmGuidewireControl(QObject):
     def get_status(self):
         return self.guidewire_status
 
+    def translational_go_home(self):
+        self.guidewireProgressMotor.go_home()
+
     def force_quire(self):
         while True:
             data = self.get_haptic_information()

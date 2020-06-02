@@ -22,6 +22,11 @@ class AdvanceOrientalMotor(AdvanceMotor):
         GPIO.setup(self.pushIO, GPIO.OUT, initial=GPIO.HIGH)
         GPIO.setup(self.pullIO, GPIO.OUT, initial=GPIO.HIGH)
 
+        self.go_home_io = 11
+        self.home_status_io = 12
+        GPIO.setup(self.go_home_io, GPIO.OUT, initial=GPIO.HIGH)
+        GPIO.setup(self.home_status_io, GPIO.IN)
+
         # store the global parameter
         self.context = None
         # parameter type id
@@ -41,6 +46,9 @@ class AdvanceOrientalMotor(AdvanceMotor):
         # the distance for every circle
         self.dis_circle = 5  # mm
         self.deg_pulse = 0.36  # degree for every pulse
+
+        # home flag
+        self.home_busy = False
 
         # velocity mode
         self.expectedSpeed = 0
@@ -254,6 +262,21 @@ class AdvanceOrientalMotor(AdvanceMotor):
             self.pos_move_task = mp.Process(target=self.position_move, args=(
             self.mv_mode, self.pos_mode_expected_flag, self.distance_pulse, self.pos_start_flag, self.is_moving,
             self.pos_mode_interval))
+
+    def go_home_start(self):
+        GPIO.output(self.go_home_io, GPIO.LOW)
+
+    def get_home_status(self):
+        return GPIO.input(self.home_status_io)
+
+    def go_home(self):
+        self.home_busy = True
+        self.go_home_start()
+        while True:
+            time.sleep(0.5)
+            if self.get_home_status():
+                break
+        self.home_busy = False
 
     def is_moving_flag(self):
         if self.is_moving.value:
