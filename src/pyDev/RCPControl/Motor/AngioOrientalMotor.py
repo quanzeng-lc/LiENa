@@ -4,12 +4,12 @@
 import RPi.GPIO as GPIO
 import time
 import threading
-from RCPControl.Motor.AdvanceMotor import AdvanceMotor
+#from RCPControl.Motor.AdvanceMotor import AdvanceMotor
 #from AdvanceMotor import AdvanceMotor
 
 
 # max velocity 10 mm/s
-class AngioOrientalMotor(AdvanceMotor):
+class AngioOrientalMotor(object):
     def __init__(self):
 
         self.orientalMotorPushLock = threading.Lock()
