@@ -41,7 +41,7 @@ class nmContrastMediaControl(QObject):
         self.angioMotor.set_pos_mode_expectedSpeed(speed)
 
 
-angio_control = AngioOrientalMotor()
+angio_control = nmContrastMediaControl()
 angio_control.set_translational_speed(10)
 angio_control.start_move()
 time.sleep(3)
