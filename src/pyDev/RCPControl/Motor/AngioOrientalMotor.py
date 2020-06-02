@@ -236,13 +236,12 @@ class AngioOrientalMotor(object):
     def start_move(self):
         if self.is_moving:
             return
+        time.sleep(0.5)
         if self.mv_mode:
             self.vel_start_flag = True
-            time.sleep(0.01)
             self.vel_move_task.start()
         else:
             self.pos_start_flag = True
-            time.sleep(0.01)
             self.pos_move_task.start()
 
     def stop(self):
