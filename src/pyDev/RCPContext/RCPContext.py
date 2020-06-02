@@ -132,14 +132,19 @@ class RCPContext(QObject):
                           gwrs = 1 * (int(body[8]) * 256 + int(body[9]))
                           ci.set_guidewire_rotational_speed(gwrs)
 
-                        chrs = 0
+                        chars = 0
                         if int(body[13]) == 0:
-                          chrs = -1 * (int(body[14]) * 256 + int(body[15]))
-                          ci.set_catheter_translational_speed(chrs)
+                          chars = -1 * (int(body[14]) * 256 + int(body[15]))
+                          ci.set_catheter_translational_speed(chars)
                         elif int(body[13]) == 1:
-                          chrs = 1 * (int(body[14]) * 256 + int(body[15]))
-                          ci.set_catheter_translational_speed(chrs)
+                          chars = 1 * (int(body[14]) * 256 + int(body[15]))
+                          ci.set_catheter_translational_speed(chars)
                         # print ("parse_command:", gwts, gwrs, chrs)
+
+                        chars = int(body[20]) * 256 + int(body[21])
+                        chars1 = int(body[22]) * 256 + int(body[23])
+                        ci.set_contrast_media_speed(chars)
+                        ci.set_contrast_media_volume(chars1)
                         self.controlMessageArrived.emit(ci)
 
                     # self.controlInstruction.append(ci)

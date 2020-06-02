@@ -44,6 +44,11 @@ class nmContrastMediaControl(QObject):
     def get_status(self):
         return self.angio_status
 
+    def execute(self, speed, volume):
+        self.set_translation_position_speed(speed)
+        self.set_translation_position(volume)
+
+
 # angio_control = nmContrastMediaControl()
 # angio_control.set_translational_speed(-5)
 # angio_control.start_move()

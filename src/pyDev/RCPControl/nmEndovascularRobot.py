@@ -127,8 +127,11 @@ class nmEndovascularRobot(QObject):
                 self.guidewireControl.set_both(msg.get_guidewire_translational_speed() / 40.0,
                                                msg.get_guidewire_rotational_speed() / 40.0)
                 self.guidewireControl.start_move()
-            # self.contrastMediaControl.execute(msg.get_speed(), msg.get_volume())
-            # self.contrastMediaControl.start_move()
+
+            print("contrastMediaControl:", msg.get_contrast_media_speed()/100.0, msg.get_contrast_media_volume()/100.0)
+            self.contrastMediaControl.execute(msg.get_contrast_media_speed()/100.0, msg.get_contrast_media_volume()/100.0)
+            self.contrastMediaControl.set_mode(0)
+            self.contrastMediaControl.start_move()
 
     # ----------------------------------------------------------------------------------------------------
     # acquire feedback information
