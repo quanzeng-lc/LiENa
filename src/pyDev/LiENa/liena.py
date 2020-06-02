@@ -40,7 +40,7 @@ class Liena(QObject):
         # signals/slots connexion
         self.distributedSystem.needToRestartServer.connect(self.restart_tcp_server)
         self.tcpServer.clientArrived.connect(self.create_reception_channel_by_address)
-        # self.distributedSystem.generateNewMessagesequence.con
+        # self.distributedSystem.generate New Message sequence
 
         self.distributedSystem.generateNewMessageSequence[int].connect(self.generate_new_msg_sequence_by)
 
@@ -102,12 +102,10 @@ class Liena(QObject):
     # [5] ---------------------------------------------------------------------------------------------------------------------------
     def create_reception_channel_by_address(self):
         incoming_socket = self.tcpServer.get_latest_socket()
-
         if self.distributedSystem.check_module_by_addr(incoming_socket[1]):
             self.distributedSystem.generate_reception_channel_by_addr(incoming_socket[1], incoming_socket[0])
         else:
             self.distributedSystem.create_distributed_module_with_reception_channel(incoming_socket[0])
-
 
     # [6] ---------------------------------------------------------------------------------------------------------------------------
     def terminate(self):

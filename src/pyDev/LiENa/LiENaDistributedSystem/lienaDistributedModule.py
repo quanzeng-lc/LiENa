@@ -304,7 +304,6 @@ class LienaDistributedModule(QObject):
 
     def generate_reception_channel(self, socket_reception):
         self.socket_for_reception = socket_reception
-
         if self.motivate:
             if self.open_channel_procedure == 1:
                 print("LienaDistributedModule | generate reception channel while motivate procedure")
@@ -356,7 +355,7 @@ class LienaDistributedModule(QObject):
 
             tcp_client = LienaTcpClient(addr, port)
             ret = tcp_client.connectera()
-            print ("generate_transmission_channel", ret)
+            print("generate_transmission_channel", ret)
             if ret == 0:
                 self.output_queue = LienaOutputQueue()
 
