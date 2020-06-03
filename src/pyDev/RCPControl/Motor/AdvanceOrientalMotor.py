@@ -22,9 +22,9 @@ class AdvanceOrientalMotor(AdvanceMotor):
         GPIO.setup(self.pushIO, GPIO.OUT, initial=GPIO.HIGH)
         GPIO.setup(self.pullIO, GPIO.OUT, initial=GPIO.HIGH)
 
-        self.go_home_io = 11
-        self.home_status_io = 12
-        GPIO.setup(self.go_home_io, GPIO.OUT, initial=GPIO.HIGH)
+        self.go_home_io = 22
+        self.home_status_io = 10
+        GPIO.setup(self.go_home_io, GPIO.OUT, initial=GPIO.LOW)
         GPIO.setup(self.home_status_io, GPIO.IN)
 
         # store the global parameter
@@ -264,6 +264,9 @@ class AdvanceOrientalMotor(AdvanceMotor):
             self.pos_mode_interval))
 
     def go_home_start(self):
+        GPIO.output(self.go_home_io, GPIO.HIGH)
+
+    def go_home_stop(self):
         GPIO.output(self.go_home_io, GPIO.LOW)
 
     def get_home_status(self):
@@ -308,3 +311,10 @@ motor1.set_position(20)
 motor1.set_pos_mode_expectedSpeed(3)
 motor1.start_move()
 """
+
+motor1 = AdvanceOrientalMotor()
+motor1.set_expectedSpeed(-2)
+start = time.time()
+motor1.start_move()
+time.sleep(5)
+motor1.go_home_start()
