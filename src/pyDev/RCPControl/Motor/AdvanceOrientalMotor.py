@@ -5,8 +5,8 @@ import RPi.GPIO as GPIO
 import time
 import threading
 import multiprocessing as mp
-from RCPControl.Motor.AdvanceMotor import AdvanceMotor
-#from pyDev.RCPContext.RCPContext import RCPContext
+#from RCPControl.Motor.AdvanceMotor import AdvanceMotor
+from pyDev.RCPContext.RCPContext import RCPContext
 
 
 # max velocity 10 mm/s
