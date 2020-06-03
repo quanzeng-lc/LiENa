@@ -310,7 +310,6 @@ motor1.start_move()
 """
 
 motor1 = AdvanceOrientalMotor()
-motor1.go_home_stop()
 motor1.set_expectedSpeed(5)
 start = time.time()
 motor1.start_move()
