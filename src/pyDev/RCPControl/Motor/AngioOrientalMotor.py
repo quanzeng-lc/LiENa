@@ -21,6 +21,11 @@ class AngioOrientalMotor(object):
         GPIO.setup(self.pushIO, GPIO.OUT, initial=GPIO.HIGH)
         GPIO.setup(self.pullIO, GPIO.OUT, initial=GPIO.HIGH)
 
+        self.go_home_io = 22
+        self.home_status_io = 10
+        GPIO.setup(self.go_home_io, GPIO.OUT, initial=GPIO.LOW)
+        GPIO.setup(self.home_status_io, GPIO.IN)
+
         self.context = None
         # parametertype id
         self.hapticFeedbackID = 0
@@ -37,6 +42,10 @@ class AngioOrientalMotor(object):
         # the distance for every circle
         self.dis_circle = 2  # mm
         self.deg_pulse = 0.36  # degree for every pulse
+
+        # home flag
+        self.home_busy = False
+
         # Syringe diameter
         self.syringe_diameter = 41.2  # mm
         self.pi_efficient = 3.14
@@ -254,6 +263,23 @@ class AngioOrientalMotor(object):
             self.pos_start_flag = False
             time.sleep(0.01)
             self.pos_move_task = threading.Thread(None, self.position_move)
+
+    def go_home_start(self):
+        GPIO.output(self.go_home_io, GPIO.HIGH)
+        time.sleep(0.5)
+        GPIO.output(self.go_home_io, GPIO.LOW)
+
+    def get_home_status(self):
+        return GPIO.input(self.home_status_io)
+
+    def go_home(self):
+        self.home_busy = True
+        self.go_home_start()
+        while True:
+            time.sleep(0.5)
+            if self.get_home_status():
+                break
+        self.home_busy = False
 
     def is_moving_flag(self):
         if self.is_moving:

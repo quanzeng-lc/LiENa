@@ -23,6 +23,11 @@ class CatheterOrientalMotor(AdvanceMotor):
         GPIO.setup(self.pushIO, GPIO.OUT, initial=GPIO.HIGH)
         GPIO.setup(self.pullIO, GPIO.OUT, initial=GPIO.HIGH)
 
+        self.go_home_io = 22
+        self.home_status_io = 10
+        GPIO.setup(self.go_home_io, GPIO.OUT, initial=GPIO.LOW)
+        GPIO.setup(self.home_status_io, GPIO.IN)
+
         # parametertype id
         self.hapticFeedbackID = 0
 
@@ -41,6 +46,9 @@ class CatheterOrientalMotor(AdvanceMotor):
         self.roller_diameter = 26.5  # mm/s
         self.pi_efficient = 3.14
         self.deg_pulse = 0.36  # degree for one pulse
+
+        # home flag
+        self.home_busy = False
 
         # velocity mode
         self.expectedSpeed = 0  # mm/s
@@ -242,6 +250,23 @@ class CatheterOrientalMotor(AdvanceMotor):
             self.pos_start_flag = False
             time.sleep(0.01)
             self.pos_move_task = threading.Thread(None, self.continuous_move_position)
+
+    def go_home_start(self):
+        GPIO.output(self.go_home_io, GPIO.HIGH)
+        time.sleep(0.5)
+        GPIO.output(self.go_home_io, GPIO.LOW)
+
+    def get_home_status(self):
+        return GPIO.input(self.home_status_io)
+
+    def go_home(self):
+        self.home_busy = True
+        self.go_home_start()
+        while True:
+            time.sleep(0.5)
+            if self.get_home_status():
+                break
+        self.home_busy = False
 
     def is_moving_flag(self):
         if self.is_moving:
