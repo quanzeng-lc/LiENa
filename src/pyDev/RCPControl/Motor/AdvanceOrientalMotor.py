@@ -6,11 +6,10 @@ import time
 import threading
 import multiprocessing as mp
 #from RCPControl.Motor.AdvanceMotor import AdvanceMotor
-from pyDev.RCPContext.RCPContext import RCPContext
+from Motor.AdvanceMotor import AdvanceMotor
 
 
 # max velocity 10 mm/s
-
 class AdvanceOrientalMotor(AdvanceMotor):
     def __init__(self):
         self.orientalMotorPushLock = threading.Lock()
