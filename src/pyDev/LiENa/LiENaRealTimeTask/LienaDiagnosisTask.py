@@ -17,7 +17,7 @@ class LienaDiagnosisTask(QObject):
 
         self.connection_failed = False
 
-        self.period = 2
+        self.period = 3
         self.connexionStatus = 1
         self.heartBeatMessageCount = 0
 

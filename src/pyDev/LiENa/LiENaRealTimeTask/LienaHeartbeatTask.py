@@ -12,7 +12,7 @@ class LienaHearBeatTask:
         self.global_parameter = global_parameter
 
         self.outputMessageCache = None
-        self.rtPeriod = 1
+        self.rtPeriod = 2
         self.stand_by = False
 
         self.flag = None

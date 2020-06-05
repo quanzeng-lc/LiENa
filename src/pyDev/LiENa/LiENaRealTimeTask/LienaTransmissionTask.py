@@ -24,7 +24,7 @@ class LienaTransmissionTask:
         self.counter = 0
 
         self.stand_by = False
-        self.rtPeriod = 0.05
+        self.rtPeriod = 0.02
 
         self.transmissionTask = threading.Thread(None, self.execute_rt_task)
 

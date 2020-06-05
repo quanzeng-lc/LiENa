@@ -63,7 +63,7 @@ class LienaDecodingTask(QObject):
         self.decoder.customizedMessageArrived[LienaCustomizedMessage].connect(self.notify_control_instruction)
 
         self.rtFlag = True
-        self.rtPeriod = 0.05
+        self.rtPeriod = 0.02
         self.stand_by = False
         self.receptionTask = threading.Thread(None, self.decode)
 

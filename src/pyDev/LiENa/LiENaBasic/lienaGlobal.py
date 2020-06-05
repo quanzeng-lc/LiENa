@@ -3,7 +3,7 @@ import time
 
 class LienaGlobal:
     def __init__(self):
-        self.global_datagram_size = 1024
+        self.global_datagram_size = 128
         self.global_port = 10704
         self.global_clock_offset = 0
         self.localDeviceId = 0
