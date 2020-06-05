@@ -44,7 +44,6 @@ class LienaDecodingTask(QObject):
         self.localDeviceId = local_device_id
         self.targetDeviceId = target_device_id
 
-
         self.inputMsgQue = None
 
         self.decoder = LienaDecoder(motivate, local_device_id, target_device_id)
