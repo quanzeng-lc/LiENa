@@ -2,6 +2,7 @@
 import threading
 import time
 import socket
+from multiprocessing import Lock
 from LiENa.LiENaStructure.LiENaDatagram.LienaDatagram import LienaDatagram
 from LiENa.LiENaBasic.lienaDefinition import *
 
@@ -9,6 +10,7 @@ from LiENa.LiENaBasic.lienaDefinition import *
 class LienaReceptionTask:
     def __init__(self, index, global_parameter, _soc, _input_queue, target_device_id):
 
+        self.mutex = Lock()
         self.index = index
         self.global_parameter = global_parameter
         self.soc = _soc
@@ -88,9 +90,10 @@ class LienaReceptionTask:
                     else:
                         #print("ntp write t2:", int(datagram.get_body()[0]), self.global_parameter.get_current_time_in_microsecond())
                         datagram.write_value_in_eight_byte(53, self.global_parameter.get_current_time_in_microsecond())
+                self.mutex.acquire()
                 self.inputQueue.append(datagram)
                 self.counter += 1
-
+                self.mutex.release()
             time.sleep(self.rtPeriod)
 
     def is_ready(self):

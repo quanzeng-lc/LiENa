@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import threading
 import time
-
+from multiprocessing import Lock
 from PyQt5.QtCore import QObject, pyqtSignal
 from LiENa.LiENaStructure.LiENaDatagram.LienaDecoder import LienaDecoder
 from LiENa.LiENaStructure.LiENaMessage.LienaNetworkQualityMessage import LienaNetworkQualityMessage
@@ -40,6 +40,7 @@ class LienaDecodingTask(QObject):
     def __init__(self, input_queue, motivate, local_device_id, target_device_id):
         super(LienaDecodingTask, self).__init__()
         self.inputQueue = input_queue
+        self.mutex = Lock()
         self.motivate = motivate
         self.localDeviceId = local_device_id
         self.targetDeviceId = target_device_id
@@ -137,10 +138,11 @@ class LienaDecodingTask(QObject):
             if self.stand_by:
                 time.sleep(1)
                 continue
+            self.mutex.acquire()
             if self.inputQueue.get_length() > 0:
                 datagram = self.inputQueue.get_latest_array()
                 self.decoder.analyse(datagram)
-
+            self.mutex.release()
             time.sleep(self.rtPeriod)
 
     def set_period(self, rt_period):
