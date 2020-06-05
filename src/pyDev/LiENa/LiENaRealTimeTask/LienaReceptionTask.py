@@ -90,10 +90,8 @@ class LienaReceptionTask:
                     else:
                         #print("ntp write t2:", int(datagram.get_body()[0]), self.global_parameter.get_current_time_in_microsecond())
                         datagram.write_value_in_eight_byte(53, self.global_parameter.get_current_time_in_microsecond())
-                self.mutex.acquire()
                 self.inputQueue.append(datagram)
                 self.counter += 1
-                self.mutex.release()
             time.sleep(self.rtPeriod)
 
     def is_ready(self):
