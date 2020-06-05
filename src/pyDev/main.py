@@ -55,7 +55,7 @@ def main():
     communication_stack = Liena()
     communication_stack.set_local_device_id(NORMAN_ENDOVASCULAR_ROBOTIC_VERSION_1)
     communication_stack.launch()
-    communication_stack.open_session_request(SIAT_COCKPIT_VERSION_1, "192.168.25.112", 10704)
+    communication_stack.open_session_request(SIAT_COCKPIT_VERSION_1, "192.168.25.110", 10704)
     context = RCPContext(communication_stack.get_input_cache(), communication_stack.get_output_cache())
 
     endovascular_robot = nmEndovascularRobot(context)
