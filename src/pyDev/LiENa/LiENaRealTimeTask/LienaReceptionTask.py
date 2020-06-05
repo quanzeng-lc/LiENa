@@ -70,7 +70,7 @@ class LienaReceptionTask:
         while self.flag:
 
             if self.stand_by:
-                time.sleep(1)
+                time.sleep(0.5)
                 continue
             try:
                 byte_array = self.recvall(self.soc, self.global_parameter.get_global_datagram_size())
