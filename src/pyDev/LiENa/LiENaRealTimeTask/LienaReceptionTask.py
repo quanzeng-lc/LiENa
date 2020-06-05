@@ -30,7 +30,7 @@ class LienaReceptionTask:
         self.pos_count = 0
         self.fileSize = 1560 * 1440 * 2
         self.datagram_count = 0
-        self.rtPeriod = 0.02
+        self.rtPeriod = 0.05
 
         self.flag = True
         self.receptionTask = threading.Thread(None, self.reception)

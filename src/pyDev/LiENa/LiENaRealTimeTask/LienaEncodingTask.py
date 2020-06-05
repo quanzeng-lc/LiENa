@@ -25,7 +25,7 @@ class LienaEncodingTask:
         self.stand_by = False
 
         self.outputMessageCache = None
-        self.rtPeriod = 0.02
+        self.rtPeriod = 0.05
 
         self.flag = True
         self.encodingThread = threading.Thread(None, self.encode)
