@@ -10,7 +10,6 @@ from LiENa.LiENaBasic.lienaDefinition import *
 class LienaReceptionTask:
     def __init__(self, index, global_parameter, _soc, _input_queue, target_device_id):
 
-        self.mutex = Lock()
         self.index = index
         self.global_parameter = global_parameter
         self.soc = _soc
