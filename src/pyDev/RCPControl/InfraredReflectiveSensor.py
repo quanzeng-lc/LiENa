@@ -8,6 +8,7 @@ import random
 # from RCPControl.EmergencySwitch import EmergencySwitch
 from EmergencySwitch import EmergencySwitch
 
+
 class InfraredReflectiveSensor(object):
     def __init__(self):
         self.doutBack = 2
@@ -30,8 +31,7 @@ class InfraredReflectiveSensor(object):
         while True:
             back = GPIO.input(self.doutBack)
             front = GPIO.input(self.doutFront)
-            emSwitch = self.switch.read_current_state() 
-
+            emSwitch = self.switch.read_current_state()
             if emSwitch == 1:
                 #print 'stop', emSwitch
                 self.status = 4
@@ -51,13 +51,14 @@ class InfraredReflectiveSensor(object):
                     self.status = 0
             time.sleep(0.03)
 
-
     def read(self):
         cpt = 0
         while self.flag:
             status = self.read_current_state()
             print(status)
-       	    time.sleep(0.05)
+            time.sleep(0.05)
+
+
 """
 irs = InfraredReflectiveSensor()
 irs.read()

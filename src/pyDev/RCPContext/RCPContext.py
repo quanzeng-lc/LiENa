@@ -141,6 +141,10 @@ class RCPContext(QObject):
                           ci.set_catheter_translational_speed(chars)
                         # print ("parse_command:", gwts, gwrs, chrs)
 
+                        if int(body[19]) == 0:
+                            chars = -1 * (int(body[20]) * 256 + int(body[21]))
+                        elif int(body[19]) == 1:
+                            chars = 1 * (int(body[20]) * 256 + int(body[21]))
                         chars = int(body[20]) * 256 + int(body[21])
                         chars1 = int(body[22]) * 256 + int(body[23])
                         ci.set_contrast_media_speed(chars)
