@@ -38,7 +38,7 @@ LIENA_ERROR_PEER_CONNEXION_LOST = 3       # timed out
 #  LIENA static parameter
 #  -----------------------------------------------------------------------------------------------------------------------
 HEAD_SIZE = 28
-DEBUG = 0
+DEBUG = 1
 
 
 NORMAN_ENDOVASCULAR_ROBOTIC_CONTROL_INSTRUCTION = 16777215
