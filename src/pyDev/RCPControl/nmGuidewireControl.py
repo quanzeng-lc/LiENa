@@ -1,13 +1,19 @@
 from PyQt5.QtCore import QObject, pyqtSignal
-from RCPControl.Motor.AdvanceOrientalMotor import AdvanceOrientalMotor
-from RCPControl.Motor.RotateOrientalMotor import RotateOrientalMotor
-from RCPControl.Gripper import Gripper
-from RCPControl.ForceSensor import ForceSensor
-from RCPControl.InfraredReflectiveSensor import InfraredReflectiveSensor
-from RCPControl.SensingParameter import SensingParameter
+# from RCPControl.Motor.AdvanceOrientalMotor import AdvanceOrientalMotor
+# from RCPControl.Motor.RotateOrientalMotor import RotateOrientalMotor
+# from RCPControl.Gripper import Gripper
+# from RCPControl.ForceSensor import ForceSensor
+# from RCPControl.InfraredReflectiveSensor import InfraredReflectiveSensor
+# from RCPControl.SensingParameter import SensingParameter
 import time
 import threading
 import csv
+from Motor.AdvanceOrientalMotor import AdvanceOrientalMotor
+from Motor.RotateOrientalMotor import RotateOrientalMotor
+from Gripper import Gripper
+from ForceSensor import ForceSensor
+from InfraredReflectiveSensor import InfraredReflectiveSensor
+from SensingParameter import SensingParameter
 
 
 class nmGuidewireControl(QObject):
@@ -200,8 +206,7 @@ class nmGuidewireControl(QObject):
         self.define_number_of_cycles()
         self.push_guidewire_advance()
 
-"""
+
 import sys
 guidewireControl = nmGuidewireControl()
 guidewireControl.multitime_push_guidewire()
-"""
