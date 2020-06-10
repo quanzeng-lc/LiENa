@@ -165,7 +165,7 @@ class RCPContext(QObject):
                                      self.get_current_time_in_microsecond(),
                                      36)
 
-        msg.define_body_length(1024-HEAD_SIZE)
+        msg.define_body_length(128-HEAD_SIZE)
         msg.append_uint8(sys_status)
         msg.append_uint8(positive_or_negtive(gtv))
         msg.append_uint16(abs(gtv))
