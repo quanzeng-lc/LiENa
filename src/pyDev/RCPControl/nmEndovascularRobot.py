@@ -119,8 +119,9 @@ class nmEndovascularRobot(QObject):
             if self.decision_making() is not 1:
                 return
 
-            self.catheterControl.set_translational_speed(msg.get_catheter_translational_speed() / 25.0)
-            self.catheterControl.start_move()
+            if msg.get_catheter_translational_speed() > 100:
+                self.catheterControl.set_translational_speed(msg.get_catheter_translational_speed() / 25.0)
+                self.catheterControl.start_move()
 
             if self.guidewireControl.get_status() != 2:
                 print("reaction", msg.get_guidewire_translational_speed())
@@ -129,9 +130,10 @@ class nmEndovascularRobot(QObject):
                 self.guidewireControl.start_move()
 
             # print("contrastMediaControl:", msg.get_contrast_media_speed()/100.0, msg.get_contrast_media_volume()/100.0)
-            self.contrastMediaControl.set_mode(0)
-            self.contrastMediaControl.execute(msg.get_contrast_media_speed()/100.0, msg.get_contrast_media_volume()/100.0)
-            self.contrastMediaControl.start_move()
+            if msg.get_contrast_media_speed() > 100;
+                self.contrastMediaControl.set_mode(0)
+                self.contrastMediaControl.execute(msg.get_contrast_media_speed()/100.0, msg.get_contrast_media_volume()/100.0)
+                self.contrastMediaControl.start_move()
 
     # ----------------------------------------------------------------------------------------------------
     # acquire feedback information
