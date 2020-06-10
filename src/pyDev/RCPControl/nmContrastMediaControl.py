@@ -1,7 +1,7 @@
 from PyQt5.QtCore import QObject, pyqtSignal
 import time
-#from RCPControl.Motor.AngioOrientalMotor import AngioOrientalMotor
-from Motor.AngioOrientalMotor import AngioOrientalMotor
+from RCPControl.Motor.AngioOrientalMotor import AngioOrientalMotor
+# from Motor.AngioOrientalMotor import AngioOrientalMotor
 
 
 class nmContrastMediaControl(QObject):
@@ -48,7 +48,7 @@ class nmContrastMediaControl(QObject):
         self.set_translation_position_speed(speed)
         self.set_translation_position(volume)
 
-
+"""
 angio_control = nmContrastMediaControl()
 angio_control.set_translational_speed(3)
 angio_control.start_move()
@@ -57,3 +57,4 @@ angio_control.set_translational_speed(-3)
 angio_control.start_move()
 time.sleep(3)
 angio_control.set_translational_speed(0)
+"""

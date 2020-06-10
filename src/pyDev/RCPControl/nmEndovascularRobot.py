@@ -130,7 +130,7 @@ class nmEndovascularRobot(QObject):
                 self.guidewireControl.start_move()
 
             # print("contrastMediaControl:", msg.get_contrast_media_speed()/100.0, msg.get_contrast_media_volume()/100.0)
-            if msg.get_contrast_media_speed() > 100;
+            if msg.get_contrast_media_speed() > 100:
                 self.contrastMediaControl.set_mode(0)
                 self.contrastMediaControl.execute(msg.get_contrast_media_speed()/100.0, msg.get_contrast_media_volume()/100.0)
                 self.contrastMediaControl.start_move()
