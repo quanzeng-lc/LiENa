@@ -118,7 +118,7 @@ class LienaTransmissionTask:
               + chr(timestamps_msb % 256) + chr(timestamps_msb / 256) \
               + chr(dlc % 256) + chr(dlc / 256) + chr(value)
         msg_len = len(msg)
-        for x in range(msg_len, 1024):
+        for x in range(msg_len, 128):
             msg += ' '
 
         self.cpt += 1
