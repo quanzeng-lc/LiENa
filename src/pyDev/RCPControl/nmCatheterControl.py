@@ -4,8 +4,8 @@ import sys
 from enum import Enum
 from PyQt5.QtCore import QObject, pyqtSignal
 import serial.tools.list_ports
-#from RCPControl.Motor.CatheterOrientalMotor import CatheterOrientalMotor
-from Motor.CatheterOrientalMotor import CatheterOrientalMotor
+from RCPControl.Motor.CatheterOrientalMotor import CatheterOrientalMotor
+#from Motor.CatheterOrientalMotor import CatheterOrientalMotor
 
 
 class nmCatheterControl(QObject):
@@ -50,9 +50,10 @@ class nmCatheterControl(QObject):
     def get_status(self):
         return self.catheter_status
 
-
+"""
 catheter_control = nmCatheterControl()
 catheter_control.set_translational_speed(10)
 catheter_control.start_move()
 time.sleep(3)
 catheter_control.set_translational_speed(0)
+"""
