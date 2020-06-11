@@ -126,7 +126,7 @@ class nmEndovascularRobot(QObject):
             if self.guidewireControl.get_status() != 2:
                 # print("reaction", msg.get_guidewire_translational_speed())
                 self.guidewireControl.set_both(msg.get_guidewire_translational_speed() / 20.0,
-                                               msg.get_guidewire_rotational_speed() / 40.0)
+                                               msg.get_guidewire_rotational_speed() / 20.0)
                 self.guidewireControl.start_move()
 
             # print("contrastMediaControl:", msg.get_contrast_media_speed()/100.0, msg.get_contrast_media_volume()/100.0)
