@@ -4,8 +4,9 @@ import sys
 from enum import Enum
 from PyQt5.QtCore import QObject, pyqtSignal
 import serial.tools.list_ports
-from RCPControl.Motor.CatheterOrientalMotor import CatheterOrientalMotor
-#from Motor.CatheterOrientalMotor import CatheterOrientalMotor
+#from RCPControl.Motor.CatheterOrientalMotor import CatheterOrientalMotor
+from Motor.CatheterOrientalMotor import CatheterOrientalMotor
+
 
 class nmCatheterControl(QObject):
     def __init__(self):
