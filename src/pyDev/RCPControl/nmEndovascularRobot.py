@@ -173,6 +173,7 @@ class nmEndovascularRobot(QObject):
         self.global_state = state
 
     def define_system_status(self):
+        self.system_status = 0
         if self.guidewireControl.get_status() == 0:
             self.system_status = self.system_status | 0x0000
         elif self.guidewireControl.get_status() == 1:
