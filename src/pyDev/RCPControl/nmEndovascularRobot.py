@@ -185,15 +185,15 @@ class nmEndovascularRobot(QObject):
         if self.catheterControl.get_status() == 0:
             system_status = system_status | 0x0000
         elif self.catheterControl.get_status() == 1:
-            system_status = system_status | 0x0004
+            system_status = system_status | 0x0010
         elif self.catheterControl.get_status() == 2:
-            system_status = system_status | 0x0008
+            system_status = system_status | 0x0020
         if self.contrastMediaControl.get_status() == 0:
             system_status = system_status | 0x0000
         elif self.contrastMediaControl.get_status() == 1:
-            system_status = system_status | 0x0001
+            system_status = system_status | 0x0004
         elif self.contrastMediaControl.get_status() == 2:
-            system_status = system_status | 0x0002
+            system_status = system_status | 0x0008
         self.system_status = system_status
         print(self.guidewireControl.get_status(), self.catheterControl.get_status(), self.contrastMediaControl.get_status(), self.system_status)
 
