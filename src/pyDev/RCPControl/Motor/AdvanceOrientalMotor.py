@@ -309,7 +309,7 @@ motor1.set_pos_mode_expectedSpeed(3)
 motor1.start_move()
 """
 
-"""
+
 motor1 = AdvanceOrientalMotor()
 motor1.set_expectedSpeed(5)
 start = time.time()
@@ -317,4 +317,4 @@ motor1.start_move()
 time.sleep(8)
 motor1.set_expectedSpeed(0)
 motor1.go_home_start()
-"""
+
