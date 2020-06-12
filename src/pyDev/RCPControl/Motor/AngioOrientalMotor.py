@@ -166,7 +166,6 @@ class AngioOrientalMotor(object):
             interval = self.vel_mode_interval
         if interval > 1:
             return
-        self.status = 2
         GPIO.output(self.pullIO, False)
         time.sleep(interval)
         GPIO.output(self.pullIO, True)
