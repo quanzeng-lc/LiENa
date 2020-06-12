@@ -35,6 +35,7 @@ class nmEndovascularRobot(QObject):
         # initialisation
         self.flag = True
         self.global_state = 0
+        self.feedback_flag = True
 
         self.system_status = 0
 
@@ -90,6 +91,9 @@ class nmEndovascularRobot(QObject):
         self.contrastMediaControl.close()
         self.feedbackTask.stop()
         print("close")
+
+    def feedback_close(self):
+        self.feedback_flag = False
 
     # ----------------------------------------------------------------------------------------------------
     # enable all sub-module of the execution unit
@@ -153,6 +157,8 @@ class nmEndovascularRobot(QObject):
     # acquire feedback information
     def feedback(self):
         while True:
+            if not self.feedback_flag:
+                return
             tf, rf = self.guidewireControl.get_haptic_information()
             self.define_system_status()
             self.context.real_time_feedback(self.system_status, 0, 0, 0, 0, tf, rf, 0, 0, 0, 0, 0, 0)
