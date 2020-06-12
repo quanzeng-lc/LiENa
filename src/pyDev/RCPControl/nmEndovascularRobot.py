@@ -27,10 +27,11 @@ class nmEndovascularRobot(QObject):
 	    author:Cheng WANG
     """
 
-    def __init__(self, context):
+    def __init__(self, context, exit_app):
         super(nmEndovascularRobot, self).__init__()
 
         self.context = context
+        self.exit_app = exit_app
 
         # initialisation
         self.flag = True
@@ -74,7 +75,7 @@ class nmEndovascularRobot(QObject):
         # signal/slots
         self.context.controlMessageArrived[LienaControlInstruction].connect(self.reaction)
         self.context.nonProvedControlMessageArrived.connect(self.standby)
-        self.context.closeSystemMessageArrived.connect(self.close)
+        self.context.closeSystemMessageArrived.connect(self.close_app)
 
     # ----------------------------------------------------------------------------------------------------
     # disable all sub-module of the execution unit
@@ -94,6 +95,10 @@ class nmEndovascularRobot(QObject):
 
     def feedback_task_close(self):
         self.feedback_flag = False
+
+    def close_app(self):
+        self.close()
+        self.exit_app()
 
     # ----------------------------------------------------------------------------------------------------
     # enable all sub-module of the execution unit

@@ -64,10 +64,14 @@ def main():
 
     context = RCPContext(communication_stack.get_input_cache(), communication_stack.get_output_cache())
 
-    endovascular_robot = nmEndovascularRobot(context)
+    endovascular_robot = nmEndovascularRobot(context, exit_app)
     # instruments = NewDispatcher(context)
     sys.exit(app.exec_())
 
 
 if __name__ == '__main__':
     main()
+
+
+def exit_app():
+    sys.exit(1)
