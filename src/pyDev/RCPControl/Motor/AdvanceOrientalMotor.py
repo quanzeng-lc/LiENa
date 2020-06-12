@@ -263,7 +263,7 @@ class AdvanceOrientalMotor(object):
 
     def go_home_start(self):
         GPIO.output(self.go_home_io, GPIO.HIGH)
-        time.sleep(0.5)
+        time.sleep(1)
         GPIO.output(self.go_home_io, GPIO.LOW)
 
     def get_home_status(self):
