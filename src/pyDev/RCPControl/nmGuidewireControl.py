@@ -108,7 +108,7 @@ class nmGuidewireControl(QObject):
             self.global_state = self.infraredReflectiveSensor.read_current_state()
         self.guidewireProgressMotor.set_expectedSpeed(0)
         self.guidewireProgressHome = False
-        self.guidewire_status = 1
+        self.guidewire_status = 0
         # self.guidewireRotateMotor.rm_move_to_position(90, -8000)
         # time.sleep(4)
 
@@ -146,7 +146,7 @@ class nmGuidewireControl(QObject):
         # advance Home
         self.push_guidewire_home()
         self.needToRetract = False
-        self.guidewire_status = 1
+        self.guidewire_status = 0
         # self.number_of_cycles -= 1
         # if self.number_of_cycles > 0:
         #     while self.needToRetract or self.guidewireProgressHome:
