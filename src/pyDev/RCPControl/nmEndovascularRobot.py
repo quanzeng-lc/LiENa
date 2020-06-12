@@ -27,12 +27,10 @@ class nmEndovascularRobot(QObject):
 	    author:Cheng WANG
     """
 
-    def __init__(self, context, exit_app, app):
+    def __init__(self, context):
         super(nmEndovascularRobot, self).__init__()
 
         self.context = context
-        self.exit_app = exit_app
-        self.app = app
 
         # initialisation
         self.flag = True
@@ -99,8 +97,6 @@ class nmEndovascularRobot(QObject):
 
     def close_app(self):
         self.close()
-        self.app.quit()
-        self.exit_app()
 
     # ----------------------------------------------------------------------------------------------------
     # enable all sub-module of the execution unit

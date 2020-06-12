@@ -18,8 +18,8 @@ class RotateOrientalMotor(object):
         GPIO.setup(self.pushIO, GPIO.OUT, initial=GPIO.HIGH)
         GPIO.setup(self.pullIO, GPIO.OUT, initial=GPIO.HIGH)
 
-        self.go_home_io = 22
-        self.home_status_io = 10
+        self.go_home_io = 0
+        self.home_status_io = 25
         GPIO.setup(self.go_home_io, GPIO.OUT, initial=GPIO.LOW)
         GPIO.setup(self.home_status_io, GPIO.IN)
 

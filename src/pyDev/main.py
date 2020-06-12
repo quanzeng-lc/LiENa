@@ -49,11 +49,6 @@ from RCPControl.nmEndovascularRobot import nmEndovascularRobot
 # from RCPControl.NewDispatcher import NewDispatcher
 
 
-def exit_app():
-    print("exit_app")
-    sys.exit(1)
-
-
 def main():
     app = QCoreApplication(sys.argv)
 
@@ -69,7 +64,7 @@ def main():
 
     context = RCPContext(communication_stack.get_input_cache(), communication_stack.get_output_cache())
 
-    endovascular_robot = nmEndovascularRobot(context, exit_app, app)
+    endovascular_robot = nmEndovascularRobot(context)
     # instruments = NewDispatcher(context)
     sys.exit(app.exec_())
 
