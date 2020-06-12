@@ -89,10 +89,10 @@ class nmEndovascularRobot(QObject):
         self.guidewireControl.close()
         self.catheterControl.close()
         self.contrastMediaControl.close()
-        self.feedbackTask.stop()
+        self.feedback_task_close()
         print("close")
 
-    def feedback_close(self):
+    def feedback_task_close(self):
         self.feedback_flag = False
 
     # ----------------------------------------------------------------------------------------------------
