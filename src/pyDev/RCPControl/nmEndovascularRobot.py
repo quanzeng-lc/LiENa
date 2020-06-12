@@ -177,13 +177,11 @@ class nmEndovascularRobot(QObject):
         if self.guidewireControl.get_status() == 0:
             system_status = system_status | 0x0000
         elif self.guidewireControl.get_status() == 1:
-            system_status = system_status | 0x0010
-        elif self.guidewireControl.get_status() == 2:
-            system_status = system_status | 0x0020
-        elif self.guidewireControl.get_status() == 3:
-            system_status = system_status | 0x0030
-        elif self.guidewireControl.get_status() == 4:
             system_status = system_status | 0x0040
+        elif self.guidewireControl.get_status() == 2:
+            system_status = system_status | 0x0080
+        elif self.guidewireControl.get_status() == 3:
+            system_status = system_status | 0x00C0
         if self.catheterControl.get_status() == 0:
             system_status = system_status | 0x0000
         elif self.catheterControl.get_status() == 1:
