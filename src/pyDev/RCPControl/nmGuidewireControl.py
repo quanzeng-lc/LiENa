@@ -97,7 +97,7 @@ class nmGuidewireControl(QObject):
 
     def push_guidewire_home(self):
         # self.context.clear_guidewire_message()
-        self.guidewire_status = 4
+        self.guidewire_status = 3
         self.guidewireProgressMotor.enable()
         self.guidewireProgressMotor.set_expectedSpeed(self.homeSpeed)
         self.guidewireProgressMotor.start_move()
