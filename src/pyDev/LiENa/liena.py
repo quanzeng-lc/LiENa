@@ -130,8 +130,8 @@ class Liena(QObject):
         return self.outputMessageCache
 
     def close(self):
-        self.context.close_system()
         self.tcpServer.terminate_server()
+        self.distributedSystem.close_all()
 
     # def launch_transmission_task_by_addr(self, addr):
     #     for transmissionTask in self.transmissionTaskManager:

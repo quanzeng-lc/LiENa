@@ -29,7 +29,11 @@ class LienaDistributedSystem(QObject):
     def close_session_by_device_id(self, device_id):
         for module in self.distributedModules:
             if module.get_device_id() == device_id:
-                module.close_session_request(device_id)
+                module.terminate()
+
+    def close_all(self):
+        for module in self.distributedModules:
+            module.terminate()
 
     def set_robotic_system_module(self, devices_ids):
         self.devicesIDs = devices_ids
