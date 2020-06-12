@@ -41,6 +41,7 @@ class nmContrastMediaControl(QObject):
         self.angioMotor.set_pos_mode_expectedSpeed(speed)
 
     def get_status(self):
+        self.angio_status = self.angioMotor.get_status()
         return self.angio_status
 
     def execute(self, speed, volume):
