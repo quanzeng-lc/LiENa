@@ -116,6 +116,9 @@ class AngioOrientalMotor(object):
             return
         self.mv_enable = True
 
+    def get_status(self):
+        return self.status
+
     def continuous_move(self):
         if self.mv_mode:
             while True:
