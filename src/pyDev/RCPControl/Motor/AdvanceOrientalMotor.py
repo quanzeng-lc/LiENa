@@ -316,5 +316,5 @@ start = time.time()
 motor1.start_move()
 time.sleep(4)
 motor1.set_expectedSpeed(0)
-motor1.go_home_start()
+motor1.go_home()
 
