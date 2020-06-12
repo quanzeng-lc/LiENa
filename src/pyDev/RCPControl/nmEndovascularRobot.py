@@ -99,7 +99,7 @@ class nmEndovascularRobot(QObject):
 
     def close_app(self):
         self.close()
-        self.app.quite()
+        self.app.quit()
         self.exit_app()
 
     # ----------------------------------------------------------------------------------------------------
