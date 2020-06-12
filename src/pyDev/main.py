@@ -49,6 +49,9 @@ from RCPControl.nmEndovascularRobot import nmEndovascularRobot
 #from RCPControl.NewDispatcher import NewDispatcher
 
 
+def exit_app():
+    sys.exit(1)
+
 def main():
     app = QCoreApplication(sys.argv)
 
@@ -72,6 +75,3 @@ def main():
 if __name__ == '__main__':
     main()
 
-
-def exit_app():
-    sys.exit(1)
