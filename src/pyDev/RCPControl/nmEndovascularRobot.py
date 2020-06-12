@@ -173,29 +173,30 @@ class nmEndovascularRobot(QObject):
         self.global_state = state
 
     def define_system_status(self):
-        self.system_status = 0
+        system_status = 0
         if self.guidewireControl.get_status() == 0:
-            self.system_status = self.system_status | 0x0000
+            system_status = system_status | 0x0000
         elif self.guidewireControl.get_status() == 1:
-            self.system_status = self.system_status | 0x0010
+            system_status = system_status | 0x0010
         elif self.guidewireControl.get_status() == 2:
-            self.system_status = self.system_status | 0x0020
+            system_status = system_status | 0x0020
         elif self.guidewireControl.get_status() == 3:
-            self.system_status = self.system_status | 0x0030
+            system_status = system_status | 0x0030
         elif self.guidewireControl.get_status() == 4:
-            self.system_status = self.system_status | 0x0040
+            system_status = system_status | 0x0040
         if self.catheterControl.get_status() == 0:
-            self.system_status = self.system_status | 0x0000
+            system_status = system_status | 0x0000
         elif self.catheterControl.get_status() == 1:
-            self.system_status = self.system_status | 0x0004
+            system_status = system_status | 0x0004
         elif self.catheterControl.get_status() == 2:
-            self.system_status = self.system_status | 0x0008
+            system_status = system_status | 0x0008
         if self.contrastMediaControl.get_status() == 0:
-            self.system_status = self.system_status | 0x0000
+            system_status = system_status | 0x0000
         elif self.contrastMediaControl.get_status() == 1:
-            self.system_status = self.system_status | 0x0001
+            system_status = system_status | 0x0001
         elif self.contrastMediaControl.get_status() == 2:
-            self.system_status = self.system_status | 0x0002
+            system_status = system_status | 0x0002
+        self.system_status = system_status
         print(self.guidewireControl.get_status(), self.catheterControl.get_status(), self.contrastMediaControl.get_status(), self.system_status)
 
     def decision_making(self):
