@@ -46,11 +46,13 @@ from LiENa.liena import Liena
 from LiENa.LiENaBasic.lienaDefinition import *
 from RCPContext.RCPContext import RCPContext
 from RCPControl.nmEndovascularRobot import nmEndovascularRobot
-#from RCPControl.NewDispatcher import NewDispatcher
+# from RCPControl.NewDispatcher import NewDispatcher
 
 
 def exit_app():
+    print("exit_app")
     sys.exit(1)
+
 
 def main():
     app = QCoreApplication(sys.argv)
