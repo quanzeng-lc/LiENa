@@ -206,6 +206,7 @@ class AngioOrientalMotor(object):
                 self.distance_pulse = 0
         self.pos_start_flag = False
         self.is_moving = False
+        self.status = 0
 
     def position_push(self):
         interval = 0
@@ -215,6 +216,7 @@ class AngioOrientalMotor(object):
             distance = self.distance_pulse
             interval = self.pos_mode_interval
             # print(interval)
+        self.status = 1
         for i in range(0, distance):
             if self.pos_start_flag:
                 self.is_moving = True
@@ -234,6 +236,7 @@ class AngioOrientalMotor(object):
             interval = self.pos_mode_interval
             # print(distance)
             # print(interval)
+        self.status = 2
         for i in range(0, distance):
             if self.pos_start_flag:
                 self.is_moving = True
