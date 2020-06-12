@@ -163,7 +163,8 @@ class nmGuidewireControl(QObject):
             return
         self.guidewireProgressMotor.set_expectedSpeed(translation_speed)
         self.guidewireRotateMotor.set_expectedSpeed(rotational_speed)
-        self.guidewire_status = 1
+        if translation_speed > 0 or rotational_speed > 0:
+            self.guidewire_status = 1
 
     def get_haptic_information(self):
         rf = self.rotationalForceSensor.get_value()
