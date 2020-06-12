@@ -72,6 +72,8 @@ class AngioOrientalMotor(object):
         # count the pulse to calculate the vilocity
         self.pos_count = 0
 
+        self.status = 0
+
         self.vel_move_task = threading.Thread(None, self.continuous_move)
         self.pos_move_task = threading.Thread(None, self.position_move)
 
@@ -121,6 +123,7 @@ class AngioOrientalMotor(object):
                     if self.vel_start_flag:
                         self.is_moving = True
                         if self.expectedSpeedFlag == 0:
+                            self.status = 0
                             time.sleep(0.1)
                         if self.expectedSpeedFlag == 1:
                             self.push()
@@ -145,6 +148,7 @@ class AngioOrientalMotor(object):
         # case where the interval is too large
         if interval > 1:
             return
+        self.status = 1
         GPIO.output(self.pushIO, False)
         time.sleep(interval)
         GPIO.output(self.pushIO, True)
@@ -159,6 +163,7 @@ class AngioOrientalMotor(object):
             interval = self.vel_mode_interval
         if interval > 1:
             return
+        self.status = 2
         GPIO.output(self.pullIO, False)
         time.sleep(interval)
         GPIO.output(self.pullIO, True)

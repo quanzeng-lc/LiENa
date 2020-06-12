@@ -30,7 +30,6 @@ class nmCatheterControl(QObject):
 
     def set_translational_speed(self, speed):
         self.catheterMotor.set_expectedSpeed(speed)
-        self.catheter_status = 1
 
     def set_mode(self, mode):
         self.catheterMotor.set_mode(mode)
@@ -48,7 +47,7 @@ class nmCatheterControl(QObject):
         self.catheterMotor.set_pos_mode_expectedSpeed(speed)
 
     def get_status(self):
-        return self.catheter_status
+        return self.catheterMotor.get_status()
 
 """
 catheter_control = nmCatheterControl()

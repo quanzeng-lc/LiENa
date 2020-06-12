@@ -27,7 +27,7 @@ class CatheterOrientalMotor(AdvanceMotor):
         self.home_status_io = 12
         GPIO.setup(self.go_home_io, GPIO.OUT, initial=GPIO.LOW)
         GPIO.setup(self.home_status_io, GPIO.IN)
-
+        self.status = 0
         # parametertype id
         self.hapticFeedbackID = 0
 
@@ -115,6 +115,7 @@ class CatheterOrientalMotor(AdvanceMotor):
                     if self.vel_start_flag:
                         self.is_moving = True
                         if self.expectedSpeedFlag == 0:
+                            self.status = 0
                             time.sleep(0.1)
                         if self.expectedSpeedFlag == 1:
                             self.push()
@@ -134,6 +135,7 @@ class CatheterOrientalMotor(AdvanceMotor):
         else:
             interval = self.vel_mode_interval
             # print "interval:", interval
+        self.status = 1
         GPIO.output(self.pushIO, False)
         time.sleep(interval)
         GPIO.output(self.pushIO, True)
@@ -145,6 +147,7 @@ class CatheterOrientalMotor(AdvanceMotor):
             return
         else:
             interval = self.vel_mode_interval
+        self.status = 2
         GPIO.output(self.pullIO, False)
         time.sleep(interval)
         GPIO.output(self.pullIO, True)
@@ -228,6 +231,9 @@ class CatheterOrientalMotor(AdvanceMotor):
 
     def set_mode(self, mode):
         self.mv_mode = False if mode == 0 else True
+
+    def get_status(self):
+        return self.status
 
     def start_move(self):
         if self.is_moving:

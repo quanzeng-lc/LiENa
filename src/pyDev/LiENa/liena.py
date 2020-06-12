@@ -133,6 +133,7 @@ class Liena(QObject):
         self.tcpServer.terminate_server()
         self.distributedSystem.close_all()
 
+
     # def launch_transmission_task_by_addr(self, addr):
     #     for transmissionTask in self.transmissionTaskManager:
     #         if transmissionTask.get_addr() == addr:
