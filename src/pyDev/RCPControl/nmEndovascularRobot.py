@@ -88,7 +88,6 @@ class nmEndovascularRobot(QObject):
         self.guidewireControl.close()
         self.catheterControl.close()
         self.contrastMediaControl.close()
-        //
 
     # ----------------------------------------------------------------------------------------------------
     # enable all sub-module of the execution unit
