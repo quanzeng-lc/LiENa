@@ -26,6 +26,7 @@ class nmEndovascularRobot(QObject):
                          -- the command and control of the actions of interventional robot in surgery   
 	    author:Cheng WANG
     """
+    quitSystem = pyqtSignal()
 
     def __init__(self, context):
         super(nmEndovascularRobot, self).__init__()
@@ -90,6 +91,7 @@ class nmEndovascularRobot(QObject):
         self.catheterControl.close()
         self.contrastMediaControl.close()
         self.feedback_task_close()
+        self.quitSystem.emit()
         print("close")
 
     def feedback_task_close(self):
