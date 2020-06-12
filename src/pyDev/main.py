@@ -69,7 +69,7 @@ def main():
 
     context = RCPContext(communication_stack.get_input_cache(), communication_stack.get_output_cache())
 
-    endovascular_robot = nmEndovascularRobot(context, exit_app)
+    endovascular_robot = nmEndovascularRobot(context, exit_app, app)
     # instruments = NewDispatcher(context)
     sys.exit(app.exec_())
 
