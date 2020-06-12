@@ -88,6 +88,7 @@ class nmEndovascularRobot(QObject):
         self.guidewireControl.close()
         self.catheterControl.close()
         self.contrastMediaControl.close()
+        //
 
     # ----------------------------------------------------------------------------------------------------
     # enable all sub-module of the execution unit
@@ -133,6 +134,19 @@ class nmEndovascularRobot(QObject):
                 self.contrastMediaControl.set_mode(0)
                 self.contrastMediaControl.execute(msg.get_contrast_media_speed()/100.0, msg.get_contrast_media_volume()/100.0)
                 self.contrastMediaControl.start_move()
+
+    def guidewire_catheter_advance(self, times):
+        self.guidewireControl.set_both(2, 0)
+        self.catheterControl.set_translational_speed(2)
+        while self.guidewireControl.get_status() == 1:
+            time.sleep(0.5)
+        self.catheterControl.set_translational_speed(0)
+        while self.guidewireControl.get_status() == 2:
+            time.sleep(0.05)
+        times -= 1
+        if times == 0:
+            return
+        self.guidewire_catheter_advance(times)
 
     # ----------------------------------------------------------------------------------------------------
     # acquire feedback information

@@ -20,7 +20,6 @@ def positive_or_negtive(value):
 
 
 class RCPContext(QObject):
-
     controlMessageArrived = pyqtSignal(LienaControlInstruction)
     nonProvedControlMessageArrived = pyqtSignal()
     closeSystemMessageArrived = pyqtSignal()
@@ -113,32 +112,29 @@ class RCPContext(QObject):
                     elif int(body[0]) == 1:
                         self.nonProvedControlMessageArrived.emit()
                     elif int(body[0]) == 2:
-
-                        # print("message",int(body[0]), int(body[0]), int(body[1]), int(body[2]), int(body[3]), int(body[4]), int(body[5]), int(body[6]), int(body[7]), int(body[8]), int(body[9]))
-
                         gwts = 0
                         if int(body[2]) == 0:
-                          gwts = -1 * (int(body[3])*256 + int(body[4]))
-                          ci.set_guidewire_translational_speed(gwts)
+                            gwts = -1 * (int(body[3]) * 256 + int(body[4]))
+                            ci.set_guidewire_translational_speed(gwts)
                         elif int(body[2]) == 1:
-                          gwts =  1 * (int(body[3])*256 + int(body[4]))
-                          ci.set_guidewire_translational_speed(gwts)
+                            gwts = 1 * (int(body[3]) * 256 + int(body[4]))
+                            ci.set_guidewire_translational_speed(gwts)
 
                         gwrs = 0
                         if int(body[7]) == 0:
-                          gwrs = -1 * (int(body[8]) * 256 + int(body[9]))
-                          ci.set_guidewire_rotational_speed(gwrs)
+                            gwrs = -1 * (int(body[8]) * 256 + int(body[9]))
+                            ci.set_guidewire_rotational_speed(gwrs)
                         elif int(body[7]) == 1:
-                          gwrs = 1 * (int(body[8]) * 256 + int(body[9]))
-                          ci.set_guidewire_rotational_speed(gwrs)
+                            gwrs = 1 * (int(body[8]) * 256 + int(body[9]))
+                            ci.set_guidewire_rotational_speed(gwrs)
 
                         chars = 0
                         if int(body[13]) == 0:
-                          chars = -1 * (int(body[14]) * 256 + int(body[15]))
-                          ci.set_catheter_translational_speed(chars)
+                            chars = -1 * (int(body[14]) * 256 + int(body[15]))
+                            ci.set_catheter_translational_speed(chars)
                         elif int(body[13]) == 1:
-                          chars = 1 * (int(body[14]) * 256 + int(body[15]))
-                          ci.set_catheter_translational_speed(chars)
+                            chars = 1 * (int(body[14]) * 256 + int(body[15]))
+                            ci.set_catheter_translational_speed(chars)
                         # print ("parse_command:", gwts, gwrs, chrs)
 
                         if int(body[19]) == 0:
@@ -165,7 +161,7 @@ class RCPContext(QObject):
                                      self.get_current_time_in_microsecond(),
                                      36)
 
-        msg.define_body_length(128-HEAD_SIZE)
+        msg.define_body_length(128 - HEAD_SIZE)
         msg.append_uint8(sys_status)
         msg.append_uint8(positive_or_negtive(gtv))
         msg.append_uint16(abs(gtv))
@@ -191,7 +187,7 @@ class RCPContext(QObject):
         msg.append_uint16(abs(lis))
         msg.append_uint8(positive_or_negtive(ltf))
         msg.append_uint16(abs(ltf))
-        #msg.print_self()
+        # msg.print_self()
         self.output_cache.write_message_by_index(0, msg)
 
         # while True:

@@ -88,7 +88,7 @@ class Liena(QObject):
             self.launch()
 
         # generate the session and the outgoing pipeline of the session
-        self.distributedSystem.create_distributed_module_with_transmission_channel(target_device_id, True, target_ip_address, port)
+        return self.distributedSystem.create_distributed_module_with_transmission_channel(target_device_id, True, target_ip_address, port)
 
     # [4] ---------------------------------------------------------------------------------------------------------------------------
     def close_session_request(self, device_id):
