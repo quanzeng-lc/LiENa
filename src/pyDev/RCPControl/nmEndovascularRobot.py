@@ -88,6 +88,7 @@ class nmEndovascularRobot(QObject):
         self.guidewireControl.close()
         self.catheterControl.close()
         self.contrastMediaControl.close()
+        self.feedbackTask.stop()
         print("close")
 
     # ----------------------------------------------------------------------------------------------------
