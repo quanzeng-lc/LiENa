@@ -153,7 +153,7 @@ class nmEndovascularRobot(QObject):
         while self.guidewireControl.get_status() == 1:
             time.sleep(0.5)
         self.catheterControl.set_translational_speed(0)
-        while self.guidewireControl.get_status() == 2:
+        while self.guidewireControl.get_status() == 2 or self.guidewireControl.get_status() == 3:
             time.sleep(0.5)
         times -= 1
         if times == 0:
