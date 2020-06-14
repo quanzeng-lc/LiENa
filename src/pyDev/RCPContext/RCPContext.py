@@ -23,6 +23,7 @@ class RCPContext(QObject):
     controlMessageArrived = pyqtSignal(LienaControlInstruction)
     nonProvedControlMessageArrived = pyqtSignal()
     closeSystemMessageArrived = pyqtSignal()
+    endovascularMultiTimeAdvanceArrived = pyqtSignal()
 
     def __init__(self, input_cache, output_cache):
         super(RCPContext, self).__init__()
@@ -146,7 +147,8 @@ class RCPContext(QObject):
                         ci.set_contrast_media_speed(chars)
                         ci.set_contrast_media_volume(chars1)
                         self.controlMessageArrived.emit(ci)
-
+                    elif:
+                        self.endovascularMultiTimeAdvanceArrived.emit()
                     # self.controlInstruction.append(ci)
                 self.inputLock.release()
             time.sleep(0.05)

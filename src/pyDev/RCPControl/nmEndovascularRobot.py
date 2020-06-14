@@ -67,15 +67,16 @@ class nmEndovascularRobot(QObject):
         self.switch = EmergencySwitch()
 
         # real time task to parse commands in context
-        # self.feedbackTask = threading.Thread(None, self.feedback)
-        # self.feedbackTask.start()
+        self.feedbackTask = threading.Thread(None, self.feedback)
+        self.feedbackTask.start()
 
         self.open()
 
         # signal/slots
-        # self.context.controlMessageArrived[LienaControlInstruction].connect(self.reaction)
-        # self.context.nonProvedControlMessageArrived.connect(self.standby)
-        # self.context.closeSystemMessageArrived.connect(self.close_app)
+        self.context.controlMessageArrived[LienaControlInstruction].connect(self.reaction)
+        self.context.nonProvedControlMessageArrived.connect(self.standby)
+        self.context.closeSystemMessageArrived.connect(self.close_app)
+        self.context.endovascularMultiTimeAdvanceArrived.connect(self.guidewire_catheter_both)
 
     # ----------------------------------------------------------------------------------------------------
     # disable all sub-module of the execution unit
@@ -145,7 +146,11 @@ class nmEndovascularRobot(QObject):
                 self.contrastMediaControl.execute(msg.get_contrast_media_speed()/100.0, msg.get_contrast_media_volume()/100.0)
                 self.contrastMediaControl.start_move()
 
+    def guidewire_catheter_both(self):
+        self.guidewire_catheter_advance(3)
+
     def guidewire_catheter_advance(self, times):
+        print("guidewire_catheter_advance")
         self.guidewireControl.set_both(10, 0)
         self.guidewireControl.start_move()
         self.catheterControl.set_translational_speed(10)
@@ -206,5 +211,5 @@ class nmEndovascularRobot(QObject):
         return ret
 
 
-endovascular = nmEndovascularRobot(1)
-endovascular.guidewire_catheter_advance(3)
+# endovascular = nmEndovascularRobot(1)
+# endovascular.guidewire_catheter_advance(3)
