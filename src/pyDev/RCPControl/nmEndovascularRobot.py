@@ -207,4 +207,4 @@ class nmEndovascularRobot(QObject):
 
 
 endovascular = nmEndovascularRobot(1)
-endovascular.guidewire_catheter_advance(2)
+endovascular.guidewire_catheter_advance(3)
