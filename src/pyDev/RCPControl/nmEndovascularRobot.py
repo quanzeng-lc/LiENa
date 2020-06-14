@@ -156,7 +156,7 @@ class nmEndovascularRobot(QObject):
         self.guidewire_catheter_flag = False
 
     def guidewire_catheter_advance(self, times):
-        print("guidewire_catheter_advance")
+        # print("guidewire_catheter_advance")
         self.guidewireControl.set_both(10, 0)
         self.guidewireControl.start_move()
         self.catheterControl.set_translational_speed(10)
