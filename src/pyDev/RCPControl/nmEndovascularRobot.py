@@ -202,7 +202,7 @@ class nmEndovascularRobot(QObject):
         elif self.contrastMediaControl.get_status() == 2:
             system_status = system_status | 0x0008
         self.system_status = system_status
-        print(self.guidewireControl.get_status(), self.catheterControl.get_status(), self.contrastMediaControl.get_status(), self.system_status)
+        # print(self.guidewireControl.get_status(), self.catheterControl.get_status(), self.contrastMediaControl.get_status(), self.system_status)
 
     def decision_making(self):
         ret = 1

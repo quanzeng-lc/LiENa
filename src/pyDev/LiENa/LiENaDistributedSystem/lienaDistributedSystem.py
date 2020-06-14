@@ -48,7 +48,7 @@ class LienaDistributedSystem(QObject):
                 else:
                     module.generate_reception_channel(socket_for_reception)
 
-    def create_distributed_module_with_reception_channel(self, socket_for_reception):
+    def create_distributed_module_wiconfigure_msg_Queue_Pairth_reception_channel(self, socket_for_reception):
         if DEBUG:
             print("LienaDistributedSystem | create_distributed_module_with_reception_channel")
         module = LienaDistributedModule(self.moduleIndex, self.globalParameter)
