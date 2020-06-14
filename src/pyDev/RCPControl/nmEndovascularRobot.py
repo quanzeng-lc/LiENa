@@ -72,6 +72,7 @@ class nmEndovascularRobot(QObject):
 
         self.open()
 
+        self.guidewire_catheter_flag = False
         # signal/slots
         self.context.controlMessageArrived[LienaControlInstruction].connect(self.reaction)
         self.context.nonProvedControlMessageArrived.connect(self.standby)
@@ -147,7 +148,12 @@ class nmEndovascularRobot(QObject):
                 self.contrastMediaControl.start_move()
 
     def guidewire_catheter_both(self):
-        self.guidewire_catheter_advance(3)
+        if self.guidewire_catheter_flag:
+            return
+        self.guidewire_catheter_flag = True
+        guidewire_catheter_multi_advance = threading.Thread(target=self.guidewire_catheter_advance, args=(3,))
+        guidewire_catheter_multi_advance.start()
+        self.guidewire_catheter_flag = False
 
     def guidewire_catheter_advance(self, times):
         print("guidewire_catheter_advance")
