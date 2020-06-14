@@ -152,7 +152,7 @@ class nmEndovascularRobot(QObject):
             time.sleep(0.5)
         self.catheterControl.set_translational_speed(0)
         while self.guidewireControl.get_status() == 2:
-            time.sleep(0.05)
+            time.sleep(0.5)
         times -= 1
         if times == 0:
             return
@@ -202,3 +202,7 @@ class nmEndovascularRobot(QObject):
         # determine control availability
         # ret = self.context.getGlobalDecisionMade()
         return ret
+
+
+endovascular = nmEndovascularRobot()
+endovascular.guidewire_catheter_advance(2)
