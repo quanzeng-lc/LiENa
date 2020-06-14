@@ -147,7 +147,7 @@ class RCPContext(QObject):
                         ci.set_contrast_media_speed(chars)
                         ci.set_contrast_media_volume(chars1)
                         self.controlMessageArrived.emit(ci)
-                    elif:
+                    elif int(body[0]) == 3:
                         self.endovascularMultiTimeAdvanceArrived.emit()
                     # self.controlInstruction.append(ci)
                 self.inputLock.release()
