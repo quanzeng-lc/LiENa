@@ -146,9 +146,9 @@ class nmEndovascularRobot(QObject):
                 self.contrastMediaControl.start_move()
 
     def guidewire_catheter_advance(self, times):
-        self.guidewireControl.set_both(2, 0)
+        self.guidewireControl.set_both(10, 0)
         self.guidewireControl.start_move()
-        self.catheterControl.set_translational_speed(2)
+        self.catheterControl.set_translational_speed(10)
         self.catheterControl.start_move()
         while self.guidewireControl.get_status() == 1:
             time.sleep(0.5)
