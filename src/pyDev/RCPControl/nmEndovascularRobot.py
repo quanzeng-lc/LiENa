@@ -7,13 +7,6 @@ import sys
 from enum import Enum
 from PyQt5.QtCore import QObject, pyqtSignal
 import serial.tools.list_ports
-# from RCPContext.RCPContext import RCPContext
-# from RCPContext.LienaControlInstruction import LienaControlInstruction
-# from RCPControl.nmGuidewireControl import nmGuidewireControl
-# from RCPControl.nmCatheterControl import nmCatheterControl
-# from RCPControl.nmContrastMediaControl import nmContrastMediaControl
-# from RCPControl.EmergencySwitch import EmergencySwitch
-import sys
 sys.path.append('../')
 from RCPContext.RCPContext import RCPContext
 from RCPContext.LienaControlInstruction import LienaControlInstruction
@@ -74,15 +67,15 @@ class nmEndovascularRobot(QObject):
         self.switch = EmergencySwitch()
 
         # real time task to parse commands in context
-        self.feedbackTask = threading.Thread(None, self.feedback)
-        self.feedbackTask.start()
+        # self.feedbackTask = threading.Thread(None, self.feedback)
+        # self.feedbackTask.start()
 
         self.open()
 
         # signal/slots
-        self.context.controlMessageArrived[LienaControlInstruction].connect(self.reaction)
-        self.context.nonProvedControlMessageArrived.connect(self.standby)
-        self.context.closeSystemMessageArrived.connect(self.close_app)
+        # self.context.controlMessageArrived[LienaControlInstruction].connect(self.reaction)
+        # self.context.nonProvedControlMessageArrived.connect(self.standby)
+        # self.context.closeSystemMessageArrived.connect(self.close_app)
 
     # ----------------------------------------------------------------------------------------------------
     # disable all sub-module of the execution unit
@@ -211,5 +204,5 @@ class nmEndovascularRobot(QObject):
         return ret
 
 
-endovascular = nmEndovascularRobot()
+endovascular = nmEndovascularRobot(1)
 endovascular.guidewire_catheter_advance(2)
