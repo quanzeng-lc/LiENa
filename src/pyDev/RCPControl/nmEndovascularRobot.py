@@ -78,6 +78,7 @@ class nmEndovascularRobot(QObject):
         self.context.nonProvedControlMessageArrived.connect(self.standby)
         self.context.closeSystemMessageArrived.connect(self.close_app)
         self.context.endovascularMultiTimeAdvanceArrived.connect(self.guidewire_catheter_both)
+        self.context.endovascularGoHomeArrived.connect(self.guidewire_go_home)
 
     # ----------------------------------------------------------------------------------------------------
     # disable all sub-module of the execution unit
@@ -209,6 +210,9 @@ class nmEndovascularRobot(QObject):
             system_status = system_status | 0x0008
         self.system_status = system_status
         # print(self.guidewireControl.get_status(), self.catheterControl.get_status(), self.contrastMediaControl.get_status(), self.system_status)
+
+    def guidewire_go_home(self):
+        self.guidewireControl.set_both(20, 0)
 
     def decision_making(self):
         ret = 1
