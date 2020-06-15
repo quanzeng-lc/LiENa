@@ -167,7 +167,6 @@ class nmGuidewireControl(QObject):
             self.global_state = self.infraredReflectiveSensor.read_current_state()
             while self.global_state != 1:
                 time.sleep(0.5)
-                print("home")
                 self.global_state = self.infraredReflectiveSensor.read_current_state()
             # fasten front gripper
             self.set_translational_speed(0)

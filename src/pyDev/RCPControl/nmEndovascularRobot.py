@@ -152,6 +152,7 @@ class nmEndovascularRobot(QObject):
                 self.contrastMediaControl.start_move()
 
     def guidewire_catheter_both(self):
+        print("guidewire_catheter_both")
         if self.guidewire_catheter_flag:
             return
         self.guidewire_catheter_flag = True
@@ -176,6 +177,7 @@ class nmEndovascularRobot(QObject):
         self.guidewire_catheter_advance(times)
 
     def multi_pull_guidewire(self):
+        print("multi_pull_guidewire")
         if self.multi_pull_guidewire_flag:
             return
         self.multi_pull_guidewire_flag = True
