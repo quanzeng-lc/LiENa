@@ -167,17 +167,17 @@ class nmGuidewireControl(QObject):
                 time.sleep(0.5)
                 self.global_state = self.infraredReflectiveSensor.read_current_state()
             # fasten front gripper
-            self.set_translational_speed(0)
+            self.set_both(0, 0)
             self.gripperFront.gripper_chuck_fasten()
             # self_tightening chunck
             self.gripperBack.gripper_chuck_fasten()
-            self.set_rotational_speed(-1 * self.speedRotate)  # +/loosen
+            self.set_both(0, -1 * self.speedRotate)  # +/loosen
             self.start_move()
             time.sleep(self.rotateTime)
-            self.set_rotational_speed(0)
+            self.set_both(0, 0)
             self.push_guidewire_home()
 
-            self.set_translational_speed(self.speedProgress)
+            self.set_both(self.speedProgress, 0)
             self.global_state = self.infraredReflectiveSensor.read_current_state()
             while self.global_state != 2:
                 time.sleep(0.5)
