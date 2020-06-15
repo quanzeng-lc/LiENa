@@ -178,6 +178,7 @@ class nmGuidewireControl(QObject):
             self.set_rotational_speed(0)
             self.push_guidewire_home()
             self.set_translational_speed(self.speedProgress)
+            print("self.set_translational_speed(self.speedProgress)")
             self.global_state = self.infraredReflectiveSensor.read_current_state()
             while self.global_state != 2:
                 time.sleep(0.5)
@@ -197,6 +198,8 @@ class nmGuidewireControl(QObject):
         self.time_stamp_list.append(time.time())
         self.speed_list.append(translation_speed)
         self.guidewireProgressMotor.set_expectedSpeed(translation_speed)
+        print("set_translational_speed", translation_speed)
+
 
     def set_both(self, translation_speed, rotational_speed):
         if self.needToRetract or self.guidewireProgressHome:
