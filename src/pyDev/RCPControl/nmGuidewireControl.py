@@ -44,6 +44,8 @@ class nmGuidewireControl(QObject):
         self.translationalForceSensor = ForceSensor("/dev/ttyusb_force", 9600, 8, 'N', 1)
         self.rotationalForceSensor = ForceSensor("/dev/ttyusb_torque", 9600, 8, 'N', 1)
 
+        self.guidewire_advance_distance = 0    # mm
+
         self.enable()
 
         self.analyseTask = threading.Thread(None, self.analyse)
