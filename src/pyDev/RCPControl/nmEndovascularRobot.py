@@ -171,7 +171,6 @@ class nmEndovascularRobot(QObject):
         while self.guidewireControl.get_status() == 2 or self.guidewireControl.get_status() == 3:
             time.sleep(0.5)
         times -= 1
-        print("times", times)
         if times == 0:
             return
         self.guidewire_catheter_advance(times)
