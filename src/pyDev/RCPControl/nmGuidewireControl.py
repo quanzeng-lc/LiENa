@@ -190,6 +190,12 @@ class nmGuidewireControl(QObject):
             time.sleep(self.rotateTime + 3)
             self.set_rotational_speed(0)
             time.sleep(1)
+        self.set_translational_speed(-2 * self.homeSpeed)
+        while self.global_state == 2:
+            time.sleep(0.5)
+            print("advance")
+            self.global_state = self.infraredReflectiveSensor.read_current_state()
+        self.set_translational_speed(0)
         self.guidewire_status = 0
 
     def set_rotational_speed(self, rotational_speed):
