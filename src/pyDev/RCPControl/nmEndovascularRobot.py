@@ -73,12 +73,15 @@ class nmEndovascularRobot(QObject):
         self.open()
 
         self.guidewire_catheter_flag = False
+        self.multi_pull_guidewire_flag = False
+
         # signal/slots
         self.context.controlMessageArrived[LienaControlInstruction].connect(self.reaction)
         self.context.nonProvedControlMessageArrived.connect(self.standby)
         self.context.closeSystemMessageArrived.connect(self.close_app)
         self.context.endovascularMultiTimeAdvanceArrived.connect(self.guidewire_catheter_both)
         self.context.endovascularGoHomeArrived.connect(self.guidewire_go_home)
+        self.context.endovascularMultiTimeGuidewirePullArrived.connect(self.multi_pull_guidewire)
 
     # ----------------------------------------------------------------------------------------------------
     # disable all sub-module of the execution unit
@@ -171,6 +174,14 @@ class nmEndovascularRobot(QObject):
         if times == 0:
             return
         self.guidewire_catheter_advance(times)
+
+    def multi_pull_guidewire(self):
+        if self.multi_pull_guidewire_flag:
+            return
+        self.multi_pull_guidewire_flag = True
+        multi_guidewire_pull_task = threading.Thread(target=self.guidewireControl.multi_pull_guidewire, args=(5,))
+        multi_guidewire_pull_task.start()
+        self.multi_pull_guidewire_flag = False
 
     # ----------------------------------------------------------------------------------------------------
     # acquire feedback information

@@ -25,6 +25,7 @@ class RCPContext(QObject):
     closeSystemMessageArrived = pyqtSignal()
     endovascularMultiTimeAdvanceArrived = pyqtSignal()
     endovascularGoHomeArrived = pyqtSignal()
+    endovascularMultiTimeGuidewirePullArrived = pyqtSignal()
 
     def __init__(self, input_cache, output_cache):
         super(RCPContext, self).__init__()
@@ -153,6 +154,8 @@ class RCPContext(QObject):
                     # self.controlInstruction.append(ci)
                     elif int(body[0]) == 4:
                         self.endovascularGoHomeArrived.emit()
+                    elif int(body[0] == 5):
+                        self.endovascularMultiTimeGuidewirePullArrived.emit()
                 self.inputLock.release()
             time.sleep(0.05)
 
