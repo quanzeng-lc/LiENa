@@ -212,7 +212,7 @@ class nmEndovascularRobot(QObject):
         # print(self.guidewireControl.get_status(), self.catheterControl.get_status(), self.contrastMediaControl.get_status(), self.system_status)
 
     def guidewire_go_home(self):
-        self.guidewireControl.set_both(20, 0)
+        self.guidewireControl.set_both(-20, 0)
         self.guidewireControl.start_move()
 
     def decision_making(self):
