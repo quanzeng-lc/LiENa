@@ -155,7 +155,7 @@ class nmGuidewireControl(QObject):
     def multi_pull_guidewire(self, times):
         self.guidewire_status = 4
         for i in range(times):
-            print("times", times)
+            # print("times", times)
             # fasten front gripper
             self.gripperFront.gripper_chuck_loosen()
             # self_tightening chunck
@@ -179,7 +179,7 @@ class nmGuidewireControl(QObject):
             self.set_rotational_speed(0)
             self.push_guidewire_home(True)
             self.set_translational_speed(self.speedProgress)
-            print("self.set_translational_speed(self.speedProgress)")
+            # print("self.set_translational_speed(self.speedProgress)")
             self.global_state = self.infraredReflectiveSensor.read_current_state()
             while self.global_state != 2:
                 time.sleep(0.5)
@@ -199,7 +199,6 @@ class nmGuidewireControl(QObject):
         self.time_stamp_list.append(time.time())
         self.speed_list.append(translation_speed)
         self.guidewireProgressMotor.set_expectedSpeed(translation_speed)
-        print("set_translational_speed", translation_speed)
 
 
     def set_both(self, translation_speed, rotational_speed):
