@@ -92,12 +92,10 @@ class nmGuidewireControl(QObject):
                 self.guidewire_status = 2
                 retract_task = threading.Thread(None, self.prepare_for_another_tour)
                 retract_task.start()
-                self.guidewire_status = 1
             elif self.global_state == 1:
                 self.guidewire_status = 3
                 home_task = threading.Thread(None, self.push_guidewire_home)
                 home_task.start()
-                self.guidewire_status = 1
             elif self.global_state == 3 or self.global_state == 4:
                 self.set_translational_speed(0)
             time.sleep(0.5)
@@ -113,6 +111,7 @@ class nmGuidewireControl(QObject):
             print("home")
             self.global_state = self.infraredReflectiveSensor.read_current_state()
         self.set_translational_speed(0)
+        self.guidewire_status = 0
         # self.guidewireRotateMotor.rm_move_to_position(90, -8000)
         # time.sleep(4)
 
@@ -129,7 +128,6 @@ class nmGuidewireControl(QObject):
         time.sleep(self.rotateTime)
         self.set_rotational_speed(0)
         time.sleep(1)
-
         self.set_translational_speed(-self.speedProgress)
         self.start_move()
         # time.sleep(3)
