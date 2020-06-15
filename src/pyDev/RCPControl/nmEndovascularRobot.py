@@ -213,6 +213,7 @@ class nmEndovascularRobot(QObject):
 
     def guidewire_go_home(self):
         self.guidewireControl.set_both(20, 0)
+        self.guidewireControl.start_move()
 
     def decision_making(self):
         ret = 1
