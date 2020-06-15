@@ -100,7 +100,7 @@ class nmGuidewireControl(QObject):
                 self.set_translational_speed(0)
             time.sleep(0.5)
 
-    def push_guidewire_home(self):
+    def push_guidewire_home(self, flag=False):
         # self.context.clear_guidewire_message()
         self.enable()
         self.set_translational_speed(self.homeSpeed)
@@ -111,7 +111,8 @@ class nmGuidewireControl(QObject):
             print("home")
             self.global_state = self.infraredReflectiveSensor.read_current_state()
         self.set_translational_speed(0)
-        self.guidewire_status = 0
+        if not flag:
+            self.guidewire_status = 0
         # self.guidewireRotateMotor.rm_move_to_position(90, -8000)
         # time.sleep(4)
 
@@ -176,7 +177,7 @@ class nmGuidewireControl(QObject):
             self.start_move()
             time.sleep(self.rotateTime)
             self.set_rotational_speed(0)
-            self.push_guidewire_home()
+            self.push_guidewire_home(True)
             self.set_translational_speed(self.speedProgress)
             print("self.set_translational_speed(self.speedProgress)")
             self.global_state = self.infraredReflectiveSensor.read_current_state()
