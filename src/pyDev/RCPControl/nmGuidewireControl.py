@@ -153,7 +153,7 @@ class nmGuidewireControl(QObject):
 
     def multi_pull_guidewire(self, times):
         self.guidewire_status = 4
-        print("times", i)
+        print("times", times)
         for i in range(times):
             # fasten front gripper
             self.gripperFront.gripper_chuck_loosen()
