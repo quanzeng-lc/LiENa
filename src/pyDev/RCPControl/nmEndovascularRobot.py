@@ -199,6 +199,7 @@ class nmEndovascularRobot(QObject):
                 return
             tf, rf = self.guidewireControl.get_haptic_information()
             self.define_system_status()
+            self.get_guidewire_dst()
             self.context.real_time_feedback(self.system_status, 0, 0, self.guidewire_dst, 0, tf, rf, 0, 0, 0, 0, 0, 0)
             time.sleep(0.1)
 
