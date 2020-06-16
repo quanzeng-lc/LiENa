@@ -173,16 +173,21 @@ class nmEndovascularRobot(QObject):
             time.sleep(0.5)
         times -= 1
         if times == 0:
+            self.guidewire_catheter_flag = False
             return
         self.guidewire_catheter_advance(times)
 
-    def multi_pull_guidewire(self):
+    def multi_pull_guidewire_reaction(self):
         print("multi_pull_guidewire")
         if self.multi_pull_guidewire_flag:
             return
         self.multi_pull_guidewire_flag = True
-        multi_guidewire_pull_task = threading.Thread(target=self.guidewireControl.multi_pull_guidewire, args=(7,))
+        multi_guidewire_pull_task = threading.Thread(target=self.multi_pull_guidewire, args=(7,))
         multi_guidewire_pull_task.start()
+
+    def multi_pull_guidewire(self):
+        self.guidewireControl.multi_pull_guidewire()
+        self.multi_pull_guidewire_flag = False
 
     # ----------------------------------------------------------------------------------------------------
     # acquire feedback information
