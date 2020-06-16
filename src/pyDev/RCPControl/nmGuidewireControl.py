@@ -123,7 +123,7 @@ class nmGuidewireControl(QObject):
 
     def get_guidewire_absolute_position(self):
         if self.guidewire_status == 2 or self.guidewire_status == 5:
-            return self.guidewire_round_dst    #mm
+            return self.guidewire_round_dst     # mm
         else:
             return self.guidewire_round_dst + self.get_guidewire_position()
 
