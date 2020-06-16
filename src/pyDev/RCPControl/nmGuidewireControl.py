@@ -161,7 +161,7 @@ class nmGuidewireControl(QObject):
         self.clear_guidewire_position()
 
         self.set_rotational_speed(self.speedRotate)  # -
-        time.sleep(self.rotateTime + 2)
+        time.sleep(self.rotateTime + 3)
         self.set_rotational_speed(0)
         time.sleep(0.5)
         self.gripperFront.gripper_chuck_loosen()
@@ -219,7 +219,7 @@ class nmGuidewireControl(QObject):
             self.guidewire_status = 4
             time.sleep(0.5)
             self.set_rotational_speed(self.speedRotate)
-            time.sleep(self.rotateTime + 2)
+            time.sleep(self.rotateTime + 3)
             self.set_rotational_speed(0)
             time.sleep(0.5)
             # fasten front gripper
