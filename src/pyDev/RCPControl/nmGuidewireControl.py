@@ -87,7 +87,7 @@ class nmGuidewireControl(QObject):
     def analyse(self):
         while True:
             # self.needToRetract or self.guidewireProgressHome is true : forbid
-            if self.guidewire_status == 2 or self.guidewire_status == 3 or self.guidewire_status == 4:
+            if self.guidewire_status == 2 or self.guidewire_status == 3 or self.guidewire_status == 4 or self.guidewire_status == 5:
                 continue
             self.global_state = self.infraredReflectiveSensor.read_current_state()
             if self.global_state == 2:
