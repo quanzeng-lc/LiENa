@@ -47,7 +47,7 @@ class nmGuidewireControl(QObject):
         self.enable()
 
         self.round_count = 0
-        self.guidewire_dst = 0    #mm
+        self.guidewire_round_dst = 0    #mm
 
         self.analyseTask = threading.Thread(None, self.analyse)
         self.analyseTask.start()
