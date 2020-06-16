@@ -249,9 +249,6 @@ class nmGuidewireControl(QObject):
     def get_status(self):
         return self.guidewire_status
 
-    def get_translation_distance(self):
-
-
     def translational_go_home(self):
         self.guidewireProgressMotor.go_home()
 
