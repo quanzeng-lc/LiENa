@@ -209,21 +209,20 @@ class nmGuidewireControl(QObject):
                 print("advance")
                 self.global_state = self.infraredReflectiveSensor.read_current_state()
             self.set_translational_speed(0)
+            self.guidewire_round_dst -= self.get_guidewire_position()
             self.guidewire_status = 4
             time.sleep(0.5)
             self.set_rotational_speed(self.speedRotate)
             time.sleep(self.rotateTime + 3)
             self.set_rotational_speed(0)
             time.sleep(0.5)
-            self.guidewire_round_dst -= self.get_guidewire_position()
-
             self.set_translational_speed(-2 * self.homeSpeed)
             while self.global_state == 2:
                 time.sleep(0.5)
                 print("retract")
                 self.global_state = self.infraredReflectiveSensor.read_current_state()
             self.set_translational_speed(0)
-            self.guidewire_status = 0
+        self.guidewire_status = 0
 
     def set_rotational_speed(self, rotational_speed):
         self.guidewireRotateMotor.set_expectedSpeed(rotational_speed)
