@@ -24,6 +24,7 @@ class nmGuidewireControl(QObject):
         super(nmGuidewireControl, self).__init__()
 
         self.needToRetract = False
+        self.forbid = False
         self.speedProgress = 30
         self.speedRetract = 2 * self.speedProgress
         self.speedRotate = 200
@@ -87,14 +88,16 @@ class nmGuidewireControl(QObject):
     def analyse(self):
         while True:
             # self.needToRetract or self.guidewireProgressHome is true : forbid
-            if self.guidewire_status == 2 or self.guidewire_status == 3 or self.guidewire_status == 4 or self.guidewire_status == 5:
+            if self.forbid:
                 continue
             self.global_state = self.infraredReflectiveSensor.read_current_state()
             if self.global_state == 2:
+                self.forbid = True
                 self.guidewire_status = 2
                 retract_task = threading.Thread(None, self.prepare_for_another_tour)
                 retract_task.start()
             elif self.global_state == 1:
+                self.forbid = True
                 self.guidewire_status = 3
                 home_task = threading.Thread(target=self.push_guidewire_home, args=(True,))
                 home_task.start()
@@ -114,6 +117,7 @@ class nmGuidewireControl(QObject):
             self.global_state = self.infraredReflectiveSensor.read_current_state()
         self.set_translational_speed(0)
         if flag:
+            self.forbid = False
             self.guidewire_status = 0
             self.clear_guidewire_position()
         # self.guidewireRotateMotor.rm_move_to_position(90, -8000)
@@ -168,6 +172,7 @@ class nmGuidewireControl(QObject):
         self.gripperBack.gripper_chuck_loosen()
         # self.context.clear_guidewire_message()
         # advance Home
+        self.forbid = False
         self.guidewire_status = 0
         # self.number_of_cycles -= 1
         # if self.number_of_cycles > 0:
@@ -176,6 +181,7 @@ class nmGuidewireControl(QObject):
         #     self.push_guidewire_advance()
 
     def multi_pull_guidewire(self, times):
+        self.forbid = True
         self.guidewire_status = 4
         for i in range(times):
             # print("times", times)
@@ -234,6 +240,7 @@ class nmGuidewireControl(QObject):
                 self.global_state = self.infraredReflectiveSensor.read_current_state()
         self.set_translational_speed(0)
         time.sleep(0.3)
+        self.forbid = False
         self.guidewire_status = 0
 
     def set_rotational_speed(self, rotational_speed):
