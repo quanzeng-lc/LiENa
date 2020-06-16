@@ -232,7 +232,7 @@ class nmGuidewireControl(QObject):
                 time.sleep(0.2)
                 print("retract")
                 self.global_state = self.infraredReflectiveSensor.read_current_state()
-            self.set_translational_speed(0)
+        self.set_translational_speed(0)
         self.guidewire_status = 0
 
     def set_rotational_speed(self, rotational_speed):
