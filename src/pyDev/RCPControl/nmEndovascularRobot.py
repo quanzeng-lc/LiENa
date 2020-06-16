@@ -82,7 +82,7 @@ class nmEndovascularRobot(QObject):
         self.context.closeSystemMessageArrived.connect(self.close_app)
         self.context.endovascularMultiTimeAdvanceArrived.connect(self.guidewire_catheter_both)
         self.context.endovascularGoHomeArrived.connect(self.guidewire_go_home)
-        self.context.endovascularMultiTimeGuidewirePullArrived.connect(self.multi_pull_guidewire)
+        self.context.endovascularMultiTimeGuidewirePullArrived.connect(self.multi_pull_guidewire_reaction)
 
     # ----------------------------------------------------------------------------------------------------
     # disable all sub-module of the execution unit
