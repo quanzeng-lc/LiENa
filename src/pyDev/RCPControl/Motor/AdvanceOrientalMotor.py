@@ -93,13 +93,13 @@ class AdvanceOrientalMotor(object):
         if not self.mv_enable.value:
             # print "Warning: Motor is already not enable!"
             return
-        self.mv_enable = 0
+        self.mv_enable.value = 0
 
     def enable(self):
         if self.mv_enable.value:
             # print "Warning: motor is already enable!"
             return
-        self.mv_enable = 1
+        self.mv_enable.value = 1
 
     def set_expectedSpeed(self, speed):
         if self.mv_mode.value:
