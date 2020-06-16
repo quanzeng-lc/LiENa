@@ -39,6 +39,7 @@ class nmEndovascularRobot(QObject):
         self.feedback_flag = True
 
         self.system_status = 0
+        self.guidewire_dst = 0
 
         # ------
         self.number_of_cycles = 0
@@ -141,7 +142,7 @@ class nmEndovascularRobot(QObject):
             self.catheterControl.set_translational_speed(msg.get_catheter_translational_speed() / 5.0)
             self.catheterControl.start_move()
 
-            if self.guidewireControl.get_status() != 2:
+            if self.guidewireControl.get_status() != 2 and self.guidewireControl.get_status() != 3:
                 # print("reaction", msg.get_guidewire_translational_speed())
                 self.guidewireControl.set_normal_both(msg.get_guidewire_translational_speed() / 10.0,
                                                       msg.get_guidewire_rotational_speed() / 10.0)
@@ -160,6 +161,7 @@ class nmEndovascularRobot(QObject):
         guidewire_catheter_multi_advance = threading.Thread(target=self.guidewire_catheter_advance, args=(5,))
         guidewire_catheter_multi_advance.start()
 
+    # push guidewire multi-time
     def guidewire_catheter_advance(self, times):
         # print("guidewire_catheter_advance")
         self.guidewireControl.set_normal_both(20, 0)
@@ -197,7 +199,7 @@ class nmEndovascularRobot(QObject):
                 return
             tf, rf = self.guidewireControl.get_haptic_information()
             self.define_system_status()
-            self.context.real_time_feedback(self.system_status, 0, 0, 0, 0, tf, rf, 0, 0, 0, 0, 0, 0)
+            self.context.real_time_feedback(self.system_status, 0, 0, self.guidewire_dst, 0, tf, rf, 0, 0, 0, 0, 0, 0)
             time.sleep(0.1)
 
     def set_global_state(self, state):
@@ -227,6 +229,10 @@ class nmEndovascularRobot(QObject):
             system_status = system_status | 0x0008
         self.system_status = system_status
         # print(self.guidewireControl.get_status(), self.catheterControl.get_status(), self.contrastMediaControl.get_status(), self.system_status)
+
+    def get_guidewire_dst(self):
+        print("get_guidewire_dst: ", self.guidewire_dst)
+        self.guidewire_dst = self.guidewireControl.get_guidewire_absolute_position()
 
     def guidewire_go_home(self):
         self.guidewireControl.set_normal_both(-20, 0)

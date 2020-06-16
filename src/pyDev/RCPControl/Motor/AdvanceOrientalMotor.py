@@ -52,9 +52,10 @@ class AdvanceOrientalMotor(object):
         self.expectedSpeed = 0
         self.expectedSpeedFlag = mp.Value('i', 0)
         self.vel_start_flag = mp.Value('i', 0)
-        self.count = 0
         # high/low level time interval
         self.vel_mode_interval = mp.Value('f', 0)
+        # record current position
+        self.count = mp.Value('i', 0)
 
         # position mode
         self.position = 0
@@ -73,7 +74,7 @@ class AdvanceOrientalMotor(object):
         # if self.mv_mode:
         #self.vel_move_task = threading.Thread(None, self.continuous_move)
         #self.pos_move_task = threading.Thread(None, self.position_move)
-        self.vel_move_task = mp.Process(target=self.continuous_move, args=(self.mv_mode, self.mv_enable, self.vel_start_flag, self.expectedSpeedFlag, self.is_moving, self.vel_mode_interval))
+        self.vel_move_task = mp.Process(target=self.continuous_move, args=(self.mv_mode, self.mv_enable, self.vel_start_flag, self.expectedSpeedFlag, self.is_moving, self.vel_mode_interval, self.count))
         self.pos_move_task = mp.Process(target=self.position_move, args=(self.mv_mode, self.pos_mode_expected_flag, self.distance_pulse, self.pos_start_flag, self.is_moving, self.pos_mode_interval))
 
     def open_device(self):
@@ -118,7 +119,7 @@ class AdvanceOrientalMotor(object):
     def get_expectedSpeed(self):
         return self.expectedSpeed
 
-    def continuous_move(self, mv_mode, mv_enable, vel_start_flag, expectedSpeedFlag, is_moving, vel_mode_interval):
+    def continuous_move(self, mv_mode, mv_enable, vel_start_flag, expectedSpeedFlag, is_moving, vel_mode_interval, count):
         if mv_mode.value:
             while True:
                 if mv_enable.value:
@@ -130,8 +131,10 @@ class AdvanceOrientalMotor(object):
                             time.sleep(0.5)
                         if expectedSpeedFlag.value == 1:
                             self.push(vel_mode_interval)
+                            count.value += 1
                         if expectedSpeedFlag.value == 2:
                             self.pull(vel_mode_interval)
+                            count.value -= 1
                     else:
                         break
                 else:
@@ -141,21 +144,24 @@ class AdvanceOrientalMotor(object):
 
     def push(self, vel_mode_interval):
         interval = vel_mode_interval.value
-        # print('push', interval)
         GPIO.output(self.pushIO, False)
         time.sleep(interval)
         GPIO.output(self.pushIO, True)
         time.sleep(interval)
-        # self.count += 1
 
     def pull(self, vel_mode_interval):
         interval = vel_mode_interval.value
-        # print('pull', interval)
         GPIO.output(self.pullIO, False)
         time.sleep(interval)
         GPIO.output(self.pullIO, True)
         time.sleep(interval)
-        # self.count += 1
+
+    def get_current_position(self):
+        current_dst = (self.count.value*self.deg_pulse*self.dis_circle)/360.0
+        return current_dst
+
+    def clear_current_position(self):
+        self.count.value = 0
 
     # Position Mode    #############################1
     def set_position(self, position):

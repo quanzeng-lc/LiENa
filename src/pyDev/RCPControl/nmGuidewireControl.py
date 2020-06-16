@@ -44,12 +44,10 @@ class nmGuidewireControl(QObject):
         self.translationalForceSensor = ForceSensor("/dev/ttyusb_force", 9600, 8, 'N', 1)
         self.rotationalForceSensor = ForceSensor("/dev/ttyusb_torque", 9600, 8, 'N', 1)
 
-        self.time_stamp_list = list()
-        self.speed_list = list()
-        self.guidewire_advance_distance = 0    # mm
-        self.mutex = threading.Lock()
-
         self.enable()
+
+        self.round_count = 0
+        self.guidewire_dst = 0    #mm
 
         self.analyseTask = threading.Thread(None, self.analyse)
         self.analyseTask.start()
@@ -94,7 +92,7 @@ class nmGuidewireControl(QObject):
                 retract_task.start()
             elif self.global_state == 1:
                 self.guidewire_status = 3
-                home_task = threading.Thread(None, self.push_guidewire_home)
+                home_task = threading.Thread(target=self.push_guidewire_home, args=(True,))
                 home_task.start()
             elif self.global_state == 3 or self.global_state == 4:
                 self.set_translational_speed(0)
@@ -111,13 +109,30 @@ class nmGuidewireControl(QObject):
             print("home")
             self.global_state = self.infraredReflectiveSensor.read_current_state()
         self.set_translational_speed(0)
-        if not flag:
+        if flag:
             self.guidewire_status = 0
+            self.clear_guidewire_position()
         # self.guidewireRotateMotor.rm_move_to_position(90, -8000)
         # time.sleep(4)
 
+    def clear_guidewire_position(self):
+        self.guidewireProgressMotor.clear_current_position()
+
+    def get_guidewire_position(self):
+        self.guidewireProgressMotor.get_current_position()
+
+    def get_guidewire_absolute_position(self):
+        if self.guidewire_status == 2:
+            return self.guidewire_round_dst    #mm
+        else:
+            return self.guidewire_round_dst + self.get_guidewire_position()
+
     def prepare_for_another_tour(self):
         self.set_translational_speed(0)
+
+        self.round_count += 1
+        self.guidewire_round_dst += self.get_guidewire_position()
+
         # fasten front gripper
         self.gripperFront.gripper_chuck_fasten()
         # self_tightening chunck
@@ -137,7 +152,10 @@ class nmGuidewireControl(QObject):
         print("back limitation arrived")
         self.set_rotational_speed(0)
         time.sleep(0.5)
-        self.push_guidewire_home(True)
+        self.push_guidewire_home()
+
+        self.clear_guidewire_position()
+
         self.set_rotational_speed(self.speedRotate)  # -
         time.sleep(self.rotateTime + 3)
         self.set_rotational_speed(0)
@@ -173,7 +191,8 @@ class nmGuidewireControl(QObject):
                 self.global_state = self.infraredReflectiveSensor.read_current_state()
             # fasten front gripper
             time.sleep(0.5)
-            self.push_guidewire_home(True)
+            self.push_guidewire_home()
+            self.clear_guidewire_position()
             time.sleep(0.5)
             # self_tightening chunck
             self.gripperFront.gripper_chuck_fasten()
@@ -194,6 +213,9 @@ class nmGuidewireControl(QObject):
             time.sleep(self.rotateTime + 3)
             self.set_rotational_speed(0)
             time.sleep(0.5)
+
+        self.guidewire_round_dst -= self.get_guidewire_position()
+
         self.set_translational_speed(-2 * self.homeSpeed)
         while self.global_state == 2:
             time.sleep(0.5)
@@ -206,8 +228,6 @@ class nmGuidewireControl(QObject):
         self.guidewireRotateMotor.set_expectedSpeed(rotational_speed)
 
     def set_translational_speed(self, translation_speed):
-        self.time_stamp_list.append(time.time())
-        self.speed_list.append(translation_speed)
         self.guidewireProgressMotor.set_expectedSpeed(translation_speed)
 
     def set_normal_both(self, translation_speed, rotational_speed):
@@ -229,18 +249,7 @@ class nmGuidewireControl(QObject):
         return self.guidewire_status
 
     def get_translation_distance(self):
-        self.mutex.acquire()
-        count = len(self.time_stamp_list)
-        for i in range(count-1):
-            self.guidewire_advance_distance += self.speed_list[i]*(self.time_stamp_list[i+1]-self.time_stamp_list[i])
-        time_now = time.time()
-        speed_now = self.speed_list[count-1]
-        self.guidewire_advance_distance += speed_now*(time_now - self.time_stamp_list[count-1])
-        self.time_stamp_list.clear()
-        self.speed_list.clear()
-        self.speed_list.append(speed_now)
-        self.time_stamp_list.append(time_now)
-        self.mutex.release()
+
 
     def translational_go_home(self):
         self.guidewireProgressMotor.go_home()
