@@ -184,10 +184,10 @@ class nmEndovascularRobot(QObject):
         if self.multi_pull_guidewire_flag:
             return
         self.multi_pull_guidewire_flag = True
-        multi_guidewire_pull_task = threading.Thread(target=self.multi_pull_guidewire, args=(7,))
+        multi_guidewire_pull_task = threading.Thread(target=self.robot_multi_pull_guidewire, args=(7,))
         multi_guidewire_pull_task.start()
 
-    def multi_pull_guidewire(self, times):
+    def robot_multi_pull_guidewire(self, times):
         self.guidewireControl.multi_pull_guidewire(times)
         self.multi_pull_guidewire_flag = False
 
