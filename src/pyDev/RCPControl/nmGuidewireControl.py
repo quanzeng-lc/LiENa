@@ -183,7 +183,7 @@ class nmGuidewireControl(QObject):
             self.gripperFront.gripper_chuck_loosen()
             # self_tightening chunck
             self.gripperBack.gripper_chuck_loosen()
-            time.sleep(0.5)
+            time.sleep(0.3)
             self.set_translational_speed(-self.speedProgress)
             self.start_move()
             self.set_rotational_speed(0)
@@ -202,6 +202,7 @@ class nmGuidewireControl(QObject):
             # self_tightening chunck
             self.gripperFront.gripper_chuck_fasten()
             self.gripperBack.gripper_chuck_fasten()
+            time.sleep(0.3)
             self.set_rotational_speed(-1 * self.speedRotate)  # +/loosen
             time.sleep(self.rotateTime)
             self.set_rotational_speed(0)
