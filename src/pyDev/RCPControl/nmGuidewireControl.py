@@ -33,6 +33,7 @@ class nmGuidewireControl(QObject):
         self.guidewireProgressHome = False
         self.global_state = 0
         self.guidewire_status = 0
+        self.start_move_flag = False
 
         self.guidewireProgressMotor = AdvanceOrientalMotor()
         self.guidewireRotateMotor = RotateOrientalMotor()
@@ -77,6 +78,9 @@ class nmGuidewireControl(QObject):
 
     def start_move(self):
         # print("ha ha start!")
+        if self.start_move_flag:
+            return
+        self.start_move_flag = True
         self.guidewireProgressMotor.start_move()
         self.guidewireRotateMotor.start_move()
 
