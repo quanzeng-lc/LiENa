@@ -141,8 +141,8 @@ class nmEndovascularRobot(QObject):
 
             if self.guidewireControl.get_status() != 2:
                 # print("reaction", msg.get_guidewire_translational_speed())
-                self.guidewireControl.set_both(msg.get_guidewire_translational_speed() / 10.0,
-                                               msg.get_guidewire_rotational_speed() / 10.0)
+                self.guidewireControl.set_normal_both(msg.get_guidewire_translational_speed() / 10.0,
+                                                      msg.get_guidewire_rotational_speed() / 10.0)
                 self.guidewireControl.start_move()
 
             # print("contrastMediaControl:", msg.get_contrast_media_speed()/100.0, msg.get_contrast_media_volume()/100.0)
@@ -157,11 +157,10 @@ class nmEndovascularRobot(QObject):
         self.guidewire_catheter_flag = True
         guidewire_catheter_multi_advance = threading.Thread(target=self.guidewire_catheter_advance, args=(5,))
         guidewire_catheter_multi_advance.start()
-        self.guidewire_catheter_flag = False
 
     def guidewire_catheter_advance(self, times):
         # print("guidewire_catheter_advance")
-        self.guidewireControl.set_both(20, 0)
+        self.guidewireControl.set_normal_both(20, 0)
         self.guidewireControl.start_move()
         self.catheterControl.set_translational_speed(10)
         self.catheterControl.start_move()
@@ -180,9 +179,8 @@ class nmEndovascularRobot(QObject):
         if self.multi_pull_guidewire_flag:
             return
         self.multi_pull_guidewire_flag = True
-        multi_guidewire_pull_task = threading.Thread(target=self.guidewireControl.multi_pull_guidewire, args=(3,))
+        multi_guidewire_pull_task = threading.Thread(target=self.guidewireControl.multi_pull_guidewire, args=(7,))
         multi_guidewire_pull_task.start()
-        self.multi_pull_guidewire_flag = False
 
     # ----------------------------------------------------------------------------------------------------
     # acquire feedback information
@@ -224,7 +222,7 @@ class nmEndovascularRobot(QObject):
         # print(self.guidewireControl.get_status(), self.catheterControl.get_status(), self.contrastMediaControl.get_status(), self.system_status)
 
     def guidewire_go_home(self):
-        self.guidewireControl.set_both(-20, 0)
+        self.guidewireControl.set_normal_both(-20, 0)
         self.guidewireControl.start_move()
 
     def decision_making(self):

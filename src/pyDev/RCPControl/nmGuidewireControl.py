@@ -123,7 +123,6 @@ class nmGuidewireControl(QObject):
         # self_tightening chunck
         self.gripperBack.gripper_chuck_fasten()
         time.sleep(1)
-
         self.set_rotational_speed(-1 * self.speedRotate)  # +/loosen
         self.start_move()
         time.sleep(self.rotateTime)
@@ -136,16 +135,17 @@ class nmGuidewireControl(QObject):
             time.sleep(0.5)
             print("retracting", self.infraredReflectiveSensor.read_current_state(), self.global_state)
         print("back limitation arrived")
-        self.set_translational_speed(0)
+        self.set_rotational_speed(0)
+        time.sleep(2)
+        self.push_guidewire_home(True)
+        time.sleep(1)
         self.set_rotational_speed(self.speedRotate)  # -
         time.sleep(self.rotateTime + 3)
-        self.set_rotational_speed(0)
-
         self.gripperFront.gripper_chuck_loosen()
         self.gripperBack.gripper_chuck_loosen()
         # self.context.clear_guidewire_message()
         # advance Home
-        self.push_guidewire_home()
+        self.guidewire_status = 0
         # self.number_of_cycles -= 1
         # if self.number_of_cycles > 0:
         #     while self.needToRetract or self.guidewireProgressHome:
@@ -163,21 +163,23 @@ class nmGuidewireControl(QObject):
             time.sleep(1)
             self.set_translational_speed(-self.speedProgress)
             self.start_move()
+            self.set_rotational_speed(0)
+            self.start_move()
             self.global_state = self.infraredReflectiveSensor.read_current_state()
             while self.global_state != 1:
                 time.sleep(0.5)
                 print("pull")
                 self.global_state = self.infraredReflectiveSensor.read_current_state()
             # fasten front gripper
-            self.set_translational_speed(0)
+            time.sleep(2)
+            self.push_guidewire_home(True)
+            time.sleep(1)
             self.gripperFront.gripper_chuck_fasten()
             # self_tightening chunck
             self.gripperBack.gripper_chuck_fasten()
             self.set_rotational_speed(-1 * self.speedRotate)  # +/loosen
-            self.start_move()
             time.sleep(self.rotateTime)
             self.set_rotational_speed(0)
-            self.push_guidewire_home(True)
             self.set_translational_speed(self.speedProgress)
             # print("self.set_translational_speed(self.speedProgress)")
             self.global_state = self.infraredReflectiveSensor.read_current_state()
@@ -206,8 +208,7 @@ class nmGuidewireControl(QObject):
         self.speed_list.append(translation_speed)
         self.guidewireProgressMotor.set_expectedSpeed(translation_speed)
 
-
-    def set_both(self, translation_speed, rotational_speed):
+    def set_normal_both(self, translation_speed, rotational_speed):
         if self.needToRetract or self.guidewireProgressHome:
             return
         self.set_translational_speed(translation_speed)
