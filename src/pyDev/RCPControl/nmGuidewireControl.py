@@ -109,7 +109,7 @@ class nmGuidewireControl(QObject):
         self.start_move()
         self.global_state = self.infraredReflectiveSensor.read_current_state()
         while self.global_state == 1:
-            time.sleep(0.5)
+            time.sleep(0.2)
             print("home")
             self.global_state = self.infraredReflectiveSensor.read_current_state()
         self.set_translational_speed(0)
@@ -151,8 +151,8 @@ class nmGuidewireControl(QObject):
         self.start_move()
         # time.sleep(3)
         while self.infraredReflectiveSensor.read_current_state() != 1:
-            time.sleep(0.5)
-            print("retracting", self.infraredReflectiveSensor.read_current_state(), self.global_state)
+            time.sleep(0.2)
+            # print("retracting", self.infraredReflectiveSensor.read_current_state(), self.global_state)
         print("back limitation arrived")
         self.set_rotational_speed(0)
         time.sleep(0.5)
@@ -190,8 +190,8 @@ class nmGuidewireControl(QObject):
             self.start_move()
             self.global_state = self.infraredReflectiveSensor.read_current_state()
             while self.global_state != 1:
-                time.sleep(0.5)
-                print("pull")
+                time.sleep(0.2)
+                # print("pull")
                 self.global_state = self.infraredReflectiveSensor.read_current_state()
             # fasten front gripper
             time.sleep(0.5)
@@ -209,8 +209,8 @@ class nmGuidewireControl(QObject):
             self.global_state = self.infraredReflectiveSensor.read_current_state()
             self.guidewire_status = 5
             while self.global_state != 2:
-                time.sleep(0.5)
-                print("advance")
+                time.sleep(0.2)
+                # print("advance")
                 self.global_state = self.infraredReflectiveSensor.read_current_state()
             self.set_translational_speed(0)
             self.guidewire_round_dst -= self.get_guidewire_position()
@@ -222,7 +222,7 @@ class nmGuidewireControl(QObject):
             time.sleep(0.5)
             self.set_translational_speed(-2 * self.homeSpeed)
             while self.global_state == 2:
-                time.sleep(0.5)
+                time.sleep(0.2)
                 print("retract")
                 self.global_state = self.infraredReflectiveSensor.read_current_state()
             self.set_translational_speed(0)
