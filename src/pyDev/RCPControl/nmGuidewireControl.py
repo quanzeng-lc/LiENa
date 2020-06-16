@@ -196,6 +196,7 @@ class nmGuidewireControl(QObject):
             # fasten front gripper
             time.sleep(0.5)
             self.push_guidewire_home()
+            self.guidewire_round_dst -= self.get_guidewire_position()
             self.clear_guidewire_position()
             time.sleep(0.5)
             # self_tightening chunck
