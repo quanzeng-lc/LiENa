@@ -119,7 +119,7 @@ class nmGuidewireControl(QObject):
         self.guidewireProgressMotor.clear_current_position()
 
     def get_guidewire_position(self):
-        self.guidewireProgressMotor.get_current_position()
+        return self.guidewireProgressMotor.get_current_position()
 
     def get_guidewire_absolute_position(self):
         if self.guidewire_status == 2 or self.guidewire_status == 5:
