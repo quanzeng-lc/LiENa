@@ -13,7 +13,7 @@ from RCPControl.GlobalParameterType import GlobalParameterType
 
 
 def positive_or_negtive(value):
-    if value > 0:
+    if value >= 0:
         return 0
     else:
         return 1
