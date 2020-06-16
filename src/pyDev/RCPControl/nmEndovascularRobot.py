@@ -232,7 +232,7 @@ class nmEndovascularRobot(QObject):
         # print(self.guidewireControl.get_status(), self.catheterControl.get_status(), self.contrastMediaControl.get_status(), self.system_status)
 
     def get_guidewire_dst(self):
-        print("get_guidewire_dst: ", self.guidewire_dst)
+        # print("get_guidewire_dst: ", self.guidewire_dst)
         self.guidewire_dst = int(self.guidewireControl.get_guidewire_absolute_position())
 
     def guidewire_go_home(self):
