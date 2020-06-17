@@ -142,8 +142,8 @@ class nmEndovascularRobot(QObject):
             self.catheterControl.set_translational_speed(msg.get_catheter_translational_speed() / 5.0)
             self.catheterControl.start_move()
 
-            if self.guidewireControl.is_forbidden_reaction():
-                print("reaction", self.guidewireControl.is_forbidden_reaction(), msg.get_guidewire_translational_speed())
+            if not self.guidewireControl.is_forbidden_reaction():
+                # print("reaction", self.guidewireControl.is_forbidden_reaction(), msg.get_guidewire_translational_speed())
                 self.guidewireControl.set_normal_both(msg.get_guidewire_translational_speed() / 10.0,
                                                       msg.get_guidewire_rotational_speed() / 10.0)
                 self.guidewireControl.start_move()
