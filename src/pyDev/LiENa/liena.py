@@ -41,7 +41,6 @@ class Liena(QObject):
         self.distributedSystem.needToRestartServer.connect(self.restart_tcp_server)
         self.tcpServer.clientArrived.connect(self.create_reception_channel_by_address)
         # self.distributedSystem.generate New Message sequence
-
         self.distributedSystem.generateNewMessageSequence[int].connect(self.generate_new_msg_sequence_by)
 
     def generate_new_msg_sequence_by(self, device_id):
@@ -86,7 +85,6 @@ class Liena(QObject):
         # verifier if the global server is launched
         if not self.system_flag:
             self.launch()
-
         # generate the session and the outgoing pipeline of the session
         return self.distributedSystem.create_distributed_module_with_transmission_channel(target_device_id, True, target_ip_address, port)
 
@@ -103,7 +101,7 @@ class Liena(QObject):
     def create_reception_channel_by_address(self):
         incoming_socket = self.tcpServer.get_latest_socket()
         if self.distributedSystem.check_module_by_addr(incoming_socket[1]):
-            self.distributedSystem.generate_reception_channel_by_addr(incoming_socket[1], incoming_socket[0])
+            self.distributedSystem.decoding_taskgenerate_reception_channel_by_addr(incoming_socket[1], incoming_socket[0])
         else:
             self.distributedSystem.create_distributed_module_with_reception_channel(incoming_socket[0])
 

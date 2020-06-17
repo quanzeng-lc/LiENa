@@ -64,7 +64,7 @@ class LienaDecodingTask(QObject):
         self.rtFlag = True
         self.rtPeriod = 0.02
         self.stand_by = False
-        self.receptionTask = threading.Thread(None, self.decode)
+        self.decodingTask = threading.Thread(None, self.decode)
 
     def set_input_msg_queue(self, inputMsgQue):
         # print("123")
@@ -128,7 +128,7 @@ class LienaDecodingTask(QObject):
         self.handshakeMessageArrived.emit(msg)
 
     def launch(self):
-        self.receptionTask.start()
+        self.decodingTask.start()
 
     def decode(self):
         while self.rtFlag:

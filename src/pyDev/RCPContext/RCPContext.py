@@ -106,9 +106,7 @@ class RCPContext(QObject):
                 self.inputLock.acquire()
                 msg = self.input_cache.get_latest_message_by_index(i)
                 if msg is not None:
-
                     ci = LienaControlInstruction()
-
                     body = msg.get_message_body()
                     if int(body[0]) == 0:
                         self.closeSystemMessageArrived.emit()
