@@ -138,6 +138,7 @@ class nmEndovascularRobot(QObject):
             if self.guidewire_catheter_flag:
                 return
 
+            print('reaction')
             self.catheterControl.set_translational_speed(msg.get_catheter_translational_speed() / 5.0)
             self.catheterControl.start_move()
 
