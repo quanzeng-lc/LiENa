@@ -74,7 +74,6 @@ class nmEndovascularRobot(QObject):
         self.open()
 
         self.guidewire_catheter_flag = False
-        self.multi_pull_guidewire_flag = False
 
         # signal/slots
         self.context.controlMessageArrived[LienaControlInstruction].connect(self.reaction)
@@ -136,13 +135,13 @@ class nmEndovascularRobot(QObject):
             self.enable()
             if self.decision_making() is not 1:
                 return
-            if self.guidewire_catheter_flag or self.multi_pull_guidewire_flag:
+            if self.guidewire_catheter_flag:
                 return
 
             self.catheterControl.set_translational_speed(msg.get_catheter_translational_speed() / 5.0)
             self.catheterControl.start_move()
 
-            if self.guidewireControl.get_status() != 2 and self.guidewireControl.get_status() != 3:
+            if self.guidewireControl.is_forbidden_reaction():
                 # print("reaction", msg.get_guidewire_translational_speed())
                 self.guidewireControl.set_normal_both(msg.get_guidewire_translational_speed() / 10.0,
                                                       msg.get_guidewire_rotational_speed() / 10.0)
@@ -183,13 +182,13 @@ class nmEndovascularRobot(QObject):
         print("multi_pull_guidewire")
         if self.multi_pull_guidewire_flag:
             return
-        self.multi_pull_guidewire_flag = True
+        self.guidewire_catheter_flag = True
         multi_guidewire_pull_task = threading.Thread(target=self.robot_multi_pull_guidewire, args=(7,))
         multi_guidewire_pull_task.start()
 
     def robot_multi_pull_guidewire(self, times):
         self.guidewireControl.multi_pull_guidewire(times)
-        self.multi_pull_guidewire_flag = False
+        self.guidewire_catheter_flag = False
 
     # ----------------------------------------------------------------------------------------------------
     # acquire feedback information

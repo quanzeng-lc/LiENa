@@ -267,6 +267,9 @@ class nmGuidewireControl(QObject):
     def get_status(self):
         return self.guidewire_status
 
+    def is_forbidden_reaction(self):
+        return self.forbid
+
     def translational_go_home(self):
         self.guidewireProgressMotor.go_home()
 
