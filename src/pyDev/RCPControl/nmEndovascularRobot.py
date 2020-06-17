@@ -180,7 +180,7 @@ class nmEndovascularRobot(QObject):
         self.guidewire_catheter_advance(times)
 
     def multi_pull_guidewire_reaction(self):
-        print("multi_pull_guidewire")
+        # print("multi_pull_guidewire")
         if self.guidewire_catheter_flag:
             return
         self.guidewire_catheter_flag = True

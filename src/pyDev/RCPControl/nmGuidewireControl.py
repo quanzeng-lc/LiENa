@@ -137,10 +137,8 @@ class nmGuidewireControl(QObject):
 
     def prepare_for_another_tour(self):
         self.set_translational_speed(0)
-
         self.round_count += 1
         self.guidewire_round_dst += self.get_guidewire_position()
-
         # fasten front gripper
         self.gripperFront.gripper_chuck_fasten()
         # self_tightening chunck
@@ -181,6 +179,8 @@ class nmGuidewireControl(QObject):
         #     self.push_guidewire_advance()
 
     def multi_pull_guidewire(self, times):
+        if self.forbid:
+            return
         self.forbid = True
         self.guidewire_status = 4
         for i in range(times):
