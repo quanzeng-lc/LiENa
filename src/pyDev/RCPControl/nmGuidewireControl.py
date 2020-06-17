@@ -174,11 +174,11 @@ class nmGuidewireControl(QObject):
         # advance Home
         self.forbid = False
         self.guidewire_status = 0
-        # self.number_of_cycles -= 1
-        # if self.number_of_cycles > 0:
-        #     while self.needToRetract or self.guidewireProgressHome:
-        #         time.sleep(0.5)
-        #     self.push_guidewire_advance()
+        self.number_of_cycles -= 1
+        if self.number_of_cycles > 0:
+            while self.needToRetract or self.guidewireProgressHome:
+                time.sleep(0.5)
+            self.push_guidewire_advance()
 
     def multi_pull_guidewire(self, times):
         if self.forbid:
