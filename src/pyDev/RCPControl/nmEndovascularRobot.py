@@ -158,6 +158,10 @@ class nmEndovascularRobot(QObject):
         if self.guidewire_catheter_flag:
             return
         self.guidewire_catheter_flag = True
+        time.sleep(0.1)
+        if self.guidewireControl.is_forbidden_reaction():
+            self.guidewire_catheter_flag = False
+            return
         guidewire_catheter_multi_advance = threading.Thread(target=self.guidewire_catheter_advance, args=(5,))
         guidewire_catheter_multi_advance.start()
 
@@ -184,6 +188,7 @@ class nmEndovascularRobot(QObject):
         if self.guidewire_catheter_flag:
             return
         self.guidewire_catheter_flag = True
+        time.sleep(0.1)
         multi_guidewire_pull_task = threading.Thread(target=self.robot_multi_pull_guidewire, args=(7,))
         multi_guidewire_pull_task.start()
 

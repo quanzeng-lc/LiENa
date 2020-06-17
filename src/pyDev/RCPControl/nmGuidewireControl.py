@@ -93,11 +93,13 @@ class nmGuidewireControl(QObject):
             self.global_state = self.infraredReflectiveSensor.read_current_state()
             if self.global_state == 2:
                 self.forbid = True
+                time.sleep(0.1)
                 self.guidewire_status = 2
                 retract_task = threading.Thread(None, self.prepare_for_another_tour)
                 retract_task.start()
             elif self.global_state == 1:
                 self.forbid = True
+                time.sleep(0.1)
                 self.guidewire_status = 3
                 home_task = threading.Thread(target=self.push_guidewire_home, args=(True,))
                 home_task.start()
