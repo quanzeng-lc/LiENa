@@ -48,9 +48,10 @@ parity = 'N'
 stop_bits = 1
 force_feedback1 = ForceSensor(force_port1, baud_rate, byte_size, parity, stop_bits)
 force_feedback2 = ForceSensor(force_port2, baud_rate, byte_size, parity, stop_bits)
+
 while True:
     force_value = force_feedback1.get_value()
     torque_value = force_feedback2.get_value()
-    time.sleep(0.01)
+    time.sleep(0.1)
     print(force_value, torque_value)
 """

@@ -101,7 +101,7 @@ class Liena(QObject):
     def create_reception_channel_by_address(self):
         incoming_socket = self.tcpServer.get_latest_socket()
         if self.distributedSystem.check_module_by_addr(incoming_socket[1]):
-            self.distributedSystem.decoding_taskgenerate_reception_channel_by_addr(incoming_socket[1], incoming_socket[0])
+            self.distributedSystem.generate_reception_channel_by_addr(incoming_socket[1], incoming_socket[0])
         else:
             self.distributedSystem.create_distributed_module_with_reception_channel(incoming_socket[0])
 

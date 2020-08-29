@@ -138,7 +138,7 @@ class nmEndovascularRobot(QObject):
             if self.guidewire_catheter_flag:
                 return
 
-            # print('reaction')
+            print('reaction', msg.get_catheter_translational_speed(), msg.get_guidewire_translational_speed(), msg.get_guidewire_rotational_speed())
             self.catheterControl.set_translational_speed(msg.get_catheter_translational_speed() / 5.0)
             self.catheterControl.start_move()
 
@@ -154,6 +154,7 @@ class nmEndovascularRobot(QObject):
                 self.contrastMediaControl.execute(msg.get_contrast_media_speed()/100.0, msg.get_contrast_media_volume()/100.0)
                 self.contrastMediaControl.start_move()
 
+    # guidewire catheter move together
     def guidewire_catheter_both(self):
         if self.guidewire_catheter_flag:
             return

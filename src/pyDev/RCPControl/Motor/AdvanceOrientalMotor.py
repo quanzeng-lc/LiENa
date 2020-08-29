@@ -42,7 +42,7 @@ class AdvanceOrientalMotor(object):
         self.is_moving = mp.Value('i', 0)
 
         # the distance for every circle
-        self.dis_circle = 5  # mm
+        self.dis_circle = 4  # mm
         self.deg_pulse = 0.36  # degree for every pulse
 
         # home flag
@@ -259,7 +259,7 @@ class AdvanceOrientalMotor(object):
             # self.vel_move_task = threading.Thread(None, self.continuous_move)
             self.vel_move_task = mp.Process(target=self.continuous_move, args=(
             self.mv_mode, self.mv_enable, self.vel_start_flag, self.expectedSpeedFlag, self.is_moving,
-            self.vel_mode_interval))
+            self.vel_mode_interval, self.count))
 
         else:
             self.pos_start_flag.value = 0
@@ -296,15 +296,15 @@ class AdvanceOrientalMotor(object):
 
 """
 motor1 = AdvanceOrientalMotor()
-motor1.set_expectedSpeed(-2)
+motor1.set_expectedSpeed(2)
 start = time.time()
 motor1.start_move()
 time.sleep(5)
 motor1.stop()
 time.sleep(3)
-motor1.set_expectedSpeed(2)
+motor1.set_expectedSpeed(-2)
 motor1.start_move()
-time.sleep(5)
+time.sleep(3)
 motor1.stop()
 print('time',time.time()-start)
 """

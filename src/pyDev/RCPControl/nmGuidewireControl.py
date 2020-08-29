@@ -1,19 +1,15 @@
 from PyQt5.QtCore import QObject, pyqtSignal
-# from RCPControl.Motor.AdvanceOrientalMotor import AdvanceOrientalMotor
-# from RCPControl.Motor.RotateOrientalMotor import RotateOrientalMotor
-# from RCPControl.Gripper import Gripper
-# from RCPControl.ForceSensor import ForceSensor
-# from RCPControl.InfraredReflectiveSensor import InfraredReflectiveSensor
-# from RCPControl.SensingParameter import SensingParameter
-import time
+import sys
+sys.path.append("../")
+from RCPControl.Motor.AdvanceOrientalMotor import AdvanceOrientalMotor
+from RCPControl.Motor.RotateOrientalMotor import RotateOrientalMotor
+from RCPControl.Gripper import Gripper
+from RCPControl.ForceSensor import ForceSensor
+from RCPControl.InfraredReflectiveSensor import InfraredReflectiveSensor
+from RCPControl.SensingParameter import SensingParameter
 import threading
+import time
 import csv
-from Motor.AdvanceOrientalMotor import AdvanceOrientalMotor
-from Motor.RotateOrientalMotor import RotateOrientalMotor
-from Gripper import Gripper
-from ForceSensor import ForceSensor
-from InfraredReflectiveSensor import InfraredReflectiveSensor
-from SensingParameter import SensingParameter
 
 
 class nmGuidewireControl(QObject):
@@ -28,13 +24,17 @@ class nmGuidewireControl(QObject):
         self.speedProgress = 30
         self.speedRetract = 2 * self.speedProgress
         self.speedRotate = 200
-        self.rotateTime = 360 / self.speedRotate
+        self.rotateTime = 400 / self.speedRotate
         self.homeSpeed = 3
         self.number_of_cycles = 0
+        self.number = ""
         self.guidewireProgressHome = False
         self.global_state = 0
         self.guidewire_status = 0
         self.start_move_flag = False
+        self.recorde_flag=False
+        self.retract_flag=False
+        self.multi_pull_times = 0
 
         self.guidewireProgressMotor = AdvanceOrientalMotor()
         self.guidewireRotateMotor = RotateOrientalMotor()
@@ -138,6 +138,7 @@ class nmGuidewireControl(QObject):
             return self.guidewire_round_dst + self.get_guidewire_position()
 
     def prepare_for_another_tour(self):
+        self.recorde_flag = False
         self.set_translational_speed(0)
         self.round_count += 1
         self.guidewire_round_dst += self.get_guidewire_position()
@@ -185,13 +186,17 @@ class nmGuidewireControl(QObject):
             return
         self.forbid = True
         self.guidewire_status = 4
+        self.retract_flag=True
+    
         for i in range(times):
+            self.multi_pull_times = i + 1
             # print("times", times)
             # fasten front gripper
             self.gripperFront.gripper_chuck_loosen()
             # self_tightening chunck
             self.gripperBack.gripper_chuck_loosen()
             time.sleep(1)
+            self.recorde_flag = True
             self.set_translational_speed(-self.speedProgress)
             self.start_move()
             self.set_rotational_speed(0)
@@ -199,10 +204,11 @@ class nmGuidewireControl(QObject):
             self.global_state = self.infraredReflectiveSensor.read_current_state()
             while self.global_state != 1:
                 time.sleep(0.2)
-                # print("pull")
+                print("pull")
                 self.global_state = self.infraredReflectiveSensor.read_current_state()
             # fasten front gripper
-            time.sleep(0.5)
+            #time.sleep(0.5)
+            self.recorde_flag = False
             self.push_guidewire_home()
             self.guidewire_round_dst += self.get_guidewire_position()
             self.clear_guidewire_position()
@@ -276,40 +282,86 @@ class nmGuidewireControl(QObject):
         self.guidewireProgressMotor.go_home()
 
     def force_quire(self):
+        compteur = 0
         while True:
+            #if not self.recorde_flag:
+            #    time.sleep(0.1)
+            #    continue
             data = self.get_haptic_information()
-            """
-            path = "./hapticFeedback.csv"
+            #print("num", str(self.number_of_cycles)) 
+            path = "./Data/hapticFeedback" + str(self.number_of_cycles) + ".csv"
+            #if self.retract_flag:
+            #    path = "./Data/hapticFeedback_pull" + str(self.multi_pull_times) + ".csv"
             #print(data)
             tmpData = list()
+            tmpData.append(str(compteur))
+            tmpData.append(str(time.time()))
             tmpData.append(str(data[0]))
             tmpData.append(str(data[1]))
             with open(path, 'a+') as f:
                 csv_writer = csv.writer(f)
                 csv_writer.writerow(data)
                 # f.write(tmpData[0])
+            compteur += 1
             time.sleep(0.01)
-            """
-
+            
+            
     #   test guidewire advance
     def push_guidewire_advance(self):
         # self.guidewireRotateMotor.set_expectedSpeed(0)
         # self.guidewireRotateMotor.start_move()
-        self.guidewireProgressMotor.set_expectedSpeed(self.speedProgress)
+        self.recorde_flag = True        
+        self.guidewireProgressMotor.set_expectedSpeed(15)
+        #print(self.speedProgress)
         self.guidewireProgressMotor.start_move()
+        self.guidewireRotateMotor.set_expectedSpeed(-200)
+        self.guidewireRotateMotor.start_move()
         print("number_of_cycles", self.number_of_cycles)
 
     def define_number_of_cycles(self):
         """
         define the number of cycels of the robot operation
         """
-        self.number_of_cycles = int(input("please input the number of cycles:"))
+        self.number = input("please input the number of cycles:")
+        self.number_of_cycles = int(self.number)
 
     def multitime_push_guidewire(self):
         self.define_number_of_cycles()
         self.push_guidewire_advance()
 
-
+"""
 import sys
 guidewireControl = nmGuidewireControl()
 guidewireControl.multitime_push_guidewire()
+#guidewireControl.multi_pull_guidewire(2)
+"""
+
+"""
+# test advance speed
+guidewireControl = nmGuidewireControl()
+guidewireControl.guidewireProgressMotor.set_expectedSpeed(6)
+guidewireControl.guidewireProgressMotor.start_move()
+start = time.time()
+time.sleep(4)
+guidewireControl.guidewireProgressMotor.set_expectedSpeed(0)
+print("time: ", time.time()-start)
+"""
+
+"""
+# test advance distance error
+guidewireControl = nmGuidewireControl()
+start = time.time()
+guidewireControl.guidewireProgressMotor.set_mode(0)
+guidewireControl.guidewireProgressMotor.set_position(20)
+guidewireControl.guidewireProgressMotor.set_pos_mode_expectedSpeed(3)
+guidewireControl.guidewireProgressMotor.start_move()
+"""
+"""
+# test rotate angle
+guidewireControl = nmGuidewireControl()
+guidewireControl.guidewireRotateMotor.set_mode(0)
+guidewireControl.guidewireRotateMotor.set_position(5)
+guidewireControl.guidewireRotateMotor.set_pos_mode_expectedSpeed(1)
+guidewireControl.guidewireRotateMotor.start_move()
+"""
+

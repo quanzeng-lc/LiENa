@@ -60,7 +60,7 @@ def main():
     communication_stack.launch()
 
     while True:
-        ret = communication_stack.open_session_request(SIAT_COCKPIT_VERSION_1, "192.168.31.44", 10704)
+        ret = communication_stack.open_session_request(SIAT_COCKPIT_VERSION_1, "192.168.0.12", 10704)
         if ret:
             break
         time.sleep(2)

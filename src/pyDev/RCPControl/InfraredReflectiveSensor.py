@@ -5,8 +5,9 @@ import RPi.GPIO as GPIO
 import time
 import threading
 import random
-# from RCPControl.EmergencySwitch import EmergencySwitch
-from EmergencySwitch import EmergencySwitch
+import sys
+sys.path.append("../")
+from RCPControl.EmergencySwitch import EmergencySwitch
 
 
 class InfraredReflectiveSensor(object):
@@ -62,4 +63,5 @@ class InfraredReflectiveSensor(object):
 """
 irs = InfraredReflectiveSensor()
 irs.read()
+#from EmergencySwitch import EmergencySwitch
 """
