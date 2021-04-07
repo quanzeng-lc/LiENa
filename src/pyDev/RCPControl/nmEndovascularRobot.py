@@ -33,6 +33,7 @@ class nmEndovascularRobot(QObject):
 
         self.context = context
 
+        self.standBy = False
         # initialisation
         self.flag = True
         self.global_state = 0
@@ -49,6 +50,7 @@ class nmEndovascularRobot(QObject):
         self.emSwitch = 1
         self.lastSwitch = 0
         self.em_count = 0
+        self.startPrepare = False
 
         # speed parameters
         self.speedProgress = 15
@@ -65,11 +67,11 @@ class nmEndovascularRobot(QObject):
         self.guidewireControl = nmGuidewireControl()
         self.catheterControl = nmCatheterControl()
         self.contrastMediaControl = nmContrastMediaControl()
-        self.switch = EmergencySwitch()
+        #self.switch = EmergencySwitch()
 
         # real time task to parse commands in context
         self.feedbackTask = threading.Thread(None, self.feedback)
-        self.feedbackTask.start()
+        #self.feedbackTask.start()
 
         self.open()
 
@@ -79,6 +81,7 @@ class nmEndovascularRobot(QObject):
         self.context.controlMessageArrived[LienaControlInstruction].connect(self.reaction)
         self.context.nonProvedControlMessageArrived.connect(self.standby)
         self.context.closeSystemMessageArrived.connect(self.close_app)
+        # multiadvance
         self.context.endovascularMultiTimeAdvanceArrived.connect(self.guidewire_catheter_both)
         self.context.endovascularGoHomeArrived.connect(self.guidewire_go_home)
         self.context.endovascularMultiTimeGuidewirePullArrived.connect(self.multi_pull_guidewire_reaction)
@@ -116,46 +119,63 @@ class nmEndovascularRobot(QObject):
     # ----------------------------------------------------------------------------------------------------
     # all sub-control-module enter into standby status
     def standby(self):
-        self.guidewireControl.standby()
-        self.catheterControl.standby()
-        self.contrastMediaControl.standby()
+        print("-----------standBy")
+        if not self.standBy:
+            self.guidewireControl.stop()
+            self.catheterControl.stop()
+            self.contrastMediaControl.stop()
+            self.standBy = True
+
 
     # ----------------------------------------------------------------------------------------------------
     # to check the emergency switch status.
     def get_robot_status(self):
-        return self.switch.read_current_state()
+        #return self.switch.read_current_state()
+        return 0
 
     # ----------------------------------------------------------------------------------------------------
     # execute action according to the incoming message
     def reaction(self, msg):
+        if self.startPrepare:
+            return
+        #print("robot_status ", self.get_robot_status())
         if self.get_robot_status() == 1:
             self.standby()
             return
         elif self.get_robot_status() == 0:
-            self.enable()
+            self.standBy = False
             if self.decision_making() is not 1:
                 return
             if self.guidewire_catheter_flag:
                 return
-
-            print('reaction', msg.get_catheter_translational_speed(), msg.get_guidewire_translational_speed(), msg.get_guidewire_rotational_speed())
-            self.catheterControl.set_translational_speed(msg.get_catheter_translational_speed() / 5.0)
+            #print('reaction', msg.get_catheter_translational_speed() / 100.0, msg.get_guidewire_translational_speed() / 100, msg.get_guidewire_rotational_speed() / 100.0)
+            self.catheterControl.set_translational_speed(msg.get_catheter_translational_speed() / 100.0)
             self.catheterControl.start_move()
 
-            if not self.guidewireControl.is_forbidden_reaction():
-                # print("reaction", self.guidewireControl.is_forbidden_reaction(), msg.get_guidewire_translational_speed())
-                self.guidewireControl.set_normal_both(msg.get_guidewire_translational_speed() / 10.0,
-                                                      msg.get_guidewire_rotational_speed() / 10.0)
-                self.guidewireControl.start_move()
+            if self.guidewireControl.is_forbidden_reaction() == 3:
+                self.guidewireControl.start_move(0, 0)
+            elif self.guidewireControl.is_forbidden_reaction() == 0:
+                self.guidewireControl.start_move(msg.get_guidewire_translational_speed() / 100.0, msg.get_guidewire_rotational_speed() / 100.0)
+            elif self.guidewireControl.is_forbidden_reaction() == 1:
+                if msg.get_guidewire_translational_speed() < 0:
+                    self.guidewireControl.start_move(msg.get_guidewire_translational_speed() / 100.0, msg.get_guidewire_rotational_speed() / 100.0)
+                if msg.get_guidewire_translational_speed() > 0:
+                    self.guidewireControl.start_move(0, msg.get_guidewire_rotational_speed() / 100.0)
+            elif self.guidewireControl.is_forbidden_reaction() == 2:
+                if msg.get_guidewire_translational_speed() > 0:
+                    self.guidewireControl.start_move(msg.get_guidewire_translational_speed() / 100.0, msg.get_guidewire_rotational_speed() / 100.0)
+                if msg.get_guidewire_translational_speed() < 0:
+                    self.guidewireControl.start_move(0, msg.get_guidewire_rotational_speed() / 100.0)
 
             # print("contrastMediaControl:", msg.get_contrast_media_speed()/100.0, msg.get_contrast_media_volume()/100.0)
             if msg.get_contrast_media_speed() > 100:
-                self.contrastMediaControl.set_mode(0)
-                self.contrastMediaControl.execute(msg.get_contrast_media_speed()/100.0, msg.get_contrast_media_volume()/100.0)
-                self.contrastMediaControl.start_move()
+                #self.contrastMediaControl.execute(msg.get_contrast_media_speed()/100.0, msg.get_contrast_media_volume()/100.0)
+                #self.contrastMediaControl.start_move()
+                pass
 
     # guidewire catheter move together
     def guidewire_catheter_both(self):
+        """
         if self.guidewire_catheter_flag:
             return
         self.guidewire_catheter_flag = True
@@ -165,11 +185,24 @@ class nmEndovascularRobot(QObject):
             return
         guidewire_catheter_multi_advance = threading.Thread(target=self.guidewire_catheter_advance, args=(5,))
         guidewire_catheter_multi_advance.start()
+        """
+        if self.standBy:
+            print("prepare!!!")
+            self.startPrepare = True
+            guidewirePrepareAnotherTour = threading.Thread(target=self.prepareAnotherTour, args=())
+            guidewirePrepareAnotherTour.start()
+            #pass
+            
+    def prepareAnotherTour(self):
+        self.guidewireControl.prepare_for_another_tour()
+        time.sleep(0.5)
+        self.startPrepare = False
+
 
     # push guidewire multi-time
     def guidewire_catheter_advance(self, times):
         # print("guidewire_catheter_advance")
-        self.guidewireControl.set_normal_both(20, 0)
+        #self.guidewireControl.set_normal_both(20, 0)
         self.guidewireControl.start_move()
         self.catheterControl.set_translational_speed(10)
         self.catheterControl.start_move()
@@ -203,7 +236,9 @@ class nmEndovascularRobot(QObject):
         while True:
             if not self.feedback_flag:
                 return
-            tf, rf = self.guidewireControl.get_haptic_information()
+            #tf, rf = self.guidewireControl.get_haptic_information()
+            tf = 0
+            rf = 0
             self.define_system_status()
             self.get_guidewire_dst()
             self.context.real_time_feedback(self.system_status, 0, 0, self.guidewire_dst, 0, tf, rf, 0, 0, 0, 0, 0, 0)
@@ -242,8 +277,9 @@ class nmEndovascularRobot(QObject):
         self.guidewire_dst = int(self.guidewireControl.get_guidewire_absolute_position())
 
     def guidewire_go_home(self):
-        self.guidewireControl.set_normal_both(-20, 0)
-        self.guidewireControl.start_move()
+        #self.guidewireControl.set_normal_both(-20, 0)
+        #self.guidewireControl.start_move()
+        print("go home!!!")
 
     def decision_making(self):
         ret = 1

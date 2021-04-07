@@ -21,7 +21,7 @@ class InfraredReflectiveSensor(object):
         GPIO.setup(self.doutBack, GPIO.IN)
         GPIO.setup(self.doutFront, GPIO.IN)
 
-        self.switch = EmergencySwitch()
+        #self.switch = EmergencySwitch()
         self.stateTask = threading.Thread(None, self.infraredReflectiveStatus)
         self.stateTask.start()
 
@@ -32,24 +32,23 @@ class InfraredReflectiveSensor(object):
         while True:
             back = GPIO.input(self.doutBack)
             front = GPIO.input(self.doutFront)
-            emSwitch = self.switch.read_current_state()
-            if emSwitch == 1:
-                #print 'stop', emSwitch
-                self.status = 4
+            #emSwitch = self.switch.read_current_state()
+            #if emSwitch == 1:
+            #    #print 'stop', emSwitch
+            #    self.status = 4
+            #print emSwitch
+            #print "front", front,"back", back
+            if back == 0 and front == 1:
+                #print 'start move'
+                self.status = 1
+            elif back == 1 and front == 0:
+                #print 'start retract'
+                self.status = 2
+            elif back == 0 and front == 0:
+                #print 'stop'
+                self.status = 3
             else:
-                #print emSwitch
-                #print "front", front,"back", back
-                if back == 0 and front == 1:
-                    #print 'start move'
-                    self.status = 1
-                elif back == 1 and front == 0:
-                    #print 'start retract'
-                    self.status = 2
-                elif back == 0 and front == 0:
-                    #print 'stop'
-                    self.status = 3
-                else:
-                    self.status = 0
+                self.status = 0
             time.sleep(0.03)
 
     def read(self):
@@ -60,8 +59,8 @@ class InfraredReflectiveSensor(object):
             time.sleep(0.05)
 
 
-"""
-irs = InfraredReflectiveSensor()
-irs.read()
+
+#irs = InfraredReflectiveSensor()
+#irs.read()
 #from EmergencySwitch import EmergencySwitch
-"""
+

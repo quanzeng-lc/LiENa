@@ -74,8 +74,8 @@ class AdvanceOrientalMotor(object):
         # if self.mv_mode:
         #self.vel_move_task = threading.Thread(None, self.continuous_move)
         #self.pos_move_task = threading.Thread(None, self.position_move)
-        self.vel_move_task = mp.Process(target=self.continuous_move, args=(self.mv_mode, self.mv_enable, self.vel_start_flag, self.expectedSpeedFlag, self.is_moving, self.vel_mode_interval, self.count))
-        self.pos_move_task = mp.Process(target=self.position_move, args=(self.mv_mode, self.pos_mode_expected_flag, self.distance_pulse, self.pos_start_flag, self.is_moving, self.pos_mode_interval))
+        #self.vel_move_task = mp.Process(target=self.continuous_move, args=(self.mv_mode, self.mv_enable, self.vel_start_flag, self.expectedSpeedFlag, self.is_moving, self.vel_mode_interval, self.count))
+        #self.pos_move_task = mp.Process(target=self.position_move, args=(self.mv_mode, self.pos_mode_expected_flag, self.distance_pulse, self.pos_start_flag, self.is_moving, self.pos_mode_interval))
 
     def open_device(self):
         if self.open_flag:

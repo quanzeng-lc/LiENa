@@ -128,6 +128,7 @@ class RCPContext(QObject):
                         elif int(body[7]) == 1:
                             gwrs = 1 * (int(body[8]) * 256 + int(body[9]))
                             ci.set_guidewire_rotational_speed(gwrs)
+                        #print("gwts: ", gwts/100, gwrs/100)
 
                         chars = 0
                         if int(body[13]) == 0:

@@ -19,3 +19,12 @@ class Gripper(object):
 	
 	def gripper_chuck_loosen(self):
 		GPIO.output(self.io, False)	
+"""
+grip = Gripper(7)
+
+for i in range(10):
+    grip.gripper_chuck_fasten()
+    time.sleep(1)
+    grip.gripper_chuck_loosen()
+    time.sleep(1)
+"""

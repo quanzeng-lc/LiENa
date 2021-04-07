@@ -66,7 +66,7 @@ class RotateOrientalMotor(object):
         # actual speed degree/s
         self.actualVelocity = 0
         #self.vel_move_task = threading.Thread(None, self.continuous_move)
-        self.vel_move_task = mp.Process(target=self.continuous_move, args=(self.mv_mode, self.mv_enable, self.vel_start_flag, self.expectedSpeedFlag, self.is_moving, self.vel_mode_interval))
+        #self.vel_move_task = mp.Process(target=self.continuous_move, args=(self.mv_mode, self.mv_enable, self.vel_start_flag, self.expectedSpeedFlag, self.is_moving, self.vel_mode_interval))
         self.pos_move_task = threading.Thread(None, self.position_move)
 
     def open_device(self):
