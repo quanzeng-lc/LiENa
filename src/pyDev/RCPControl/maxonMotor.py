@@ -1,5 +1,6 @@
 from RCPControl.socketCan import socketCan
 #from socketCan import socketCan
+import time
 
 
 class maxonMotor(object):
@@ -25,7 +26,7 @@ class maxonMotor(object):
     def setParameter(self, resolution, gear, lead):
         self.lead = lead
         self.resolution = resolution
-        self.gear = gear
+        self.gear_ratio = gear
     
     def transfromQcToPosition(self, qc):
         position = qc * self.lead / (self.resolution * self.gear_ratio);
@@ -60,6 +61,8 @@ class maxonMotor(object):
        #socketCan.instance().receiveMsg()
        
     def enableMotor(self):
+        #self.disableMotor()
+        #time.sleep(0.5)
         canId = 0x600 + self.nodeId
         sendData = list()
         sendData.append(0x22)
@@ -72,6 +75,7 @@ class maxonMotor(object):
         sendData.append(0x00)
         socketCan.instance().sendMsg(canId, sendData)
         #socketCan.instance().receiveMsg()
+        time.sleep(0.05)
 
         canId = 0x600 + self.nodeId
         sendData = list()
@@ -149,6 +153,97 @@ class maxonMotor(object):
         socketCan.instance().sendMsg(canId, sendData)
         #socketCan.instance().receiveMsg()
 
+    def setProfilePositionMode(self):
+        canId = 0x600 + self.nodeId 
+        sendData = list()
+        sendData.append(0x22)
+        sendData.append(0x60)
+        sendData.append(0x60)
+        sendData.append(0x00)
+        sendData.append(0x01)
+        sendData.append(0x00)
+        sendData.append(0x00)
+        sendData.append(0x00)
+        socketCan.instance().sendMsg(canId, sendData)
+        #socketCan.instance().receiveMsg()
+
+    def setTargetPosition(self, position):
+        canId = 0x600 + self.nodeId
+        qcPosition = int(self.isSameDirection(self.transfromPositionToQc(position)))
+        #print('position: ' ,qcPosition)
+        positionLowByte = 0x000000FF & qcPosition
+        positionHighByte = (0x0000FF00 & qcPosition)>>8
+        positionHighLowByte = (0x00FF0000 & qcPosition)>>16
+        positionHighHighByte = (0xFF000000 & qcPosition)>>24
+        sendData = list()
+        sendData.append(0x22)
+        sendData.append(0x7A)
+        sendData.append(0x60)
+        sendData.append(0x00)
+        sendData.append(positionLowByte)
+        sendData.append(positionHighByte)
+        sendData.append(positionHighLowByte)
+        sendData.append(positionHighHighByte)
+        socketCan.instance().sendMsg(canId, sendData)
+        #socketCan.instance().receiveMsg()
+
+    def setProfilePositionModeVelocity(self, velocity):
+        canId = 0x600 + self.nodeId
+        profileVelocity = abs(int(self.isSameDirection(self.transfromLineSpToRPM(velocity))))
+        #print('profileVelocity: ' ,profileVelocity)
+        positionLowByte = 0x000000FF & profileVelocity
+        positionHighByte = (0x0000FF00 & profileVelocity)>>8
+        positionHighLowByte = (0x00FF0000 & profileVelocity)>>16
+        positionHighHighByte = (0xFF000000 & profileVelocity)>>24
+        sendData = list()
+        sendData.append(0x23)
+        sendData.append(0x81)
+        sendData.append(0x60)
+        sendData.append(0x00)
+        sendData.append(positionLowByte)
+        sendData.append(positionHighByte)
+        sendData.append(positionHighLowByte)
+        sendData.append(positionHighHighByte)
+        """
+        sendData.append(0xE8)
+        sendData.append(0x03)
+        sendData.append(0x00)
+        sendData.append(0x00)
+        """
+        socketCan.instance().sendMsg(canId, sendData)
+        #socketCan.instance().receiveMsg()
+
+
+    def profilePositionModeRelativeStartMove(self):
+        canId = 0x600 + self.nodeId
+        sendData = list()
+        sendData.append(0x22)
+        sendData.append(0x40)
+        sendData.append(0x60)
+        sendData.append(0x00)
+        sendData.append(0x5F)
+        sendData.append(0x00)
+        sendData.append(0x00)
+        sendData.append(0x00)
+        socketCan.instance().sendMsg(canId, sendData)
+        #socketCan.instance().receiveMsg()
+
+    def clearFault(self):
+        canId = 0x600 + self.nodeId
+        sendData = list()
+        sendData.append(0x22)
+        sendData.append(0x40)
+        sendData.append(0x60)
+        sendData.append(0x00)
+        sendData.append(0x80)
+        sendData.append(0x00)
+        sendData.append(0x00)
+        sendData.append(0x00)
+        socketCan.instance().sendMsg(canId, sendData)
+        #socketCan.instance().receiveMsg()
+
+
+
 
 """
 import time
@@ -162,4 +257,25 @@ maxonMotor.profileVelocityModeStartMove()
 time.sleep(2)
 maxonMotor.profileVelocityModeHalt()
 maxonMotor.disableMotor()
+"""
+
+"""
+import time
+maxonMotor = maxonMotor(1)
+maxonMotor.setDirection(False)
+maxonMotor.setParameter(500*4, 1, 4)
+maxonMotor.enableMotor()
+maxonMotor.setProfilePositionMode()
+maxonMotor.setProfilePositionModeVelocity(4)
+maxonMotor.setTargetPosition(10)
+maxonMotor.profilePositionModeRelativeStartMove()
+time.sleep(10)
+maxonMotor.profileVelocityModeHalt()
+maxonMotor.disableMotor()
+"""
+
+"""
+import time
+maxonMotor = maxonMotor(1)
+maxonMotor.clearFault()
 """

@@ -71,7 +71,7 @@ class nmEndovascularRobot(QObject):
 
         # real time task to parse commands in context
         self.feedbackTask = threading.Thread(None, self.feedback)
-        #self.feedbackTask.start()
+        self.feedbackTask.start()
 
         self.open()
 
@@ -82,7 +82,7 @@ class nmEndovascularRobot(QObject):
         self.context.nonProvedControlMessageArrived.connect(self.standby)
         self.context.closeSystemMessageArrived.connect(self.close_app)
         # multiadvance
-        self.context.endovascularMultiTimeAdvanceArrived.connect(self.guidewire_catheter_both)
+        self.context.endovascularPrepareAnotherTour.connect(self.prepareAnotherTour)
         self.context.endovascularGoHomeArrived.connect(self.guidewire_go_home)
         self.context.endovascularMultiTimeGuidewirePullArrived.connect(self.multi_pull_guidewire_reaction)
 
@@ -119,7 +119,7 @@ class nmEndovascularRobot(QObject):
     # ----------------------------------------------------------------------------------------------------
     # all sub-control-module enter into standby status
     def standby(self):
-        print("-----------standBy")
+        #print("-----------standBy")
         if not self.standBy:
             self.guidewireControl.stop()
             self.catheterControl.stop()
@@ -149,19 +149,20 @@ class nmEndovascularRobot(QObject):
             if self.guidewire_catheter_flag:
                 return
             #print('reaction', msg.get_catheter_translational_speed() / 100.0, msg.get_guidewire_translational_speed() / 100, msg.get_guidewire_rotational_speed() / 100.0)
+            
             self.catheterControl.set_translational_speed(msg.get_catheter_translational_speed() / 100.0)
             self.catheterControl.start_move()
 
-            if self.guidewireControl.is_forbidden_reaction() == 3:
+            if self.guidewireControl.getGlobalState() == 3:
                 self.guidewireControl.start_move(0, 0)
-            elif self.guidewireControl.is_forbidden_reaction() == 0:
+            elif self.guidewireControl.getGlobalState() == 0:
                 self.guidewireControl.start_move(msg.get_guidewire_translational_speed() / 100.0, msg.get_guidewire_rotational_speed() / 100.0)
-            elif self.guidewireControl.is_forbidden_reaction() == 1:
+            elif self.guidewireControl.getGlobalState() == 2:
                 if msg.get_guidewire_translational_speed() < 0:
                     self.guidewireControl.start_move(msg.get_guidewire_translational_speed() / 100.0, msg.get_guidewire_rotational_speed() / 100.0)
                 if msg.get_guidewire_translational_speed() > 0:
                     self.guidewireControl.start_move(0, msg.get_guidewire_rotational_speed() / 100.0)
-            elif self.guidewireControl.is_forbidden_reaction() == 2:
+            elif self.guidewireControl.getGlobalState() == 1:
                 if msg.get_guidewire_translational_speed() > 0:
                     self.guidewireControl.start_move(msg.get_guidewire_translational_speed() / 100.0, msg.get_guidewire_rotational_speed() / 100.0)
                 if msg.get_guidewire_translational_speed() < 0:
@@ -169,12 +170,11 @@ class nmEndovascularRobot(QObject):
 
             # print("contrastMediaControl:", msg.get_contrast_media_speed()/100.0, msg.get_contrast_media_volume()/100.0)
             if msg.get_contrast_media_speed() > 100:
-                #self.contrastMediaControl.execute(msg.get_contrast_media_speed()/100.0, msg.get_contrast_media_volume()/100.0)
-                #self.contrastMediaControl.start_move()
-                pass
+                #print(".........contract...... ", msg.get_contrast_media_speed()/100.0, msg.get_contrast_media_volume()/100.0)
+                self.contrastMediaControl.execute(msg.get_contrast_media_speed()/100.0, msg.get_contrast_media_volume()/100.0)
 
     # guidewire catheter move together
-    def guidewire_catheter_both(self):
+    def prepareAnotherTour(self):
         """
         if self.guidewire_catheter_flag:
             return
@@ -189,14 +189,15 @@ class nmEndovascularRobot(QObject):
         if self.standBy:
             print("prepare!!!")
             self.startPrepare = True
-            guidewirePrepareAnotherTour = threading.Thread(target=self.prepareAnotherTour, args=())
+            guidewirePrepareAnotherTour = threading.Thread(target=self.prepareAnotherTourFunc, args=())
             guidewirePrepareAnotherTour.start()
             #pass
             
-    def prepareAnotherTour(self):
+    def prepareAnotherTourFunc(self):
         self.guidewireControl.prepare_for_another_tour()
         time.sleep(0.5)
         self.startPrepare = False
+        #self.guidewireControl.GripperLoosen()
 
 
     # push guidewire multi-time
@@ -236,13 +237,14 @@ class nmEndovascularRobot(QObject):
         while True:
             if not self.feedback_flag:
                 return
-            #tf, rf = self.guidewireControl.get_haptic_information()
-            tf = 0
-            rf = 0
-            self.define_system_status()
+            tf, rf = self.guidewireControl.get_haptic_information()
+            #tf = 1
+            #rf = 2
+            #self.define_system_status()
+            #globalState = self.guidewireControl.getGlobalState()
             self.get_guidewire_dst()
-            self.context.real_time_feedback(self.system_status, 0, 0, self.guidewire_dst, 0, tf, rf, 0, 0, 0, 0, 0, 0)
-            time.sleep(0.1)
+            self.context.real_time_feedback(0, 0, 0, self.guidewire_dst, 0, tf, rf, 0, 0, 0, 0, 0, 0)
+            time.sleep(0.2)
 
     def set_global_state(self, state):
         self.global_state = state

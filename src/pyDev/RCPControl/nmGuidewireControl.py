@@ -20,16 +20,16 @@ class nmGuidewireControl(QObject):
 
         self.needToRetract = False
         self.forbid = 0
-        self.speedProgress = 2
+        self.speedProgress = 8
         #self.speedRetract = 2 * self.speedProgress
-        self.speedRotate = 20
-        self.rotateTime = 200 / self.speedRotate
+        self.speedRotate = 80
+        self.rotateTime = 500 / self.speedRotate
         self.homeSpeed = 1
         self.number_of_cycles = 0
         self.number = ""
         self.guidewireProgressHome = False
         self.global_state = 0
-        self.guidewire_status = 0
+        #self.guidewire_status = 0
         self.start_move_flag = False
         self.recorde_flag=False
         self.retract_flag=False
@@ -48,11 +48,12 @@ class nmGuidewireControl(QObject):
         #self.open()
         self.enable()
 
-        self.gripperFront = Gripper(7)
-        self.gripperBack = Gripper(8)
+        self.gripperFront = Gripper(26)
+        self.gripperBack = Gripper(19)
 
         self.infraredReflectiveSensor = InfraredReflectiveSensor()
-        #self.translationalForceSensor = ForceSensor("/dev/ttyusb_force", 9600, 8, 'N', 1)
+
+        self.translationalForceSensor = ForceSensor("/dev/ttyUSB0", 9600, 8, 'N', 1)
         #self.rotationalForceSensor = ForceSensor("/dev/ttyusb_torque", 9600, 8, 'N', 1)
 
 
@@ -62,8 +63,8 @@ class nmGuidewireControl(QObject):
         self.analyseTask = threading.Thread(None, self.analyse)
         self.analyseTask.start()
 
-        #self.force_quire_task = threading.Thread(None, self.force_quire)
-   #     self.force_quire_task.start()
+        self.force_quire_task = threading.Thread(None, self.force_aquire)
+        self.force_quire_task.start()
 
         # self.controlMessageArrived[LienaControlInstruction].connect(self.reaction)
 
@@ -100,10 +101,17 @@ class nmGuidewireControl(QObject):
         self.guidewireRotateMotor.profileVelocityModeHalt()
 
 
+    def GripperLoosen(self):
+        self.gripperFront.loosen()
+        self.gripperBack.loosen()
+
+
     def analyse(self):
         while True:
             # self.needToRetract or self.guidewireProgressHome is true : forbid
             self.global_state = self.infraredReflectiveSensor.read_current_state()
+            print("global_state: ", self.global_state)
+            """
             if self.global_state == 0:
                 self.forbid = 0
             if self.global_state == 2:
@@ -121,7 +129,12 @@ class nmGuidewireControl(QObject):
             elif self.global_state == 3 or self.global_state == 4:
                 self.forbid = 3
                 self.start_move(0, 0)
-            time.sleep(0.5)
+            """
+            time.sleep(1)
+
+    def getGlobalState(self):
+        #print("global_state:", self.global_state)
+        return self.global_state
 
     def push_guidewire_home(self, flag=False):
         # self.context.clear_guidewire_message()
@@ -155,7 +168,7 @@ class nmGuidewireControl(QObject):
         else:
             return self.guidewire_round_dst + self.get_guidewire_position()
         """    
-
+    # pull back
     def prepare_for_another_tour(self):
         
         self.recorde_flag = False
@@ -173,13 +186,14 @@ class nmGuidewireControl(QObject):
         self.start_move(-self.speedProgress, 0)
         # time.sleep(3)
         while self.infraredReflectiveSensor.read_current_state() != 1:
+            print("retract..")
             time.sleep(0.2)
         print("back limitation arrived")
         time.sleep(0.5)
         self.push_guidewire_home()
         #self.clear_guidewire_position()
-        self.start_move(0, self.speedRotate)  # -
-        time.sleep(self.rotateTime + 0.3)
+        self.start_move(0, self.speedRotate+1)  # -
+        time.sleep(self.rotateTime + 3)
         self.start_move(0, 0)
         time.sleep(0.5)
         self.gripperFront.gripper_chuck_loosen()
@@ -188,14 +202,14 @@ class nmGuidewireControl(QObject):
         # advance Home
         self.forbid = 0
         self.guidewire_status = 0
-        self.number_of_cycles -= 1
+        #self.number_of_cycles -= 1
         """
         if self.number_of_cycles > 0:
             while self.needToRetract or self.guidewireProgressHome:
                 time.sleep(0.5)
             self.push_guidewire_advance()
         """
-
+    # pull back multi
     def multi_pull_guidewire(self, times):
         if self.forbid > 0:
             return
@@ -274,9 +288,9 @@ class nmGuidewireControl(QObject):
 
     def get_haptic_information(self):
         #time_stamps = time.time()
-        rf = self.rotationalForceSensor.get_value()
-        #status = self.get_status()
-        tf = self.translationalForceSensor.get_value()
+        #rf = self.rotationalForceSensor.get_value()
+        tf = self.translationalForceSensor.get_value_filter()
+        rf = 0
         #return (time_stamps, tf, status, rf)
         return (tf, rf)
 
@@ -289,30 +303,23 @@ class nmGuidewireControl(QObject):
     def translational_go_home(self):
         self.guidewireProgressMotor.go_home()
 
-    def force_quire(self):
+    def force_aquire(self):
         compteur = 0
         while True:
-            #if not self.recorde_flag:
-            #    time.sleep(0.1)
-            #    continue
+            #print("force")
             data = self.get_haptic_information()
-            #print("num", str(self.number_of_cycles)) 
-            #path = "./Data/hapticFeedback" + str(self.number_of_cycles) + ".csv"
             path = "./Data/hapticFeedback.csv"
-            #if self.retract_flag:
-            #    path = "./Data/hapticFeedback_pull" + str(self.multi_pull_times) + ".csv"
-            #print(data)
             tmpData = list()
             tmpData.append(str(compteur))
             tmpData.append(str(time.time()))
             tmpData.append(str(data[0]))
-            tmpData.append(str(data[1]))
+            #tmpData.append(str(data[1]))
             with open(path, 'a+') as f:
                 csv_writer = csv.writer(f)
-                csv_writer.writerow(data)
+                csv_writer.writerow(tmpData)
                 # f.write(tmpData[0])
-            compteur += 1
             time.sleep(0.01)
+            compteur = compteur+1 
             
             
     #   test guidewire advance
