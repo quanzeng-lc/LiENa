@@ -26,6 +26,7 @@ class RCPContext(QObject):
     endovascularPrepareAnotherTour= pyqtSignal()
     endovascularGoHomeArrived = pyqtSignal()
     endovascularMultiTimeGuidewirePullArrived = pyqtSignal()
+    posFollowMotion = pyqtSignal()
 
     def __init__(self, input_cache, output_cache):
         super(RCPContext, self).__init__()
@@ -154,6 +155,26 @@ class RCPContext(QObject):
                         self.endovascularGoHomeArrived.emit()
                     elif int(body[0] == 5):
                         self.endovascularMultiTimeGuidewirePullArrived.emit()
+                    elif int(body[0] == 6):
+                        #quanzeng to do...
+                        gwts = 0
+                        if int(body[1]) == 0:
+                            gwts = -1 * (int(body[2]) * 256 + int(body[3]))
+                            ci.set_guidewire_translational_speed(gwts)
+                        elif int(body[1]) == 1:
+                            gwts = 1 * (int(body[2]) * 256 + int(body[3]))
+                            ci.set_guidewire_translational_speed(gwts)
+
+                        gwrs = 0
+                        if int(body[4]) == 0:
+                            gwrs = -1 * (int(body[5]) * 256 + int(body[6]))
+                            ci.set_guidewire_rotational_speed(gwrs)
+                        elif int(body[4]) == 1:
+                            gwrs = 1 * (int(body[5]) * 256 + int(body[6]))
+                            ci.set_guidewire_rotational_speed(gwrs)
+                        print("gwts: ", gwts/100, gwrs/100)
+                        self.posFollowMotion.emit()
+
                 self.inputLock.release()
             time.sleep(0.05)
 
