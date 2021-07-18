@@ -104,7 +104,7 @@ class RCPContext(QObject):
             cpt = self.input_cache.get_sequence_count()
             for i in range(cpt):
                 self.inputLock.acquire()
-                msg = self.input_cache.get_latest_message_by_index(i)
+                msg = self.input_cache.get_front_message_by_index(i)
                 if msg is not None:
                     ci = LienaControlInstruction()
                     body = msg.get_message_body()
@@ -138,7 +138,6 @@ class RCPContext(QObject):
                             chars = 1 * (int(body[14]) * 256 + int(body[15]))
                             ci.set_catheter_translational_speed(chars)
                         # print ("parse_command:", gwts, gwrs, chrs)
-
 
                         chars1 = int(body[22]) * 256 + int(body[23])
                         if int(body[19]) == 0:
