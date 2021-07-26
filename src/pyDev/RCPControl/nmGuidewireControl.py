@@ -96,6 +96,12 @@ class nmGuidewireControl(QObject):
         self.guidewireProgressMotor.profileVelocityModeStartMove()
         self.guidewireRotateMotor.profileVelocityModeStartMove()
 
+    def translateStartMove(self, progressVelocity):
+        self.start_move_flag = True
+        self.guidewireProgressMotor.setProfileVelocityModeVelocity(progressVelocity)
+        self.guidewireProgressMotor.profileVelocityModeStartMove()
+
+
     def stop(self):
         self.guidewireProgressMotor.profileVelocityModeHalt()
         self.guidewireRotateMotor.profileVelocityModeHalt()
@@ -105,12 +111,14 @@ class nmGuidewireControl(QObject):
         self.gripperFront.loosen()
         self.gripperBack.loosen()
 
+    def getGuidewirePosActualValue(self):
+        return self.guidewireProgressMotor.getPosActualValue()
 
     def analyse(self):
         while True:
             # self.needToRetract or self.guidewireProgressHome is true : forbid
             self.global_state = self.infraredReflectiveSensor.read_current_state()
-            print("global_state: ", self.global_state)
+            # print("global_state: ", self.global_state)
             """
             if self.global_state == 0:
                 self.forbid = 0
@@ -363,12 +371,15 @@ print("time: ", time.time()-start)
 """
 # test advance distance error
 guidewireControl = nmGuidewireControl()
-start = time.time()
-guidewireControl.guidewireProgressMotor.set_mode(0)
-guidewireControl.guidewireProgressMotor.set_position(20)
-guidewireControl.guidewireProgressMotor.set_pos_mode_expectedSpeed(3)
-guidewireControl.guidewireProgressMotor.start_move()
+#start = time.time()
+#guidewireControl.guidewireProgressMotor.set_mode(0)
+#guidewireControl.guidewireProgressMotor.set_position(20)
+#guidewireControl.guidewireProgressMotor.set_pos_mode_expectedSpeed(3)
+#guidewireControl.guidewireProgressMotor.start_move()
+while(1):
+    print(guidewireControl.getGuidewirePosActualValue())
 """
+
 """
 # test rotate angle
 guidewireControl = nmGuidewireControl()

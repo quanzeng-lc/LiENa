@@ -26,7 +26,8 @@ class RCPContext(QObject):
     endovascularPrepareAnotherTour= pyqtSignal()
     endovascularGoHomeArrived = pyqtSignal()
     endovascularMultiTimeGuidewirePullArrived = pyqtSignal()
-    posFollowMotion = pyqtSignal()
+    posFollowMotion = pyqtSignal(LienaControlInstruction)
+    saveInitPos = pyqtSignal()
 
     def __init__(self, input_cache, output_cache):
         super(RCPContext, self).__init__()
@@ -172,8 +173,10 @@ class RCPContext(QObject):
                         elif int(body[4]) == 1:
                             gwrs = 1 * (int(body[5]) * 256 + int(body[6]))
                             ci.set_guidewire_rotational_speed(gwrs)
-                        print("gwts: ", gwts/100, gwrs/100)
-                        self.posFollowMotion.emit()
+                        #print("gwts: ", gwts/100, gwrs/100)
+                        self.posFollowMotion.emit(ci)
+                    elif int(body[0]==7):
+                        self.saveInitPos.emit()
 
                 self.inputLock.release()
             time.sleep(0.05)

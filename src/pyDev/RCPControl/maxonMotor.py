@@ -1,4 +1,8 @@
-from RCPControl.socketCan import socketCan
+#from RCPControl.socketCan import socketCan
+import sys
+sys.path.append('./RCPControl/')
+from socketCan import socketCan
+import struct
 #from socketCan import socketCan
 import time
 
@@ -242,6 +246,32 @@ class maxonMotor(object):
         socketCan.instance().sendMsg(canId, sendData)
         #socketCan.instance().receiveMsg()
 
+    def getPosActualValue(self):
+        canId = 0x600 + self.nodeId
+        sendData = list()
+        sendData.append(0x40)
+        sendData.append(0x64)
+        sendData.append(0x60)
+        sendData.append(0x00)
+        sendData.append(0x00)
+        sendData.append(0x00)
+        sendData.append(0x00)
+        sendData.append(0x00)
+        socketCan.instance().sendMsg(canId, sendData)
+        msg = socketCan.instance().receiveMsg()
+        #print(len(msg.data))
+        data = msg.data[4:]
+        #print("datalength: ", len(data))
+        posArray = struct.unpack('i'*1, data)
+        #pos = posArray[0]
+        pos = self.isSameDirection(self.transfromQcToPosition(posArray[0]))
+        #pos = (int((msg.data[4]&0x000000ff) + (msg.data[5]&0x000000ff)<<8 + (msg.data[6]&0x000000ff)<<16) + (msg.data[7]&0x000000ff)<<24)
+        #print("receiveMsg: %X"%(msg.data[0]&0x000000ff),"%X"%msg.data[1], "%X"%msg.data[2], "%X"%msg.data[3], "%X"%msg.data[4], "%X"%msg.data[5],
+        #        "%X"%msg.data[6], "%X"%msg.data[7])
+        #print("pos: ", pos)
+        return pos
+
+
 
 
 
@@ -278,4 +308,14 @@ maxonMotor.disableMotor()
 import time
 maxonMotor = maxonMotor(1)
 maxonMotor.clearFault()
+"""
+
+# 设置了导程、分辨率 
+"""
+import time
+maxonMotor = maxonMotor(1)
+maxonMotor.clearFault()
+while(1):
+    time.sleep(0.1)
+    print(maxonMotor.getPosActualValue())
 """

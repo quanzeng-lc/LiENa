@@ -62,6 +62,7 @@ class nmEndovascularRobot(QObject):
         # self.pos_speed = 2
         # self.position_cgf = 1
         # self.position_cgb = 2
+        self.initPos = 0
 
         # sub-module
         self.guidewireControl = nmGuidewireControl()
@@ -85,6 +86,8 @@ class nmEndovascularRobot(QObject):
         self.context.endovascularPrepareAnotherTour.connect(self.prepareAnotherTour)
         self.context.endovascularGoHomeArrived.connect(self.guidewire_go_home)
         self.context.endovascularMultiTimeGuidewirePullArrived.connect(self.multi_pull_guidewire_reaction)
+        self.context.posFollowMotion.connect(self.followMotion)
+        self.context.saveInitPos.connect(self.saveRobotInitPos)
 
     # ----------------------------------------------------------------------------------------------------
     # disable all sub-module of the execution unit
@@ -119,12 +122,11 @@ class nmEndovascularRobot(QObject):
     # ----------------------------------------------------------------------------------------------------
     # all sub-control-module enter into standby status
     def standby(self):
-        #print("-----------standBy")
-        if not self.standBy:
-            self.guidewireControl.stop()
-            self.catheterControl.stop()
-            self.contrastMediaControl.stop()
-            self.standBy = True
+        self.guidewireControl.stop()
+        self.catheterControl.stop()
+        self.contrastMediaControl.stop()
+        self.standBy = True
+        print("-----------standBy")
 
 
     # ----------------------------------------------------------------------------------------------------
@@ -132,6 +134,28 @@ class nmEndovascularRobot(QObject):
     def get_robot_status(self):
         #return self.switch.read_current_state()
         return 0
+
+    def saveRobotInitPos(self):
+        # to do
+        self.initPos = self.guidewireControl.getGuidewirePosActualValue()
+        print("initPos!!!", self.initPos)
+
+    # quanzeng 用来响应位置跟随运动的消息
+    def followMotion(self, msg):
+        Kp = 1
+        Kd = 0.5
+        K = 10
+        KdKInverse = 1/(Kd*K)
+        KInverse = 1/K
+        XmPos = msg.get_guidewire_translational_speed()/100.0
+        XmSpeed = msg.get_guidewire_rotational_speed()/100.0
+        XsPos =  self.guidewireControl.getGuidewirePosActualValue()
+        XsPosInit = self.initPos
+        XsSpeed = KInverse*XmSpeed + KdKInverse*(Kp*XmPos - K*(XsPos - XsPosInit))
+        self.guidewireControl.translateStartMove(XsSpeed)
+        print("follow!!!", XsPosInit, XsPos, XmPos, XmSpeed, XsSpeed)
+
+
 
     # ----------------------------------------------------------------------------------------------------
     # execute action according to the incoming message
